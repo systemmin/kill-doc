@@ -31,7 +31,7 @@
 // @match        http://jjg.spc.org.cn/resmea/view/stdonline
 // @match        https://pro-img-brtm.baijiayun.com/*
 // @match        https://hbba.sacinfo.org.cn/attachment/onlineRead/*
-// @match        https://www.qzoffice.com/edit*
+// @match        https://www.qzoffice.com/edit**
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js
