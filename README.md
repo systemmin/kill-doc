@@ -101,7 +101,7 @@
 | MBA智库         | 获取文本功能需要预览全文，否则数据不完整                     |
 | GB              | 要输入验证码以后才可以进行相应操作                           |
 | JJG             | 文档阅读页面下载                                             |
-| 轻竹办公        | 等待系统生成结束点击 `下载图片` 即可。支持切换模板下载，支持编辑后再重新下载，反正就是能一直下载。<br />**注意：**下载后解压缩包，浏览器打开`index.html`，鼠标右键或 `Ctrl` `+` `P`  打印PDF，布局选择横向即可保存PDF。 |
+| 轻竹办公        | 等待系统生成结束点击 `下载图片` 即可。支持切换模板下载，支持编辑后再重新下载，反正就是能一直下载。<br />**注意**：下载后解压缩包，浏览器打开`index.html`，鼠标右键或 `Ctrl` `+` `P`  打印PDF，布局选择横向即可保存PDF。 |
 
 ## 历史
 
@@ -155,6 +155,6 @@
   - 有钱谁用脚本啊！😲
   - 当然土豪可以随便赏小弟🤭
 
-- [鸣谢](https://github.com/systemmin/kill-doc/blob/master/AMOUNT)🫡
+- [鸣谢](https://github.com/systemmin/kill-doc/blob/master/AMOUNT.md)🫡
 
 ，<img src="https://dtking.cn/pay.png" alt="赞赏" style="zoom: 67%;" />
