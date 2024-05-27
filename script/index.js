@@ -621,7 +621,7 @@
 			fileType = u.attr(u.query('h1').children[0], 'title').toLowerCase();
 			// 兼容图片格式 aHR0cHMlM0EvL3d3dy5kb2Npbi5jb20vcC00MDU3Mzg2NDMuaHRtbCUzRnRvSW1nJTNEMQ==
 			select = u.query("#contentcontainer img") ? '#contentcontainer img' : "#contentcontainer canvas";
-			console.log('select================>',select);
+			console.log('select================>', select);
 			if (isUserLogin === '1') {
 				beforeFun = "let eb = u.query('.model-fold-show');if (eb) {eb.click();}";
 			}
@@ -879,7 +879,8 @@
 			} else if (host.includes(domain.renrendoc)) {
 				scrollPageArea()
 			} else if (host.includes(domain.docin)) {
-				select = u.query("#contentcontainer img") ? '#contentcontainer img' : "#contentcontainer canvas";
+				select = u.query("#contentcontainer img") ? '#contentcontainer img' :
+					"#contentcontainer canvas";
 				scrollWinArea()
 			} else if (host.includes(domain.wenku)) {
 				scrollWinArea()
@@ -1168,18 +1169,18 @@
 		const length = images.length;
 		for (let i = 0; i < length; i++) {
 			let {
-				data,
+				blob,
 				width,
 				height
 			} = await MF_CanvasToBase64(images[i]);
 			let fileName = i + ".png";
-			zipWriter.add(fileName, new zip.Data64URIReader(data));
+			zipWriter.add(fileName, new zip.BlobReader(blob));
 			if (fileType.includes('ppt')) {
 				doc.addPage([width * pdf_ratio, height * pdf_ratio], 'l');
-				doc.addImage(data, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, i, 'FAST')
+				doc.addImage(images[i], 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, i, 'FAST')
 			} else {
 				doc.addPage();
-				doc.addImage(data, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
+				doc.addImage(images[i], 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
 			}
 			if (i === 1) {
 				doc.deletePage(1);
@@ -1216,14 +1217,17 @@
 				useCORS: true,
 				logging: false,
 			}).then(function(canvas) {
-				// 将canvas转换为图片并下载.
-				let data = canvas.toDataURL();
 				let fileName = max_index + "_" + a_len + ".png";
-				zipWriter.add(fileName, new zip.Data64URIReader(data));
+				// 将canvas转换为图片并下载.
+				canvas.toBlob(blob => {
+						zipWriter.add(fileName, new zip.BlobReader(blob));
+					},
+					"image/png",
+					1);
 				// 添加PDF
 				// 794px*1123px ;
 				doc.addPage([canvas.width * pdf_ratio, canvas.height * pdf_ratio], 'l');
-				doc.addImage(data, 'JPEG', 0, 0, canvas.width * pdf_ratio, canvas.height *
+				doc.addImage(canvas, 'JPEG', 0, 0, canvas.width * pdf_ratio, canvas.height *
 					pdf_ratio, max_index + "_" + a_len, 'FAST')
 				if (max_index === 1) {
 					doc.deletePage(1);
@@ -1869,13 +1873,34 @@
 			image.src = fullUrl;
 		})
 	}
-
+	
+	
 	/**
-	 * @description 画布输出 base64
+	 * @description 将 blob 对象转 uint8Array
+	 * @author Mr.Fang
+	 * @time 2024年5月27日
+	 * @param {Object} blob 图片对象
+	 * @returns {Promise<Uint8Array>}
+	 */
+	const MF_BlobToUint8Array = (blob)=> {
+	  return new Promise((resolve, reject) => {
+	    const fileReader = new FileReader();
+	    fileReader.onload = function () {
+	      resolve(new Uint8Array(this.result));
+	    };
+	    fileReader.onerror = function (error) {
+	      reject(error);
+	    };
+	    fileReader.readAsArrayBuffer(blob);
+	  });
+	}
+	
+	/**
+	 * @description 画布输出 blob 对象
 	 * @author Mr.Fang
 	 * @time 2024年1月20日18:05:49
 	 * @param src 图片地址
-	 * @returns {Promise<unknown>}
+	 * @returns {Promise<Object>}
 	 */
 	const MF_CanvasToBase64 = (canvas) => {
 		return new Promise((resolve, reject) => {
@@ -1883,12 +1908,17 @@
 				width,
 				height
 			} = canvas;
-			const data = canvas.toDataURL();
-			resolve({
-				data,
-				width,
-				height
-			});
+			canvas.toBlob(
+				(blob) => {
+					resolve({
+						blob,
+						width,
+						height
+					});
+				},
+				"image/png",
+				1,
+			);
 		})
 	}
 })();
