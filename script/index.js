@@ -31,7 +31,7 @@
 // @match        http://jjg.spc.org.cn/resmea/view/stdonline
 // @match        https://pro-img-brtm.baijiayun.com/*
 // @match        https://hbba.sacinfo.org.cn/attachment/onlineRead/*
-// @match        https://www.qzoffice.com/edit**
+// @match        https://www.qzoffice.com/*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js
@@ -336,42 +336,7 @@
 		u.log('子页面加载完成！');
 	}
 
-	/**
-	 * 人人监听侧边栏点击切换问题
-	 */
-	const renObserve = () => {
-		const targetNode = u.query(".center-wrap");
-		if (targetNode) {
-			const observerOptions = {
-				childList: true,
-				attributes: false,
-				subtree: false
-			};
-			// dom 监听器
-			const observer = new MutationObserver(function(mutationList, observer) {
-				mutationList.forEach((mutation) => {
-					const addedNodes = mutation.addedNodes;
-					if (addedNodes.length) {
-						addedNodes.forEach(item => {
-							if (item.className === 'main-content') {
-								dom = item;
-								let node = u.query('h1');
-								title = node.innerText.replaceAll(" ", "");
-								node.nextElementSibling.children
-								let innerText = node.nextElementSibling.children[6]
-									.innerText;
-								fileType = innerText.split("：")[1].toLowerCase();
-								localStorage.removeItem('down')
-							}
-						})
-					}
-				});
-			});
-			// 触发监听
-			observer.observe(targetNode, observerOptions);
-		}
-	}
-
+	// 百度拷贝文本
 	const baiduCopy = () => {
 		const observerOptions = {
 			characterData: true,
@@ -405,14 +370,13 @@
 		observer.observe(targetNode2, observerOptions);
 	}
 
-
+	// 监听页面卸载，移除百度定时删除广告等 DOM 定时器
 	window.onunload = function() {
 		if (intervalBai) {
 			clearInterval(intervalBai);
 			intervalBai = null;
 		}
 	}
-
 
 	// 百度 xhr 数据监听
 	if (host.includes(domain.wenku)) {
@@ -508,21 +472,22 @@
 			let index = Number(localStorage.getItem("current") || "0");
 			let length = Number(localStorage.getItem("length") || "0");
 			const {
-				data,
+				blob,
+				uint8,
 				width,
 				height
 			} = value;
 			if (fileType.includes('ppt') || width > height) {
 				doc.addPage([width * pdf_ratio, height * pdf_ratio], 'l');
-				doc.addImage(data, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, index, 'FAST')
+				doc.addImage(uint8, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, index, 'FAST')
 			} else {
 				doc.addPage();
-				doc.addImage(data, 'JPEG', 0, 0, pdf_w, pdf_h, index, 'FAST')
+				doc.addImage(uint8, 'JPEG', 0, 0, pdf_w, pdf_h, index, 'FAST')
 			}
 			if (index === 1) {
 				doc.deletePage(1);
 			}
-			zipWriter.add(index + ".png", new zip.Data64URIReader(data));
+			zipWriter.add(index + ".png", new zip.BlobReader(blob));
 			localStorage.setItem('current', index + 1 + "");
 			downimg();
 		} else if (type === 'onload') {
@@ -619,9 +584,8 @@
 			}
 			title = u.query('meta[property="og:title"]').content;
 			fileType = u.attr(u.query('h1').children[0], 'title').toLowerCase();
-			// 兼容图片格式 aHR0cHMlM0EvL3d3dy5kb2Npbi5jb20vcC00MDU3Mzg2NDMuaHRtbCUzRnRvSW1nJTNEMQ==
 			select = u.query("#contentcontainer img") ? '#contentcontainer img' : "#contentcontainer canvas";
-			console.log('select================>', select);
+			console.log(select);
 			if (isUserLogin === '1') {
 				beforeFun = "let eb = u.query('.model-fold-show');if (eb) {eb.click();}";
 			}
@@ -762,14 +726,14 @@
 		console.log('文件名称：', title);
 		console.log('文件类型：', fileType);
 	}
+	
 
 	(function() {
 		// 移除多余 iframe
 		document.querySelectorAll('iframe').forEach(item => {
 			item.remove()
 		})
-		// 在这里执行渲染完成后的操作
-		console.log('HTML 渲染完成!');
+		
 		// 清空系统缓存数据
 		localStorage.removeItem('listData')
 		localStorage.removeItem('length')
@@ -848,11 +812,21 @@
 				}
 			}, 1000);
 		}
-		// 监听子页面加载完成，发送消息
-		if (!params.size || !params.get('custom')) {
-			init()
-		}
+		
 	})();
+	
+	// load 事件
+	document.onreadystatechange = function() {
+		if (document.readyState === "complete") {
+			console.log('readyState:', document.readyState);
+			// 在这里执行渲染完成后的操作
+			console.log('HTML 渲染完成!');
+			// 监听子页面加载完成，发送消息
+			if (!params.size || !params.get('custom')) {
+				init()
+			}
+		}
+	};
 
 
 	/**
@@ -879,8 +853,6 @@
 			} else if (host.includes(domain.renrendoc)) {
 				scrollPageArea()
 			} else if (host.includes(domain.docin)) {
-				select = u.query("#contentcontainer img") ? '#contentcontainer img' :
-					"#contentcontainer canvas";
 				scrollWinArea()
 			} else if (host.includes(domain.wenku)) {
 				scrollWinArea()
@@ -1403,11 +1375,11 @@
 						href: animVal
 					})
 					const {
-						data,
+						blob,
 						width,
 						height
 					} = await MF_ImageToBase64(animVal);
-					zipWriter.add(`images/${i}.png`, new zip.Data64URIReader(data));
+					zipWriter.add(`images/${i}.png`, new zip.BlobReader(blob));
 				} else {
 					image.setAttribute('xlink:href', is[0].name)
 				}
@@ -1492,21 +1464,22 @@
 			const src = image.src;
 			if (src.includes(host)) { // 当前域
 				const {
-					data,
+					uint8,
+					blob,
 					width,
 					height
 				} = await MF_ImageToBase64(src);
 				if (fileType.includes('ppt') || width > height) {
 					doc.addPage([width * pdf_ratio, height * pdf_ratio], 'l');
-					doc.addImage(data, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, index, 'FAST')
+					doc.addImage(uint8, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, index, 'FAST')
 				} else {
 					doc.addPage();
-					doc.addImage(data, 'JPEG', 0, 0, pdf_w, pdf_h, index, 'FAST')
+					doc.addImage(uint8, 'JPEG', 0, 0, pdf_w, pdf_h, index, 'FAST')
 				}
 				if (index === 1) {
 					doc.deletePage(1);
 				}
-				zipWriter.add(index + ".png", new zip.Data64URIReader(data));
+				zipWriter.add(index + ".png", new zip.BlobReader(blob));
 				current = index;
 				await u.preview(current, length);
 			} else {
@@ -1545,24 +1518,27 @@
 		for (let i = 0; i < length; i++) {
 			let item = els[i];
 			const {
-				data,
-				width,
-				height
+				blob,
+				canvas
 			} = await MF_ImagePositionToBase64(item);
-			if (data === -1) {
+			if (!blob) {
 				break;
 			}
+			const {
+				width,
+				height
+			} = canvas;
 			if (fileType.includes('ppt') || width > height) {
 				doc.addPage([width * pdf_ratio, height * pdf_ratio], 'l');
-				doc.addImage(data, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, index, 'FAST')
+				doc.addImage(canvas, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, index, 'FAST')
 			} else {
 				doc.addPage();
-				doc.addImage(data, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
+				doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
 			}
 			if (i === 1) {
 				doc.deletePage(1);
 			}
-			zipWriter.add(i + ".png", new zip.Data64URIReader(data));
+			zipWriter.add(i + ".png", new zip.BlobReader(blob));
 			await u.preview(i + 1, length);
 		}
 		// 非当前域下载文件下标会多加一个数值
@@ -1675,13 +1651,14 @@
 	 */
 	const downzip = () => {
 		zipWriter.close().then(blob => {
+			GM_download(URL.createObjectURL(blob), `${title}.zip`);
+			URL.revokeObjectURL(blob);
+			
 			// 在关闭旧的 ZipWriter 后，创建新的 ZipWriter
 			zipWriter = new zip.ZipWriter(new zip.BlobWriter("application/zip"), {
 				bufferedWrite: true,
 				useCompressionStream: false
 			});
-			GM_download(URL.createObjectURL(blob), `${title}.zip`);
-			URL.revokeObjectURL(blob);
 		}).catch(error => {
 			console.error(error);
 		});
@@ -1788,12 +1765,20 @@
 					canvas.height = height;
 					let context = canvas.getContext('2d');
 					context.drawImage(image, 0, 0, width, height);
-					const data = canvas.toDataURL();
-					resolve({
-						data,
-						width,
-						height
-					});
+					canvas.toBlob(async blob => {
+							// canvas 转 blob 对象
+							// blob 转 uint8 、PDF 需要 uint8 对象
+							const uint8 =await MF_BlobToUint8Array(blob)
+							resolve({
+								uint8,
+								blob,
+								width,
+								height
+							});
+						},
+						"image/png",
+						1,
+					);
 				} catch (e) {
 					reject(e);
 				}
@@ -1825,7 +1810,7 @@
 		if (!imageUrl) {
 			return new Promise((resolve, reject) => {
 				resolve({
-					data: -1
+					blob: null
 				})
 			})
 		}
@@ -1857,12 +1842,16 @@
 						ctx.drawImage(image, sx, sy, sw, sh, dx, dy, sw, sh);
 						if (i === childrens.length - 1) {
 							// 转 base64 输出
-							const data = canvas.toDataURL();
-							resolve({
-								data,
-								width: canvas.width,
-								height: canvas.height
-							});
+							canvas.toBlob(
+								(blob) => {
+									resolve({
+										blob,
+										canvas
+									});
+								},
+								"image/png",
+								1,
+							);
 						}
 					}
 				} catch (e) {
@@ -1873,8 +1862,8 @@
 			image.src = fullUrl;
 		})
 	}
-	
-	
+
+
 	/**
 	 * @description 将 blob 对象转 uint8Array
 	 * @author Mr.Fang
@@ -1882,19 +1871,19 @@
 	 * @param {Object} blob 图片对象
 	 * @returns {Promise<Uint8Array>}
 	 */
-	const MF_BlobToUint8Array = (blob)=> {
-	  return new Promise((resolve, reject) => {
-	    const fileReader = new FileReader();
-	    fileReader.onload = function () {
-	      resolve(new Uint8Array(this.result));
-	    };
-	    fileReader.onerror = function (error) {
-	      reject(error);
-	    };
-	    fileReader.readAsArrayBuffer(blob);
-	  });
+	const MF_BlobToUint8Array = (blob) => {
+		return new Promise((resolve, reject) => {
+			const fileReader = new FileReader();
+			fileReader.onload = function() {
+				resolve(new Uint8Array(this.result));
+			};
+			fileReader.onerror = function(error) {
+				reject(error);
+			};
+			fileReader.readAsArrayBuffer(blob);
+		});
 	}
-	
+
 	/**
 	 * @description 画布输出 blob 对象
 	 * @author Mr.Fang
