@@ -363,7 +363,8 @@
 				}
 				u.style(textarea, style)
 				textarea.innerText = result;
-				let box = u.query('#catalog-main') || u.query('.catalog-main') || u.query('.related-doc-list')
+				let box = u.query('#catalog-main') || u.query('.catalog-main') || u.query(
+					'.related-doc-list')
 				box.before(textarea);
 			}
 		});
@@ -587,7 +588,12 @@
 			}
 			title = u.query('meta[property="og:title"]').content;
 			fileType = u.attr(u.query('h1').children[0], 'title').toLowerCase();
-			select = u.query("#contentcontainer img") ? '#contentcontainer img' : "#contentcontainer canvas";
+			if (host === 'jz.docin.com') {
+				select = "#contentcontainer canvas";
+			} else {
+				select = u.query("#contentcontainer img") ? '#contentcontainer img' :
+				"#contentcontainer canvas";
+			}
 			u.log(select);
 			if (isUserLogin === '1') {
 				beforeFun = "let eb = u.query('.model-fold-show');if (eb) {eb.click();}";
@@ -602,12 +608,13 @@
 				return;
 			}
 			dom = u.query('.reader-wrap');
-			beforeFun = "let eb = u.query('.unfold')?u.query('.unfold'):u.query('.read-all');if (eb) {eb.click();}"; 
+			beforeFun =
+				"let eb = u.query('.unfold')?u.query('.unfold'):u.query('.read-all');if (eb) {eb.click();}";
 			select = "#original-creader-root canvas";
 			btns.push(new Box('print-pdf', '打印PDF', 'window.print()'))
 			if (fileType.includes('ppt') || fileType.includes('pdf')) {
 				btns.push(new Box('PPT', '获取地址', 'downtxt()'))
-			} else{
+			} else {
 				btns.push(new Box('get-text', '获取文本', 'fullText()'))
 			}
 		} else if (host.includes(domain.so)) {
@@ -920,7 +927,7 @@
 					await downimg()
 				}
 			} else if (host.includes(domain.docin)) {
-				if (u.query("#contentcontainer img")) {
+				if (select.includes('img')) {
 					await parseImage()
 				} else {
 					await imageToBase64()
