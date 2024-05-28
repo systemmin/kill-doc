@@ -620,6 +620,7 @@
 			if (fileType.includes('ppt') || fileType.includes('pdf')) {
 				btns.push(new Box('PPT', '获取地址', 'downtxt()'))
 			} else {
+				btns.push(new Box('get-text', '获取文本', 'fullText()'))
 			}
 		} else if (host.includes(domain.so)) {
 			if (!/.+wenku\.so\.com\/.+$/.test(href)) {
