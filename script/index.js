@@ -50,7 +50,7 @@
 	let MF =
 		'#MF_fixed{position:fixed;top:50%;transform:translateY(-50%);right:20px;gap:20px;flex-direction:column;z-index:2147483647;display:flex}';
 	MF +=
-		'.MF_box{padding:10px;cursor:pointer;border-color:rgb(0,102,255);border-radius:5px;background-color:white;color:rgb(0,102,255);margin-right:10px;box-shadow:rgb(207,207,207) 1px 1px 9px 3px}.MF_active{color: green;}';
+		'.MF_box{padding:10px;cursor:pointer;border-color:rgb(0,102,255);border-radius:5px;background-color:white;color:rgb(0,102,255);margin-right:10px;box-shadow:rgb(207,207,207) 1px 1px 9px 3px}.MF_active{color: green}#MF_speed{color: red;}';
 	MF +=
 		'@media print{html{height:auto !important}body{display:block !important}#app-left{display:none !important}#app-right{display:none !important}#MF_fixed{display:none !important}.menubar{display:none !important}.top-bar-right{display:none !important}.user-guide{display:none !important}#app-reader-editor-below{display:none !important}.no-full-screen{display:none !important}.comp-vip-pop{display:none !important}.center-wrapper{width:auto !important}.reader-thumb,.related-doc-list,.fold-page-content,.try-end-fold-page,.lazy-load,#MF_textarea,#nav-menu-wrap{display:none !important}}'
 	const prefix = "MF_";
@@ -235,6 +235,9 @@
 						eval(item.fun);
 					}
 				}
+				if (item.id === 'speed') {
+					this.attr(el, 'contenteditable', true)
+				}
 				box.append(el);
 			}
 			document.body.append(box);
@@ -263,6 +266,7 @@
 
 	const btns = [
 		new Box('text', '状态 0 %'),
+		new Box('speed', '500'),
 		new Box('start', '自动预览', 'autoPreview()'),
 		new Box('stop', '停止预览', 'stopPreview()'),
 		new Box('down', '下载图片', 'executeDownload(2)'),
@@ -311,6 +315,7 @@
 	});
 	let pdf_w = 446,
 		pdf_h = 631,
+		loading = 500, // 毫秒
 		pdf_ratio = 0.56,
 		title = document.title,
 		fileType = '',
@@ -615,7 +620,6 @@
 			if (fileType.includes('ppt') || fileType.includes('pdf')) {
 				btns.push(new Box('PPT', '获取地址', 'downtxt()'))
 			} else {
-				btns.push(new Box('get-text', '获取文本', 'fullText()'))
 			}
 		} else if (host.includes(domain.so)) {
 			if (!/.+wenku\.so\.com\/.+$/.test(href)) {
@@ -650,7 +654,7 @@
 			dom = u.query('#scroll-m-box');
 			title = u.query('h1 p').innerText;
 			fileType = title.substring(title.indexOf('.') + 1).toLowerCase();
-			select = "#viewer canvas";
+			select = "#viewer .page"
 			btns.push(new Box('get-text', '获取文本', 'fullText()'))
 		} else if (host.includes(domain.deliwenku) ||
 			host.includes(domain.cxk) ||
@@ -734,8 +738,8 @@
 		} else {
 			query.click();
 		}
-		u.log('文件名称：', title);
-		u.log('文件类型：', fileType);
+		console.log('文件名称：', title);
+		console.log('文件类型：', fileType);
 	}
 
 
@@ -857,7 +861,9 @@
 			return false;
 		}
 		if (host.includes(domain.mbalib)) {
+			localStorage.setItem('start', '1');
 			localStorage.removeItem('MB_index')
+			dom.scrollTop = 0;
 			await scrollMbalib()
 			return false;
 		}
@@ -896,12 +902,7 @@
 			clearInterval(interval);
 			interval = null;
 		}
-		if (host.includes(domain.book118) && fileType.includes('ppt')) {
-			localStorage.removeItem('start')
-		}
-		if (host.includes(domain.shengtongedu) && fileType.includes('ppt')) {
-			localStorage.removeItem('start')
-		}
+		localStorage.removeItem('start')
 	}
 
 	/**
@@ -1004,64 +1005,86 @@
 			u.preview(top, height);
 		}
 	}
-
-	function isElementInViewport(el) {
+	
+	/**
+	 * 判断 dom 是否在可视范围内
+	 */
+	const isElementInViewport =(el)=> {
 		const rect = el.getBoundingClientRect();
 		return (
 			rect.top >= 0 && rect.top <= (window.innerHeight || document.documentElement.clientHeight)
 		);
 	}
 
+	/**
+	 * 保存数据
+	 */
+	const saveMbalib = async (i, canvas, textLayer) => {
+		let fileName = i + ".png";
+		let {
+			blob,
+			width,
+			height
+		} = await MF_CanvasToBase64(canvas);
+		zipWriter.add(fileName, new zip.BlobReader(blob));
+		if (width > height) {
+			doc.addPage([width * pdf_ratio, height * pdf_ratio], 'l');
+			doc.addImage(canvas, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, i, 'FAST')
+		} else {
+			doc.addPage();
+			doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
+		}
+		if (i === 1) {
+			doc.deletePage(1);
+		}
+		// 获取文本内容
+		let texts = JSON.parse(localStorage.getItem('MB_text')) || [];
+		texts.push(fileType.includes('doc') ? textLayer.innerText : textLayer.textContent);
+		localStorage.setItem('MB_text', JSON.stringify(texts))
+		// 更新下标
+		localStorage.setItem('MB_index', i + 1);
+	}
+	
+	/**
+	 * 边预览边下载
+	 */
 	const scrollMbalib = async () => {
+		if (!localStorage.getItem("start")) {
+			u.preview(-1, null, "已终止");
+			return;
+		}
 		before();
 		let i = Number(localStorage.getItem('MB_index')) || 0;
-		let children = document.querySelectorAll('#viewer .page');
+		let children = u.queryAll(select)
 		let current = children[i];
-		console.log(i, current);
 		// 如果当前对象在可视范围内，进行保存添加
 		const canvas = current.querySelector('canvas');
 		const textLayer = current.querySelector('.textLayer');
 		if (isElementInViewport(current) && canvas) {
-			let fileName = i + ".png";
-			let {
-				blob,
-				width,
-				height
-			} = await MF_CanvasToBase64(canvas);
-			zipWriter.add(fileName, new zip.BlobReader(blob));
-			if (width > height) {
-				doc.addPage([width * pdf_ratio, height * pdf_ratio], 'l');
-				doc.addImage(canvas, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, i, 'FAST')
-			} else {
-				doc.addPage();
-				doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
-			}
-			if (i === 1) {
-				doc.deletePage(1);
-			}
-			localStorage.setItem('MB_index', i + 1)
+			saveMbalib(i, canvas, textLayer)
 			// 滚动到下一个范围
-			children[i + 1].scrollIntoView({
-				behavior: "smooth"
-			});
-			let texts = JSON.parse(localStorage.getItem('MB_text')) || [];
-			texts.push(textLayer.innerText);
-			localStorage.setItem('MB_text', JSON.stringify(texts))
-		} else {
-			localStorage.setItem('MB_index', i)
-			current.scrollIntoView({
-				behavior: "smooth"
-			});
+			if (i !== children.length - 1)
+				children[i + 1].scrollIntoView({
+					behavior: "smooth"
+				});
 		}
 		u.preview(i, children.length);
 		if (i !== children.length - 1) {
+			let speed = 500,MF_speed = Number(u.query('#MF_speed').innerText);
+			if (MF_speed > 0) {
+				speed = MF_speed
+			} else {
+				u.query('#MF_speed').innerText = 500
+			}
 			setTimeout(() => {
-				console.log('1秒后执行');
+				console.log(speed,'ms 后执行');
 				scrollMbalib()
-			}, 1000)
+			}, speed)
 		} else {
+			console.log('执行结束');
 			u.preview(-1);
 			localStorage.removeItem('MB_index')
+			localStorage.removeItem('start')
 		}
 	}
 
@@ -1697,12 +1720,7 @@
 			const texts = JSON.parse(localStorage.getItem("MB_text")) || []
 			for (var i = 0; i < texts.length; i++) {
 				let t = texts[i];
-				text += `\n\n====第${i+1}页====\n\n`;
-				if (fileType.includes('doc')) {
-					text += t.innerText;
-				} else {
-					text += t.textContent;
-				}
+				text += `\n\n====第${i+1}页====\n\n` + t;
 			}
 			localStorage.removeItem('MB_text')
 		} else if (host.includes(domain.doc88)) {
