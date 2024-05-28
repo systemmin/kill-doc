@@ -17,6 +17,7 @@
 // @match        https://*.dugen.com/*
 // @match        https://*.7cxk.com/*
 // @match        https://ishare.iask.com/*
+// @match        https://swf.iask.com/*
 // @match        https://*.down.sina.com.cn/*
 // @match        https://wenku.baidu.com/*
 // @match        https://wkbjcloudbos.bdimg.com/*
@@ -266,7 +267,6 @@
 
 	const btns = [
 		new Box('text', '状态 0 %'),
-		new Box('speed', '500'),
 		new Box('start', '自动预览', 'autoPreview()'),
 		new Box('stop', '停止预览', 'stopPreview()'),
 		new Box('down', '下载图片', 'executeDownload(2)'),
@@ -655,6 +655,7 @@
 			title = u.query('h1 p').innerText;
 			fileType = title.substring(title.indexOf('.') + 1).toLowerCase();
 			select = "#viewer .page"
+			btns.splice(1, 0, new Box('speed', '500'));
 			btns.push(new Box('get-text', '获取文本', 'fullText()'))
 		} else if (host.includes(domain.deliwenku) ||
 			host.includes(domain.cxk) ||
