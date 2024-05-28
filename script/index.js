@@ -1633,7 +1633,7 @@
 				}
 			}
 		} else if (host.includes(domain.doc88)) {
-			const texts = Core.api._pK;
+			const texts = Core.api._VM;
 			for (var i = 0; i < texts.length; i++) {
 				text += `\n\n====第${i+1}页====\n\n` + texts[i];
 			}
