@@ -352,16 +352,18 @@
 				textarea.innerText = result;
 			} else {
 				textarea = u.createEl('MF_textarea', 'textarea');
-				textarea.style.width = "100%"
-				textarea.style.height = "200px"
-				textarea.style.outline = "none";
-				textarea.style.padding = "10px";
-				textarea.style.boxSizing = "border-box";
-				textarea.style.fontSize = "16px"
-				textarea.style.border = "1px solid rgb(204, 204, 204)"
+				let style = {
+					width: "100%",
+					height: "200px",
+					outline: "none",
+					padding: "10px",
+					boxSizing: "border-box",
+					fontSize: "16px",
+					border: "1px solid rgb(204, 204, 204)"
+				}
+				u.style(textarea, style)
 				textarea.innerText = result;
-				let box = u.query('#catalog-main') || u.query('.catalog-main') || u.query(
-					'.related-doc-list')
+				let box = u.query('#catalog-main') || u.query('.catalog-main') || u.query('.related-doc-list')
 				box.before(textarea);
 			}
 		});
@@ -508,7 +510,7 @@
 	 */
 	const before = () => {
 		if (beforeFun) {
-			console.log('---------->beforeFun');
+			u.log('---------->beforeFun');
 			eval(beforeFun)
 		}
 		// 画布添加监听事件，当数据加载完成删除 id，防止数据被清空
@@ -542,7 +544,7 @@
 		dom = document.documentElement || document.body;
 		if (host.includes(domain.renrendoc)) {
 			if (!/.*renrendoc\.com\/.+$/.test(href)) {
-				console.log('结束');
+				u.log('结束');
 				return;
 			}
 			const node = u.query('h1');
@@ -557,12 +559,13 @@
 			btns.push(new Box('PPT', '获取地址', 'downtxt()'))
 		} else if (host.includes(domain.book118)) {
 			if (!/.+book118\.com\/.+$/.test(href)) {
-				console.log('结束');
+				u.log('结束');
 				return;
 			}
-			if (!href.includes('pptView.html')) {
-				const node = u.query('h1');
-				title = node.innerText.replaceAll(" ", "");
+			if (!href.includes('pptView.html') && !params.get("readpage")) {
+				let node = u.query('h1')
+				node = node ? node : u.query('h2');
+				title = node.innerText.replaceAll(" ", "").replaceAll("VIP", "");
 				const number = title.lastIndexOf(".");
 				fileType = title.substring(number + 1).toLowerCase();
 				GM_setValue('title', title);
@@ -579,13 +582,13 @@
 			btns.push(new Box('PPT', '获取地址', 'downtxt()'))
 		} else if (host.includes(domain.docin)) {
 			if (!/.+docin\.com\/.+$/.test(href)) {
-				console.log('结束');
+				u.log('结束');
 				return;
 			}
 			title = u.query('meta[property="og:title"]').content;
 			fileType = u.attr(u.query('h1').children[0], 'title').toLowerCase();
 			select = u.query("#contentcontainer img") ? '#contentcontainer img' : "#contentcontainer canvas";
-			console.log(select);
+			u.log(select);
 			if (isUserLogin === '1') {
 				beforeFun = "let eb = u.query('.model-fold-show');if (eb) {eb.click();}";
 			}
@@ -595,20 +598,21 @@
 
 		} else if (host.includes(domain.wenku)) {
 			if (!/.+wenku\.baidu\.com\/(tfview|view).+$/.test(href)) {
-				console.log('结束');
+				u.log('结束');
 				return;
 			}
 			dom = u.query('.reader-wrap');
-			beforeFun = "let eb = u.query('.unfold');if (eb) {eb.click();}";
+			beforeFun = "let eb = u.query('.unfold')?u.query('.unfold'):u.query('.read-all');if (eb) {eb.click();}"; 
 			select = "#original-creader-root canvas";
 			btns.push(new Box('print-pdf', '打印PDF', 'window.print()'))
-			btns.push(new Box('get-text', '获取文本', 'fullText()'))
 			if (fileType.includes('ppt') || fileType.includes('pdf')) {
 				btns.push(new Box('PPT', '获取地址', 'downtxt()'))
+			} else{
+				btns.push(new Box('get-text', '获取文本', 'fullText()'))
 			}
 		} else if (host.includes(domain.so)) {
 			if (!/.+wenku\.so\.com\/.+$/.test(href)) {
-				console.log('结束');
+				u.log('结束');
 				return;
 			}
 			const {
@@ -623,7 +627,7 @@
 			MF_addURL(Field03);
 		} else if (host.includes(domain.doc88)) {
 			if (!/.+doc88\.com\/.+$/.test(href)) {
-				console.log('结束');
+				u.log('结束');
 				return;
 			}
 			title = u.query('meta[property="og:title"]').content;
@@ -633,7 +637,7 @@
 			btns.push(new Box('get-text', '获取文本', 'fullText()'))
 		} else if (host.includes(domain.mbalib)) {
 			if (!/doc\.mbalib\.com\/.+$/.test(href)) {
-				console.log('结束');
+				u.log('结束');
 				return;
 			}
 			dom = u.query('#scroll-m-box');
@@ -723,17 +727,17 @@
 		} else {
 			query.click();
 		}
-		console.log('文件名称：', title);
-		console.log('文件类型：', fileType);
+		u.log('文件名称：', title);
+		u.log('文件类型：', fileType);
 	}
-	
+
 
 	(function() {
 		// 移除多余 iframe
 		document.querySelectorAll('iframe').forEach(item => {
 			item.remove()
 		})
-		
+
 		// 清空系统缓存数据
 		localStorage.removeItem('listData')
 		localStorage.removeItem('length')
@@ -812,9 +816,9 @@
 				}
 			}, 1000);
 		}
-		
+
 	})();
-	
+
 	// load 事件
 	document.onreadystatechange = function() {
 		if (document.readyState === "complete") {
@@ -1653,7 +1657,7 @@
 		zipWriter.close().then(blob => {
 			GM_download(URL.createObjectURL(blob), `${title}.zip`);
 			URL.revokeObjectURL(blob);
-			
+
 			// 在关闭旧的 ZipWriter 后，创建新的 ZipWriter
 			zipWriter = new zip.ZipWriter(new zip.BlobWriter("application/zip"), {
 				bufferedWrite: true,
@@ -1768,7 +1772,7 @@
 					canvas.toBlob(async blob => {
 							// canvas 转 blob 对象
 							// blob 转 uint8 、PDF 需要 uint8 对象
-							const uint8 =await MF_BlobToUint8Array(blob)
+							const uint8 = await MF_BlobToUint8Array(blob)
 							resolve({
 								uint8,
 								blob,
@@ -1777,8 +1781,7 @@
 							});
 						},
 						"image/png",
-						1,
-					);
+						1, );
 				} catch (e) {
 					reject(e);
 				}
