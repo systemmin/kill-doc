@@ -592,7 +592,7 @@
 				select = "#contentcontainer canvas";
 			} else {
 				select = u.query("#contentcontainer img") ? '#contentcontainer img' :
-				"#contentcontainer canvas";
+					"#contentcontainer canvas";
 			}
 			u.log(select);
 			if (isUserLogin === '1') {
@@ -856,6 +856,12 @@
 			await autoShengTongParsingPPT();
 			return false;
 		}
+		if (host.includes(domain.mbalib)) {
+			localStorage.removeItem('MB_index')
+			await scrollMbalib()
+			return false;
+		}
+
 		if (interval) return false;
 		dom.scrollTop = 0;
 		interval = setInterval(() => {
@@ -869,8 +875,6 @@
 				scrollWinArea()
 			} else if (host.includes(domain.doc88)) {
 				scrollPageAreaDoc88()
-			} else if (host.includes(domain.mbalib)) {
-				scrollWinArea()
 			} else if (host.includes(domain.taodocs)) {
 				scrollWinAreaTao()
 			} else if (host.includes(domain.gb688)) {
@@ -933,9 +937,10 @@
 					await imageToBase64()
 					conditionDownload();
 				}
+			} else if (host.includes(domain.mbalib)) {
+				conditionDownload();
 			} else if (
 				host.includes(domain.doc88) ||
-				host.includes(domain.mbalib) ||
 				host.includes(domain.taodocs)
 			) {
 				await imageToBase64()
@@ -997,6 +1002,66 @@
 				behavior: "smooth",
 			});
 			u.preview(top, height);
+		}
+	}
+
+	function isElementInViewport(el) {
+		const rect = el.getBoundingClientRect();
+		return (
+			rect.top >= 0 && rect.top <= (window.innerHeight || document.documentElement.clientHeight)
+		);
+	}
+
+	const scrollMbalib = async () => {
+		before();
+		let i = Number(localStorage.getItem('MB_index')) || 0;
+		let children = document.querySelectorAll('#viewer .page');
+		let current = children[i];
+		console.log(i, current);
+		// 如果当前对象在可视范围内，进行保存添加
+		const canvas = current.querySelector('canvas');
+		const textLayer = current.querySelector('.textLayer');
+		if (isElementInViewport(current) && canvas) {
+			let fileName = i + ".png";
+			let {
+				blob,
+				width,
+				height
+			} = await MF_CanvasToBase64(canvas);
+			zipWriter.add(fileName, new zip.BlobReader(blob));
+			if (width > height) {
+				doc.addPage([width * pdf_ratio, height * pdf_ratio], 'l');
+				doc.addImage(canvas, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, i, 'FAST')
+			} else {
+				doc.addPage();
+				doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
+			}
+			if (i === 1) {
+				doc.deletePage(1);
+			}
+			localStorage.setItem('MB_index', i + 1)
+			// 滚动到下一个范围
+			children[i + 1].scrollIntoView({
+				behavior: "smooth"
+			});
+			let texts = JSON.parse(localStorage.getItem('MB_text')) || [];
+			texts.push(textLayer.innerText);
+			localStorage.setItem('MB_text', JSON.stringify(texts))
+		} else {
+			localStorage.setItem('MB_index', i)
+			current.scrollIntoView({
+				behavior: "smooth"
+			});
+		}
+		u.preview(i, children.length);
+		if (i !== children.length - 1) {
+			setTimeout(() => {
+				console.log('1秒后执行');
+				scrollMbalib()
+			}, 1000)
+		} else {
+			u.preview(-1);
+			localStorage.removeItem('MB_index')
 		}
 	}
 
@@ -1629,7 +1694,7 @@
 			}
 
 		} else if (host.includes(domain.mbalib)) {
-			const texts = u.queryAll('#viewer .textLayer');
+			const texts = JSON.parse(localStorage.getItem("MB_text")) || []
 			for (var i = 0; i < texts.length; i++) {
 				let t = texts[i];
 				text += `\n\n====第${i+1}页====\n\n`;
@@ -1639,6 +1704,7 @@
 					text += t.textContent;
 				}
 			}
+			localStorage.removeItem('MB_text')
 		} else if (host.includes(domain.doc88)) {
 			const texts = Core.api._VM;
 			for (var i = 0; i < texts.length; i++) {
