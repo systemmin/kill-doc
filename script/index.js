@@ -1693,6 +1693,9 @@
 		const length = els.length;
 		for (let i = 0; i < length; i++) {
 			let item = els[i];
+			if (!item.children.length) {
+				break;
+			}
 			const {
 				blob,
 				canvas
