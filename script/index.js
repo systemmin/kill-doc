@@ -2,7 +2,7 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      2.2
+// @version      2.3
 // @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|文泉书局等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
@@ -40,6 +40,7 @@
 // @icon         https://dtking.cn/favicon.ico
 // @run-at 		document-idle
 // @grant       GM_getValue
+// @grant       GM_deleteValue
 // @grant       GM_setValue
 // @grant       GM_download
 // @grant       GM_notification
@@ -748,6 +749,7 @@
 			title = u.query('.read-header-title').innerText;
 			select = "#pagebox .page-lmg";
 			dom = u.query('#scroll');
+			btns.splice(1, 0, new Box('speed', '500'));
 		}
 		const query = u.query("#btn_ppt_front_pc"); // 原创
 		if (!query) {
@@ -884,6 +886,13 @@
 			await scrollMbalib()
 			return false;
 		}
+		if (host.includes(domain.wqxuetang)) {
+			localStorage.setItem('start', '1');
+			localStorage.removeItem('WQ_index')
+			dom.scrollTop = 0;
+			await scrollWQxuetang()
+			return false;
+		}
 
 		if (interval) return false;
 		dom.scrollTop = 0;
@@ -981,7 +990,7 @@
 				await downBgImg();
 			} else if (host.includes(domain.wqxuetang)) {
 				title = u.query('.read-header-title').innerText;
-				await downWQImg();
+				conditionDownload();
 			} else if (host.includes(domain.jjg)) {
 				await parseImage()
 			} else if (host.includes(domain.qzoffice)) {
@@ -1038,7 +1047,7 @@
 	}
 
 	/**
-	 * 保存数据
+	 * mba 保存数据
 	 */
 	const saveMbalib = async (i, canvas, textLayer) => {
 		let fileName = i + ".png";
@@ -1066,8 +1075,33 @@
 		localStorage.setItem('MB_index', i + 1);
 	}
 
+	// wq 保存图片
+	const saveWQImage = async (els, i) => {
+		const {
+			blob,
+			canvas
+		} = await MF_ImageJoinToBlob(els);
+		const {
+			width,
+			height
+		} = canvas;
+		if (fileType.includes('ppt') || width > height) {
+			doc.addPage([width * pdf_ratio, height * pdf_ratio], 'l');
+			doc.addImage(canvas, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, index, 'FAST')
+		} else {
+			doc.addPage();
+			doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
+		}
+		if (i === 1) {
+			doc.deletePage(1);
+		}
+		zipWriter.add(i + ".png", new zip.BlobReader(blob));
+		// 更新下标
+		localStorage.setItem('WQ_index', i + 1);
+	}
+
 	/**
-	 * 边预览边下载
+	 * mba 边预览边下载
 	 */
 	const scrollMbalib = async () => {
 		if (!localStorage.getItem("start")) {
@@ -1107,6 +1141,63 @@
 			u.preview(-1);
 			localStorage.removeItem('MB_index')
 			localStorage.removeItem('start')
+		}
+	}
+
+	/**
+	 * wq 边预览边下载
+	 */
+	const scrollWQxuetang = async () => {
+		if (!localStorage.getItem("start")) {
+			u.preview(-1, null, "已终止");
+			return;
+		}
+		// 判断图片是否加载完成
+		function isImageLoaded(img) {
+			return img.complete && img.naturalWidth > 0 && img.naturalHeight > 0;
+		}
+
+		function isAllLoaded(childrens) {
+			if (!childrens.length) {
+				return false;
+			}
+			for (let i = 0; i < childrens.length; i++) {
+				if (!isImageLoaded(childrens[i])) {
+					return false;
+				}
+			}
+			return true;
+		}
+		let i = Number(localStorage.getItem('WQ_index')) || 0;
+		let children = u.queryAll(select)
+		let current = children[i];
+		if (isAllLoaded(current.children)) {
+			await saveWQImage(current, i)
+			// 滚动到下一个范围
+			if (i !== children.length - 1) {
+				children[i + 1].scrollIntoView({
+					behavior: "smooth"
+				});
+			}
+		}
+		u.preview(i, children.length);
+		if (i !== children.length - 1) {
+			let speed = 1000,
+				MF_speed = Number(u.query('#MF_speed').innerText);
+			if (MF_speed > 0) {
+				speed = MF_speed
+			} else {
+				u.query('#MF_speed').innerText = speed
+			}
+			setTimeout(() => {
+				console.log(speed, 'ms 后执行');
+				scrollWQxuetang()
+			}, speed)
+		} else {
+			console.log('执行结束');
+			u.preview(-1);
+			localStorage.removeItem('WQ_index');
+			localStorage.removeItem('start');
 		}
 	}
 
@@ -1223,28 +1314,6 @@
 		for (let i = 0; i < length; i++) {
 			let item = els[i];
 			if (u.attr(item, 'bg')) {
-				end = 1;
-				item.scrollIntoView({
-					behavior: "smooth"
-				});
-				u.preview(i + 1, length);
-				break;
-			}
-		}
-		if (end === 0) {
-			u.preview(-1);
-			stopPreview();
-		}
-	}
-
-	const scrollPageAreaDocWQ = () => {
-		const clientHeight = dom.clientHeight;
-		let end = 0;
-		const els = u.queryAll(select);
-		const length = els.length;
-		for (let i = 0; i < length; i++) {
-			let item = els[i];
-			if (!item.children.length) {
 				end = 1;
 				item.scrollIntoView({
 					behavior: "smooth"
@@ -1688,41 +1757,6 @@
 		conditionDownload();
 	}
 
-	const downWQImg = async () => {
-		const els = u.queryAll(select);
-		const length = els.length;
-		for (let i = 0; i < length; i++) {
-			let item = els[i];
-			if (!item.children.length) {
-				break;
-			}
-			const {
-				blob,
-				canvas
-			} = await MF_ImageJoinToBlob(item);
-			if (!blob) {
-				break;
-			}
-			const {
-				width,
-				height
-			} = canvas;
-			if (fileType.includes('ppt') || width > height) {
-				doc.addPage([width * pdf_ratio, height * pdf_ratio], 'l');
-				doc.addImage(canvas, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, index, 'FAST')
-			} else {
-				doc.addPage();
-				doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
-			}
-			if (i === 1) {
-				doc.deletePage(1);
-			}
-			zipWriter.add(i + ".png", new zip.BlobReader(blob));
-			await u.preview(i + 1, length);
-		}
-		// 非当前域下载文件下标会多加一个数值
-		conditionDownload();
-	}
 
 	/**
 	 * @param {String} url 请求地址
@@ -2051,6 +2085,8 @@
 				naturalWidth,
 				naturalHeight
 			} = children[0];
+			console.log('naturalWidth: ', naturalWidth);
+			console.log('naturalHeight: ', naturalHeight);
 			// 1、创建画布
 			let canvas = u.createEl('', 'canvas');
 			canvas.width = naturalWidth * 6;

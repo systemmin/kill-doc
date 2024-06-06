@@ -116,13 +116,15 @@
 
 最新版本
 
-- 2024/05/29`v2.2` 增加文泉书局
+- 2024/06/6 `v2.3` 优化文泉书局
 
 
 历史版本
+
 <details>
 			<summary>点击查看</summary>
 			<ul>
+				<li><span>2024/06/06 </span><code>v2.2</code><span>增加文泉书局 </span></li>
 				<li><span>2024/05/28 </span><code>v2.1</code><span> 大版本更新，影响网站较多，有问题及时反馈</span>
 					<ul>
 						<li>所有网站图片下载处理优化，提升下载速度。来自 <a
@@ -155,9 +157,6 @@
 				<li><span>2024/02/01 </span><code>v0.2</code><span> 初版发布</span></li>
 			</ul>
 		</details>
-
-
-
 
 ## 贡献
 
