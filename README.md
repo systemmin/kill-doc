@@ -25,7 +25,7 @@
 [GitHub 地址](https://github.com/systemmin/wxdown)
 
 ## 安装
-1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 浏览器扩展。
+1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 浏览器扩展。[国内](https://www.crxsoso.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo)安装
 2. 点击 [脚本链接](https://greasyfork.org/zh-CN/scripts/486211-%E7%99%BE%E5%BA%A6-%E5%8E%9F%E5%88%9B%E5%8A%9B-%E4%BA%BA%E4%BA%BA-%E8%B1%86%E4%B8%81-%E9%81%93%E5%AE%A2-%E8%B1%86%E4%B8%81%E5%BB%BA%E7%AD%91) 或手动复制脚本代码。
 3. 在 Tampermonkey 中创建一个新脚本，将代码粘贴到编辑器中并保存。
 
@@ -110,28 +110,52 @@
 | GB              | 要输入验证码以后才可以进行相应操作                           |
 | JJG             | 文档阅读页面下载                                             |
 | 轻竹办公        | 等待系统生成结束点击 `下载图片` 即可。支持切换模板下载，支持编辑后再重新下载，反正就是能一直下载。<br />**注意**：下载后解压缩包，浏览器打开`index.html`，鼠标右键或 `Ctrl` `+` `P`  打印PDF，布局选择横向即可保存PDF。 |
-| 文泉书局        | 仅支持`PDF`，仅可见内容。 注意切换 **原貌** 或 **流式** 预览。 |
+| 文泉书局        | 仅支持`PDF`，仅可见内容。 注意切换 **原貌** 预览。           |
 
 ## 历史
 
 最新版本
 
-- 2024/05/28`v2.1` 大版本更新，影响网站较多，有问题及时反馈。
-  - 所有网站图片下载处理优化，提升下载速度。来自（[JoyofFire](https://greasyfork.org/zh-CN/users/398437-joyoffire) ）建议，脚本反馈处查看详情。
-  - MBA智库内容部分修改，脚本也重新做了兼容
-  - 百度文库、爱问文库、豆丁建筑、道客等优化
+- 2024/05/29`v2.2` 增加文泉书局
 
 
 历史版本
 <details>
-<summary>点击查看</summary>
-<ul>
-    <li><span>2024/05/21 </span><code>v2.0</code><span> 豆丁特殊格式优化处理，wxdown 软件上线了</span></li>
-    <li><span>2024/05/18 </span><code>v1.9</code><span> 新增 轻竹办公</span></li>
-	<li><span>2024/05/11 </span><code>v1.8</code><span> 新增 行业标准</span></li>
-    <li><span>2024/05/10 </span><code>v1.7</code><span> 新增 sheng tong </span></li>
-    <li><span>2024/04/26 </span><code>v1.6</code><span> 优化“计量”脚本无法加载菜单问题</span></li><li><span>2024/04/26 </span><code>v1.5</code><span> 新增“计量”</span></li><li><span>2024/04/08 </span><code>v1.4</code><span> 淘豆网增加“获取文本”功能、优化原创力 PPTX 文件下载 bug</span></li><li><span>2024/03/19 </span><code>v1.3</code><span> 增加/优化“获取文本”内容-道客-智库</span></li><li><span>2024/03/13 </span><code>v1.2</code><span> 增加（GB/gb688）网</span></li><li><span>2024/03/11 </span><code>v1.1</code><span> 优化百度文库打印文档问题、增加 Word Txt 类型文档获取文本原格式、隐藏文心一言框</span></li><li><span>2024/03/04 </span><code>v1.0</code><span> 原创力PPT从自定页码开始预览</span></li><li><span>2024/02/27 </span><code>v0.9</code><span> 替换 zip 资源路径,因之前引入链接部分区域可能无法正常加载,导致脚本无法正常执行。</span></li><li><span>2024/02/27 </span><code>v0.8</code><span> 新增360文库、读根网、搜弘、微传网、淘豆网等5个平台</span></li><li><span>2024/02/26 </span><code>v0.7</code><span> 修改百度文库 tfview 路径下PPT无法下载问题</span></li><li><span>2024/02/23 </span><code>v0.6</code><span> 新增5个文库平台</span></li><li><span>2024/02/21 </span><code>v0.5</code><span> 增加百度-豆丁-道客-豆丁建筑</span></li><li><span>2024/02/02 </span><code>v0.4</code><span> 优化已知bug</span></li><li><span>2024/02/01 </span><code>v0.3</code><span> 优化调试信息</span></li><li><span>2024/02/01 </span><code>v0.2</code><span> 初版发布</span></li></ul>
-</details>
+			<summary>点击查看</summary>
+			<ul>
+				<li><span>2024/05/28 </span><code>v2.1</code><span> 大版本更新，影响网站较多，有问题及时反馈</span>
+					<ul>
+						<li>所有网站图片下载处理优化，提升下载速度。来自 <a
+								href="https://greasyfork.org/zh-CN/users/398437-joyoffire">（JoyofFire）</a>建议，脚本反馈处查看详情。
+						</li>
+						<li>MBA智库内容部分修改，脚本也重新做了兼容</li>
+						<li>百度文库、爱问文库、豆丁建筑、道客等优化</li>
+					</ul>
+				</li>
+				<li><span>2024/05/21 </span><code>v2.0</code><span> 豆丁特殊格式优化处理，wxdown 软件上线了</span></li>
+				<li><span>2024/05/18 </span><code>v1.9</code><span> 新增 轻竹办公</span></li>
+				<li><span>2024/05/11 </span><code>v1.8</code><span> 新增 行业标准</span></li>
+				<li><span>2024/05/10 </span><code>v1.7</code><span> 新增 sheng tong </span></li>
+				<li><span>2024/04/26 </span><code>v1.6</code><span> 优化“计量”脚本无法加载菜单问题</span></li>
+				<li><span>2024/04/26 </span><code>v1.5</code><span> 新增“计量”</span></li>
+				<li><span>2024/04/08 </span><code>v1.4</code><span> 淘豆网增加“获取文本”功能、优化原创力 PPTX 文件下载 bug</span></li>
+				<li><span>2024/03/19 </span><code>v1.3</code><span> 增加/优化“获取文本”内容-道客-智库</span></li>
+				<li><span>2024/03/13 </span><code>v1.2</code><span> 增加（GB/gb688）网</span></li>
+				<li><span>2024/03/11 </span><code>v1.1</code><span> 优化百度文库打印文档问题、增加 Word Txt 类型文档获取文本原格式、隐藏文心一言框</span>
+				</li>
+				<li><span>2024/03/04 </span><code>v1.0</code><span> 原创力PPT从自定页码开始预览</span></li>
+				<li><span>2024/02/27 </span><code>v0.9</code><span> 替换 zip 资源路径,因之前引入链接部分区域可能无法正常加载,导致脚本无法正常执行。</span>
+				</li>
+				<li><span>2024/02/27 </span><code>v0.8</code><span> 新增360文库、读根网、搜弘、微传网、淘豆网等5个平台</span></li>
+				<li><span>2024/02/26 </span><code>v0.7</code><span> 修改百度文库 tfview 路径下PPT无法下载问题</span></li>
+				<li><span>2024/02/23 </span><code>v0.6</code><span> 新增5个文库平台</span></li>
+				<li><span>2024/02/21 </span><code>v0.5</code><span> 增加百度-豆丁-道客-豆丁建筑</span></li>
+				<li><span>2024/02/02 </span><code>v0.4</code><span> 优化已知bug</span></li>
+				<li><span>2024/02/01 </span><code>v0.3</code><span> 优化调试信息</span></li>
+				<li><span>2024/02/01 </span><code>v0.2</code><span> 初版发布</span></li>
+			</ul>
+		</details>
+
 
 
 
@@ -159,7 +183,7 @@
 如果您有任何问题或建议或合作或定制，请通过以下方式联系我们：
 
 - 邮箱：[2441553829@qq.com](mailto:2441553829@qq.com)
-- GitHub：https://github.com/systemmin/kill-doc
+- GitHub：[kill-doc](https://github.com/systemmin/kill-doc)
 
 感谢使用篡改猴脚本！
 
