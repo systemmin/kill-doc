@@ -2,7 +2,7 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      2.4
+// @version      2.5
 // @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|文泉书局等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
@@ -1083,24 +1083,13 @@
 			blob,
 			canvas
 		} = await MF_ImageJoinToBlob(els);
-		const {
-			width,
-			height
-		} = canvas;
-		if (fileType.includes('ppt') || width > height) {
-			doc.addPage([width * pdf_ratio, height * pdf_ratio], 'l');
-			doc.addImage(canvas, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, index, 'FAST')
-		} else {
-			doc.addPage();
-			doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
-		}
-		if (i === 1) {
-			doc.deletePage(1);
-		}
+		doc.addPage();
+		doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
 		zipWriter.add(i + ".png", new zip.BlobReader(blob));
-		// 更新下标
 		localStorage.setItem('WQ_index', i + 1);
-		// 切断对canvas的引用，
+		if(doc.internal.pages[1].length === 2){
+			doc.deletePage(1); // 删除空白页
+		}
 	}
 
 	/**
@@ -1172,8 +1161,14 @@
 			return true;
 		}
 		let i = Number(localStorage.getItem('WQ_index')) || 0;
-		console.log('页码', i);
 		let children = u.queryAll(select)
+		if (i === children.length) {
+			console.log('执行结束');
+			u.preview(-1);
+			localStorage.removeItem('WQ_index');
+			localStorage.removeItem('start');
+			return;
+		}
 		let current = children[i];
 		if (isAllLoaded(current.children)) {
 			await saveWQImage(current, i)
@@ -1185,7 +1180,7 @@
 			}
 		}
 		u.preview(i, children.length);
-		if (i !== children.length - 1) {
+		if (i !== children.length) {
 			let speed = 1000,
 				MF_speed = Number(u.query('#MF_speed').innerText);
 			if (MF_speed > 0) {
@@ -1197,11 +1192,6 @@
 				console.log(speed, 'ms 后执行');
 				scrollWQxuetang()
 			}, speed)
-		} else {
-			console.log('执行结束');
-			u.preview(-1);
-			localStorage.removeItem('WQ_index');
-			localStorage.removeItem('start');
 		}
 	}
 
@@ -2089,8 +2079,6 @@
 				naturalWidth,
 				naturalHeight
 			} = children[0];
-			console.log('naturalWidth: ', naturalWidth);
-			console.log('naturalHeight: ', naturalHeight);
 			// 1、创建画布
 			let canvas = u.createEl('', 'canvas');
 			canvas.width = naturalWidth * 6;
