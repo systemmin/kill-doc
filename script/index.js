@@ -2,7 +2,7 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      2.3
+// @version      2.4
 // @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|文泉书局等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
@@ -888,7 +888,9 @@
 		}
 		if (host.includes(domain.wqxuetang)) {
 			localStorage.setItem('start', '1');
-			localStorage.removeItem('WQ_index')
+			let pages = u.query('.page-head-tol').innerText.split('/');
+			let index = Number(pages[0]) - 1 || 0;
+			localStorage.setItem('WQ_index', index)
 			dom.scrollTop = 0;
 			await scrollWQxuetang()
 			return false;
@@ -1098,6 +1100,7 @@
 		zipWriter.add(i + ".png", new zip.BlobReader(blob));
 		// 更新下标
 		localStorage.setItem('WQ_index', i + 1);
+		// 切断对canvas的引用，
 	}
 
 	/**
@@ -1169,6 +1172,7 @@
 			return true;
 		}
 		let i = Number(localStorage.getItem('WQ_index')) || 0;
+		console.log('页码', i);
 		let children = u.queryAll(select)
 		let current = children[i];
 		if (isAllLoaded(current.children)) {
