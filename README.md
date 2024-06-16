@@ -18,12 +18,6 @@
 
 看到经常有小伙伴们需要下载一些免费文档，但是相关网站浏览体验不好各种广告，各种登录验证，需要很多步骤才能下载文档，该脚本就是为了解决您的烦恼而诞生，尽可能做到自动化。
 
-## 延伸
-
-**最近开发了一款[wxdown公众号离线文章保存](https://www.cnblogs.com/bxmm/p/18201389)软件，老规矩公开免费使用**。后续可能考虑和当前脚本互连互通，进行本地管理自己下载的文件和本地下载大文件，有需要自行下载。
-
-[GitHub 地址](https://github.com/systemmin/wxdown)
-
 ## 安装
 1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 浏览器扩展。[国内](https://www.crxsoso.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo)安装
 2. 点击 [脚本链接](https://greasyfork.org/zh-CN/scripts/486211-%E7%99%BE%E5%BA%A6-%E5%8E%9F%E5%88%9B%E5%8A%9B-%E4%BA%BA%E4%BA%BA-%E8%B1%86%E4%B8%81-%E9%81%93%E5%AE%A2-%E8%B1%86%E4%B8%81%E5%BB%BA%E7%AD%91) 或手动复制脚本代码。
@@ -50,30 +44,31 @@
 
 蓝色箭头开始（➡️）和结束（⬅️）同类型平台直接下载无需预览。
 
-|                 **📖** 支持平台                 | 状态 | 自动预览 | 停止预览 | 下载图片 | 下载PDF | 获取文本 | 打印PDF | 获取地址 |
-| :--------------------------------------------: | :--: | :------: | :------: | :------: | :-----: | :------: | :-----: | :------: |
-|      [百度文库](https://wenku.baidu.com/)      |  ✅   |    ✅     |    ✅     |  ✔️部分   |  ✔️部分  |  ✔️ 部分  |    ✅    |  ✔️ 部分  |
-|     [原创力文档](https://max.book118.com/)     |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
-|     [人人文库](https://www.renrendoc.com/)     |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
-|        [360文库](https://wenku.so.com/)        |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
-|        [豆丁网](https://www.docin.com/)        |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
-|       [豆丁建筑](https://jz.docin.com/)        |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
-|       [道客巴巴](https://www.doc88.com/)       |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✔️     |    ❌    |    ❌     |
-|       [MBA智库](https://doc.mbalib.com/)       |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
-|    ➡️[得力文库](https://www.deliwenku.com/)     |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
-|       [七彩学科](https://www.7cxk.com/)        |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
-|      [金锄头](https://www.jinchutou.com/)      |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
-|      [爱问文库](https://ishare.iask.com/)      |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
-|     [蚂蚁文库](https://www.mayiwenku.com/)     |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
-|        [读根网](https://ww.dugen.com/)         |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
-|    [搜弘文库](https://wenku.chochina.com/)     |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
-|     [微传网](https://www.weizhuannet.com/)     |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
-|   [行业标准](https://hbba.sacinfo.org.cn/)⬅️    |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
-|       [淘豆网](https://www.taodocs.com/)       |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
-|   [GB](https://openstd.samr.gov.cn/bzgk/gb/)   |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
-| [JJG](http://jjg.spc.org.cn/resmea/view/index) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
-|     [轻竹办公](https://www.qzoffice.com/)      |  ✅   |    ❌     |    ❌     |    ✅     |    ❌    |    ❌     |    ✅    |    ❌     |
-|   [文泉书局](https://wqbook.wqxuetang.com/)    |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+|                   **📖** 支持平台                    | 状态 | 自动预览 | 停止预览 | 下载图片 | 下载PDF | 获取文本 | 打印PDF | 获取地址 |
+| :-------------------------------------------------: | :--: | :------: | :------: | :------: | :-----: | :------: | :-----: | :------: |
+|        [百度文库](https://wenku.baidu.com/)         |  ✅   |    ✅     |    ✅     |  ✔️部分   |  ✔️部分  |  ✔️ 部分  |    ✅    |  ✔️ 部分  |
+|       [原创力文档](https://max.book118.com/)        |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
+|       [人人文库](https://www.renrendoc.com/)        |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
+|          [360文库](https://wenku.so.com/)           |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
+|          [豆丁网](https://www.docin.com/)           |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+|          [豆丁建筑](https://jz.docin.com/)          |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+|         [道客巴巴](https://www.doc88.com/)          |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✔️     |    ❌    |    ❌     |
+|         [MBA智库](https://doc.mbalib.com/)          |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
+|       ➡️[得力文库](https://www.deliwenku.com/)       |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
+|          [七彩学科](https://www.7cxk.com/)          |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
+|        [金锄头](https://www.jinchutou.com/)         |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
+|        [爱问文库](https://ishare.iask.com/)         |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
+|       [蚂蚁文库](https://www.mayiwenku.com/)        |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
+|           [读根网](https://ww.dugen.com/)           |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+|       [搜弘文库](https://wenku.chochina.com/)       |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
+|       [微传网](https://www.weizhuannet.com/)        |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
+|      [行业标准](https://hbba.sacinfo.org.cn/)⬅️      |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
+|         [淘豆网](https://www.taodocs.com/)          |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+|     [GB](https://openstd.samr.gov.cn/bzgk/gb/)      |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+|   [JJG](http://jjg.spc.org.cn/resmea/view/index)    |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+|        [轻竹办公](https://www.qzoffice.com/)        |  ✅   |    ❌     |    ❌     |    ✅     |    ❌    |    ❌     |    ✅    |    ❌     |
+|      [文泉书局](https://wqbook.wqxuetang.com/)      |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+| [自然标准](http://www.nrsis.org.cn/portal/xxcx/std) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 
 
 ## 功能
@@ -116,14 +111,14 @@
 
 最新版本
 
-- 2024/06/06 `v2.4` 优化文泉空白页面，页面丢失问题
+- 2024/06/16 `v2.6` 新增自然资源
 
 
 历史版本
 
 <details>
 			<summary>点击查看</summary>
-			<ul>
+                <li><span>2024/06/06 </span><code>v2.5</code><span>优化文泉空白页面，页面丢失问题</span></li>
                 <li><span>2024/06/06 </span><code>v2.4</code><span>优化文泉记住页码</span></li>
                 <li><span>2024/06/06 </span><code>v2.3</code><span>优化文泉书局 </span></li>
 				<li><span>2024/06/06 </span><code>v2.2</code><span>增加文泉书局 </span></li>
@@ -159,6 +154,7 @@
 				<li><span>2024/02/01 </span><code>v0.2</code><span> 初版发布</span></li>
 			</ul>
 		</details>
+
 
 
 ## 贡献

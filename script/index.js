@@ -2,8 +2,8 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      2.5
-// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|文泉书局等公开免费文档下载
+// @version      2.6
+// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|文泉书局|自然标准等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
 // @match        https://*.renrendoc.com/*
@@ -34,6 +34,7 @@
 // @match        https://hbba.sacinfo.org.cn/attachment/onlineRead/*
 // @match        https://www.qzoffice.com/*
 // @match        https://wqbook.wqxuetang.com/deep/read/pdf*
+// @match        http://www.nrsis.org.cn/mnr_kfs/file/read/*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js
@@ -306,7 +307,8 @@
 		shengtongedu: 'pro-img-brtm.baijiayun.com',
 		sacinfo: 'hbba.sacinfo.org.cn',
 		qzoffice: 'www.qzoffice.com',
-		wqxuetang: 'wqbook.wqxuetang.com'
+		wqxuetang: 'wqbook.wqxuetang.com',
+		nrsis: 'www.nrsis.org.cn',
 	};
 	const {
 		host,
@@ -750,6 +752,9 @@
 			select = "#pagebox .page-lmg";
 			dom = u.query('#scroll');
 			btns.splice(1, 0, new Box('speed', '500'));
+		} else if (host.includes(domain.nrsis)) {
+			fileType = "pdf";
+			select = ".page canvas";
 		}
 		const query = u.query("#btn_ppt_front_pc"); // 原创
 		if (!query) {
@@ -917,6 +922,8 @@
 				scrollPageAreaJJG()
 			} else if (host.includes(domain.wqxuetang)) {
 				scrollPageAreaDocWQ()
+			} else if (host.includes(domain.nrsis)) {
+				scrollWinArea()
 			}
 		}, 500);
 	}
@@ -945,7 +952,8 @@
 		downType = type;
 		const down = localStorage.getItem('down');
 		console.log('down', down)
-		console.log('down', host)
+		console.log('host', host)
+		console.log('downType', downType)
 		if (!down) {
 			// 结束后续执行的方法
 			if (host.includes(domain.book118) || host.includes(domain.shengtongedu)) {
@@ -972,7 +980,8 @@
 				conditionDownload();
 			} else if (
 				host.includes(domain.doc88) ||
-				host.includes(domain.taodocs)
+				host.includes(domain.taodocs) ||
+				host.includes(domain.nrsis)
 			) {
 				await imageToBase64()
 				conditionDownload();
@@ -1008,10 +1017,13 @@
 	 * 根据指定条件下载文件
 	 */
 	const conditionDownload = () => {
+		console.log('下载')
 		if (downType === 1) {
+			console.log('downpdf')
 			downpdf()
 			localStorage.setItem('down', '1')
 		} else if (downType === 2) {
+			console.log('downzip')
 			downzip()
 			if (!host.includes(domain.qzoffice)) // 排除 qz
 				localStorage.setItem('down', '1')
@@ -1087,7 +1099,7 @@
 		doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
 		zipWriter.add(i + ".png", new zip.BlobReader(blob));
 		localStorage.setItem('WQ_index', i + 1);
-		if(doc.internal.pages[1].length === 2){
+		if (doc.internal.pages[1].length === 2) {
 			doc.deletePage(1); // 删除空白页
 		}
 	}
@@ -1856,12 +1868,13 @@
 		zipWriter.close().then(blob => {
 			GM_download(URL.createObjectURL(blob), `${title}.zip`);
 			URL.revokeObjectURL(blob);
-
-			// 在关闭旧的 ZipWriter 后，创建新的 ZipWriter
-			zipWriter = new zip.ZipWriter(new zip.BlobWriter("application/zip"), {
-				bufferedWrite: true,
-				useCompressionStream: false
-			});
+			setTimeout(() => {
+				//在关闭旧的 ZipWriter 后，创建新的 ZipWriter
+				zipWriter = new zip.ZipWriter(new zip.BlobWriter("application/zip"), {
+					bufferedWrite: true,
+					useCompressionStream: false
+				});
+			}, 1000); // 1秒之后执行
 		}).catch(error => {
 			console.error(error);
 		});
