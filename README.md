@@ -111,13 +111,14 @@
 
 最新版本
 
-- 2024/06/16 `v2.6` 新增自然资源
+- 2024/06/16 `v2.7` 优化无法下载图片
 
 
 历史版本
 
 <details>
 			<summary>点击查看</summary>
+     			<li><span>2024/06/16 </span><code>v2.6</code><span>新增自然资源</span></li>
                 <li><span>2024/06/06 </span><code>v2.5</code><span>优化文泉空白页面，页面丢失问题</span></li>
                 <li><span>2024/06/06 </span><code>v2.4</code><span>优化文泉记住页码</span></li>
                 <li><span>2024/06/06 </span><code>v2.3</code><span>优化文泉书局 </span></li>
@@ -154,6 +155,7 @@
 				<li><span>2024/02/01 </span><code>v0.2</code><span> 初版发布</span></li>
 			</ul>
 		</details>
+
 
 
 
