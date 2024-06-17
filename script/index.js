@@ -35,6 +35,7 @@
 // @match        https://www.qzoffice.com/*
 // @match        https://wqbook.wqxuetang.com/deep/read/pdf*
 // @match        http://www.nrsis.org.cn/mnr_kfs/file/read/*
+// @match        https://*.feishu.cn/space/*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js
@@ -309,6 +310,7 @@
 		qzoffice: 'www.qzoffice.com',
 		wqxuetang: 'wqbook.wqxuetang.com',
 		nrsis: 'www.nrsis.org.cn',
+		feishu: 'feishu.cn',
 	};
 	const {
 		host,
@@ -754,7 +756,13 @@
 			btns.splice(1, 0, new Box('speed', '500'));
 		} else if (host.includes(domain.nrsis)) {
 			fileType = "pdf";
+
 			select = ".page canvas";
+		} else if (host.includes(domain.feishu)) {
+			fileType = "pdf";
+			dom = u.query('#viewerContainer')
+			select = ".page canvas";
+			btns.push(new Box('get-text', '获取文本', 'fullText()'))
 		}
 		const query = u.query("#btn_ppt_front_pc"); // 原创
 		if (!query) {
@@ -924,6 +932,8 @@
 				scrollPageAreaDocWQ()
 			} else if (host.includes(domain.nrsis)) {
 				scrollWinArea()
+			} else if (host.includes(domain.feishu)) {
+				scrollWinArea()
 			}
 		}, 500);
 	}
@@ -981,7 +991,8 @@
 			} else if (
 				host.includes(domain.doc88) ||
 				host.includes(domain.taodocs) ||
-				host.includes(domain.nrsis)
+				host.includes(domain.nrsis) ||
+				host.includes(domain.feishu)
 			) {
 				await imageToBase64()
 				conditionDownload();
@@ -1362,7 +1373,7 @@
 			} = await MF_CanvasToBase64(images[i]);
 			let fileName = i + ".png";
 			zipWriter.add(fileName, new zip.BlobReader(blob));
-			if (fileType.includes('ppt')) {
+			if (width > height) {
 				doc.addPage([width * pdf_ratio, height * pdf_ratio], 'l');
 				doc.addImage(images[i], 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, i, 'FAST')
 			} else {
@@ -1835,22 +1846,29 @@
 
 		} else if (host.includes(domain.mbalib)) {
 			const texts = JSON.parse(localStorage.getItem("MB_text")) || []
-			for (var i = 0; i < texts.length; i++) {
+			for (let i = 0; i < texts.length; i++) {
 				let t = texts[i];
 				text += `\n\n====第${i+1}页====\n\n` + t;
 			}
 			localStorage.removeItem('MB_text')
 		} else if (host.includes(domain.doc88)) {
 			const texts = Core.api._VM;
-			for (var i = 0; i < texts.length; i++) {
+			for (let i = 0; i < texts.length; i++) {
 				text += `\n\n====第${i+1}页====\n\n` + texts[i];
 			}
 		} else if (host.includes(domain.taodocs)) {
 			const texts = u.queryAll('#canvas .textLayer');
-			for (var i = 0; i < texts.length; i++) {
+			for (let i = 0; i < texts.length; i++) {
 				let t = texts[i];
 				text += `\n\n====第${i+1}页====\n\n`;
 				text += t.innerText;
+			}
+		} else if (host.includes(domain.feishu)) {
+			const texts = u.queryAll('.page .textLayer');
+			for (let i = 0; i < texts.length; i++) {
+				let t = texts[i];
+				text += `\n\n====第${i+1}页====\n\n`;
+				text += t.textContent;
 			}
 		}
 		MF_ExportTxt(text, `${title}.txt`);
