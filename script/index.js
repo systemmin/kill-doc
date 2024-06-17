@@ -762,8 +762,9 @@
 			fileType = "pdf";
 			dom = u.query('#viewerContainer')
 			fileType = 'pdf';
-			select = ".page canvas";
+			select = "#viewer .page";
 			if (title.includes('PDF')) {
+				btns.splice(1, 0, new Box('speed', '500'));
 				btns.push(new Box('get-text', '获取文本', 'fullText()'))
 			} else {
 				btns.splice(1, 5);
@@ -793,6 +794,7 @@
 		localStorage.removeItem('current')
 		localStorage.removeItem('pageData')
 		localStorage.removeItem('down')
+		localStorage.removeItem('MB_text')
 		// 百度服务端渲染
 		if (host.includes(domain.wenku)) {
 			const {
@@ -898,7 +900,7 @@
 			await autoShengTongParsingPPT();
 			return false;
 		}
-		if (host.includes(domain.mbalib)) {
+		if (host.includes(domain.mbalib) || host.includes(domain.feishu)) {
 			localStorage.setItem('start', '1');
 			localStorage.removeItem('MB_index')
 			dom.scrollTop = 0;
@@ -938,9 +940,7 @@
 				scrollPageAreaDocWQ()
 			} else if (host.includes(domain.nrsis)) {
 				scrollWinArea()
-			} else if (host.includes(domain.feishu)) {
-				scrollWinArea()
-			}
+			} 
 		}, 500);
 	}
 
@@ -992,13 +992,13 @@
 					await imageToBase64()
 					conditionDownload();
 				}
-			} else if (host.includes(domain.mbalib)) {
+			} else if (host.includes(domain.mbalib) || host.includes(domain.feishu)) {
 				conditionDownload();
 			} else if (
 				host.includes(domain.doc88) ||
 				host.includes(domain.taodocs) ||
-				host.includes(domain.nrsis) ||
-				host.includes(domain.feishu)
+				host.includes(domain.nrsis)
+
 			) {
 				await imageToBase64()
 				conditionDownload();
@@ -1031,7 +1031,7 @@
 	}
 	// 飞书打包下载
 	const buildDown = async () => {
-		const styles = [...u.queryAll('style')].map(div =>  div.outerHTML ).join('\n');
+		const styles = [...u.queryAll('style')].map(div => div.outerHTML).join('\n');
 		if (title.includes('excel')) {
 			const container = u.query('.container').innerHTML;
 			const content =
@@ -1166,6 +1166,10 @@
 				children[i + 1].scrollIntoView({
 					behavior: "smooth"
 				});
+		} else {
+			children[i].scrollIntoView({
+				behavior: "smooth"
+			});
 		}
 		u.preview(i, children.length);
 		if (i !== children.length - 1) {
@@ -1876,7 +1880,7 @@
 				text = u.query('.ql-editor').innerText;
 			}
 
-		} else if (host.includes(domain.mbalib)) {
+		} else if (host.includes(domain.mbalib) || host.includes(domain.feishu)) {
 			const texts = JSON.parse(localStorage.getItem("MB_text")) || []
 			for (let i = 0; i < texts.length; i++) {
 				let t = texts[i];
@@ -1895,14 +1899,7 @@
 				text += `\n\n====第${i+1}页====\n\n`;
 				text += t.innerText;
 			}
-		} else if (host.includes(domain.feishu)) {
-			const texts = u.queryAll('.page .textLayer');
-			for (let i = 0; i < texts.length; i++) {
-				let t = texts[i];
-				text += `\n\n====第${i+1}页====\n\n`;
-				text += t.textContent;
-			}
-		}
+		} 
 		MF_ExportTxt(text, `${title}.txt`);
 	}
 
