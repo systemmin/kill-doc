@@ -2,7 +2,7 @@
 // @name         蓝秦获取外部链接
 // @namespace    http://tampermonkey.net/
 // @version      1.0.1
-// @description  获取文件夹、文件外部链接
+// @description  获取文件夹、文件外部链接；下载链接一键复制，
 // @author       MR.Fang
 // @match        https://up.woozooo.com/*
 // @match        https://*.lanzouj.com/*
@@ -23,6 +23,30 @@
 
 	// 获取外链 URL
 	const BASE_URL = 'https://up.woozooo.com/doupload.php';
+
+	/**
+	 * @description 子 iframe 发送消息 
+	 * @param {String} message 
+	 * @param {String} type: real 真实下载页面
+	 */
+	const childMessage = (message, type) => {
+		if (!window.parent) return;
+		window.parent.postMessage({
+			type: type,
+			value: message ? message : ''
+		}, "*")
+	}
+
+	// 监听页面消息事件，父子共用
+	window.addEventListener("message", (e) => {
+		console.log(e)
+		const {
+			data
+		} = e;
+		if (data.type === 'real') {
+			iframeLoadData(data.value)
+		}
+	})
 
 	/**
 	 * 复制到剪切板
@@ -203,14 +227,73 @@
 				url: a.href,
 				img: img.src,
 				size: item.nextElementSibling.innerText,
-				time: item.nextElementSibling.nextElementSibling.innerText
+				time: item.nextElementSibling.nextElementSibling.innerText,
+				down: ''
 			}
 		})
 	}
 
+	const createIframe = (src) => {
+		let iframe = document.querySelector('iframe');
+		if (!iframe) {
+			iframe = document.createElement('iframe')
+			iframe.style.visibility = "hidden";
+			document.body.append(iframe);
+			iframe.src = src;
+		} else {
+			iframe.src = src;
+		}
+	}
+
+	const getMiddleHTML = async (url) => {
+		try {
+			const response = await fetch(url);
+			const html = await response.text();
+			const parser = new DOMParser();
+			const doc = parser.parseFromString(html, 'text/html');
+			const iframe = doc.querySelector('iframe');
+			return iframe.src;
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
+	const iframeLoadData = async (url) => {
+		console.log(url)
+		const start = Number(localStorage.start) || 0;
+		const listData = JSON.parse(localStorage.listData) || [];
+		if (url) {
+			listData[start].down = url;
+			localStorage.listData = JSON.stringify(listData);
+		}
+		console.log('start', start)
+		let index = -1;
+		for (let i = 0; i < listData.length; i++) {
+			const data = listData[i];
+			index = i;
+			if (!data.down) {
+				localStorage.start = i + '';
+				const targetURL = await getMiddleHTML(data.url);
+				createIframe(targetURL)
+				index = -1
+				break;
+			}
+		}
+		if (index === listData.length - 1) {
+			console.log('加载结束')
+			reRendering()
+		}
+		console.log(listData);
+	}
+
+	const setLocalData = () => {
+		const listData = loadData();
+		localStorage.listData = JSON.stringify(listData);
+		iframeLoadData()
+	}
 	// 重新渲染页面
 	const reRendering = () => {
-		const listData = loadData();
+		const listData = JSON.parse(localStorage.listData) || [];
 		const content = listData.map(item => {
 			return `<tr> <td>&nbsp;<img src="${item.img}" align="absmiddle" border="0">&nbsp;<a href="${item.url}" target="_blank">${item.name}</a></td>
 			<td>${item.url}</td>
@@ -219,7 +302,7 @@
 		}).join('\n')
 		createTable(content);
 		// 获取地址列表
-		const urls = listData.map(item => item.url).join('\n');
+		const urls = listData.map(item => item.down).join('\n');
 
 		// 处理按钮
 		const save = document.getElementById('save')
@@ -239,40 +322,77 @@
 	}
 
 	// 下载
-	if (host.includes('lanzouj.com')) {
-
-		// 携带密码访问
-		const href = decodeURI(location.href); // URL 解码
-		const last = href.lastIndexOf(':');
-		if (last != -1 && last != 5) { // 携带密码访问 404
-			localStorage.pwd = href.substring(last + 1);
-			const target = href.substring(0, href.lastIndexOf('密码'));
-			window.location.href = target
-		} else { // 输入密码页面
-			// 输入密码跳转下载页面
-			if (localStorage.pwd) {
-				document.getElementById('pwd').value = localStorage.pwd;
-				document.getElementById('sub').onclick();
+	if (host.includes('lanzouj.com') && !href.includes('fn?')) {
+		const iframe = document.querySelector('iframe')
+		console.log(iframe)
+		if (!iframe) {
+			// 携带密码访问
+			const href = decodeURI(location.href); // URL 解码
+			const last = href.lastIndexOf(':');
+			if (last != -1 && last != 5) { // 携带密码访问 404
+				localStorage.pwd = href.substring(last + 1);
+				const target = href.substring(0, href.lastIndexOf('密码'));
+				window.location.href = target
+			} else { // 输入密码页面
+				// 输入密码跳转下载页面
+				if (localStorage.pwd) {
+					document.getElementById('pwd').value = localStorage.pwd;
+					document.getElementById('sub').onclick();
+				}
 			}
+
+			// 监听
+			const sub = document.getElementById('sub')
+			if (sub) {
+				sub.addEventListener('click', (event) => {
+					const pwd = document.getElementById('pwd').value
+					if (pwd)
+						localStorage.pwd = pwd;
+				})
+
+			}
+
+			// 监听、渲染
+			const targetElement = document.getElementById('pwdload');
+			const observer = new MutationObserver(function(mutations) {
+				mutations.forEach(function(mutation) {
+					setLocalData()
+					observer.disconnect(); // 释放
+				});
+			});
+			observer.observe(targetElement, {
+				attributes: true
+			});
+
+		} else { // 下载页面
+
+			// 获取真实下载地址
+			// console.log(iframe.contentDocument)
+			// console.log(iframe.contentDocument.readyState)
+			// setTimeout(() => {
+			// 	console.log('5秒后');
+			// 	console.log(document.querySelector('iframe').contentDocument)
+			// 	console.log(document.querySelector('iframe').contentDocument.querySelector('a'))
+			// }, 1000)
 		}
-
-		// 监听
-		document.getElementById('sub').addEventListener('click', (event) => {
-			const pwd = document.getElementById('pwd').value
-			if (pwd)
-				localStorage.pwd = pwd;
-		})
-
-		// 监听、渲染
-		const targetElement = document.getElementById('pwdload');
+	}
+	// 真实下载 iframe 页面
+	if (href.includes('fn?')) {
+		const targetElement = document.getElementById('tourl');
 		const observer = new MutationObserver(function(mutations) {
 			mutations.forEach(function(mutation) {
-				reRendering()
-				observer.disconnect(); // 释放
+				const addedNodes = mutation.addedNodes;
+				if (addedNodes.length) {
+					const aNode = addedNodes[0];
+					if (aNode.nodeName === 'A') {
+						childMessage(aNode.href, 'real')
+						observer.disconnect(); // 释放
+					}
+				}
 			});
 		});
 		observer.observe(targetElement, {
-			attributes: true
+			childList: true
 		});
 	}
 
