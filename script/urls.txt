@@ -1,0 +1,17 @@
+测试验证URL地址列表
+
+自然标准
+
+http://www.nrsis.org.cn/mnr_kfs/file/read/ba4fffe67825faf09b3a5b838c4763bd
+
+道客
+
+https://www.doc88.com/p-1126692391084.html
+
+豆丁
+
+https://www.docin.com/p-4657154388.html
+
+淘豆
+
+https://www.taodocs.com/p-1073030740.html
