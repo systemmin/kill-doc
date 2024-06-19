@@ -2,7 +2,7 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      2.9
+// @version      3.0
 // @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|文泉书局|自然标准|飞书等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
@@ -940,7 +940,7 @@
 				scrollPageAreaDocWQ()
 			} else if (host.includes(domain.nrsis)) {
 				scrollWinArea()
-			} 
+			}
 		}, 500);
 	}
 
@@ -1413,7 +1413,7 @@
 				doc.addPage([width * pdf_ratio, height * pdf_ratio], 'l');
 				doc.addImage(images[i], 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, i, 'FAST')
 			} else {
-				doc.addPage();
+				doc.addPage([width * pdf_ratio, height * pdf_ratio], 'p');
 				doc.addImage(images[i], 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
 			}
 			if (i === 1) {
@@ -1889,6 +1889,10 @@
 			localStorage.removeItem('MB_text')
 		} else if (host.includes(domain.doc88)) {
 			const texts = Core.api._VM;
+			if (!texts) {
+				alert('没有文本内容')
+				return
+			}
 			for (let i = 0; i < texts.length; i++) {
 				text += `\n\n====第${i+1}页====\n\n` + texts[i];
 			}
@@ -1899,7 +1903,7 @@
 				text += `\n\n====第${i+1}页====\n\n`;
 				text += t.innerText;
 			}
-		} 
+		}
 		MF_ExportTxt(text, `${title}.txt`);
 	}
 
