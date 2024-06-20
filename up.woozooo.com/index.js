@@ -1,20 +1,23 @@
 // ==UserScript==
 // @name         蓝秦获取外部链接
 // @namespace    http://tampermonkey.net/
+// @homepageURL  https://github.com/systemmin/kill-doc/blob/master/up.woozooo.com/index.js
 // @version      1.0.1
-// @description  获取文件夹、文件外部链接；下载链接一键复制，
+// @description  内部：批量获取文件夹，文件分享链接；外部：自动提交携带密码的访问链接，批量获取下载链接，分享链接；
 // @author       MR.Fang
 // @match        https://up.woozooo.com/*
 // @match        https://*.lanzouj.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=woozooo.com
-// @grant        none
+// @grant        GM_addStyle
+// @grant        GM_setClipboard
+// @grant        unsafeWindow
 // @run-at 		 document-end
 // @license      Apache-2.0
 // ==/UserScript==
 
 (function() {
 	'use strict'
-
+	GM_addStyle('.td-down{max-width:200px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;} th{text-align: start;}')
 	const {
 		host,
 		href,
@@ -43,8 +46,9 @@
 		const {
 			data
 		} = e;
-		if (data.type === 'real') {
-			iframeLoadData(data.value)
+		// 非单个文件下载时
+		if (data.type === 'real' && document.getElementById('pwdload')) {
+			loadDataIframe(data.value)
 		}
 	})
 
@@ -97,7 +101,7 @@
 					pwd,
 					new_url
 				} = data.info;
-				return new_url + '  密码：' + pwd;
+				return new_url + '密码:' + pwd;
 			} else if (type === 2) {
 				const {
 					f_id,
@@ -111,12 +115,12 @@
 
 	// 创建 table 盒子
 	const createBox = (content) => {
-		const template = `<table border="1px" style="border-color: azure;" width="100%" contenteditable="true" cellpadding="10px" cellspacing="0px">
+		const template = `<table border="1px" style="border-color: azure;" width="100%" cellpadding="10px" cellspacing="0px">
 			<thead>
 				<tr>
-					<td>文件名</td>
-					<td>链接</td>
-					<td>文件大小</td>
+					<th>文件名</th>
+					<th>链接</th>
+					<th>文件大小</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -179,12 +183,11 @@
 		}
 	}
 
-	// 内部访问
+	// ===========================内部访问
 	if (host === 'up.woozooo.com') {
 		createButton();
 	}
-
-
+	
 	// 创建文件下载页面 table
 	const createTable = (content) => {
 		const d2 = document.querySelector('.d2');
@@ -192,10 +195,11 @@
 		const template = `<table style="border-color: azure;" width="100%" cellpadding="10px" cellspacing="0px">
 			<thead>
 				<tr>
-					<td>文件名</td>
-					<td>链接</td>
-					<td>大小</td>
-					<td>时间</td>
+					<th>文件名</th>
+					<th>下载链接</th>
+					<th>分享链接</th>
+					<th>大小</th>
+					<th>时间</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -232,7 +236,7 @@
 			}
 		})
 	}
-
+	// 创建 iframe
 	const createIframe = (src) => {
 		let iframe = document.querySelector('iframe');
 		if (!iframe) {
@@ -244,7 +248,7 @@
 			iframe.src = src;
 		}
 	}
-
+	// 获取中间页面 HTML 内容
 	const getMiddleHTML = async (url) => {
 		try {
 			const response = await fetch(url);
@@ -257,16 +261,15 @@
 			console.log(e)
 		}
 	}
-
-	const iframeLoadData = async (url) => {
-		console.log(url)
+	
+	// 加载真实下载页面
+	const loadDataIframe = async (url) => {
 		const start = Number(localStorage.start) || 0;
 		const listData = JSON.parse(localStorage.listData) || [];
 		if (url) {
 			listData[start].down = url;
 			localStorage.listData = JSON.stringify(listData);
 		}
-		console.log('start', start)
 		let index = -1;
 		for (let i = 0; i < listData.length; i++) {
 			const data = listData[i];
@@ -283,48 +286,66 @@
 			console.log('加载结束')
 			reRendering()
 		}
-		console.log(listData);
 	}
-
-	const setLocalData = () => {
+	
+	// 数据保存到本地
+	const saveLocalStorage = () => {
 		const listData = loadData();
 		localStorage.listData = JSON.stringify(listData);
-		iframeLoadData()
+		loadDataIframe()
 	}
 	// 重新渲染页面
 	const reRendering = () => {
 		const listData = JSON.parse(localStorage.listData) || [];
+
 		const content = listData.map(item => {
 			return `<tr> <td>&nbsp;<img src="${item.img}" align="absmiddle" border="0">&nbsp;<a href="${item.url}" target="_blank">${item.name}</a></td>
+			<td><div  class="td-down" title="${item.down}">${item.down}</div></td>
 			<td>${item.url}</td>
 			<td>${item.size}</td>
 			<td><time>${item.time}</time></td></tr>`;
 		}).join('\n')
 		createTable(content);
-		// 获取地址列表
-		const urls = listData.map(item => item.down).join('\n');
+		
+		// 获取下载地址列表
+		const downs = listData.map(item => item.down).join('\n');
+		// 获取外部链接
+		const urls = listData.map(item => item.url).join('\n');
 
 		// 处理按钮
 		const save = document.getElementById('save')
 		save.style.display = 'flex';
 		save.style.justifyContent = 'space-around';
-		const button = save.querySelector('a').cloneNode(true);
+
+		let button = save.querySelector('a').cloneNode(true);
 		button.href = 'javascript:;';
 		button.target = "_self"
 		button.onclick = function() {
-			copyToClipboard(urls)
+			GM_setClipboard(urls)
 			alert('拷贝成功');
 		}
-		const span = button.querySelector('span');
-		span.innerText = '一键拷贝地址';
+		let span = button.querySelector('span');
+		span.innerText = '一键拷贝分享链接';
 		span.style.color = "red";
 		save.append(button);
+
+		button = save.querySelector('a').cloneNode(true);
+		button.href = 'javascript:;';
+		button.target = "_self"
+		button.onclick = function() {
+			GM_setClipboard(downs)
+			alert('拷贝成功');
+		}
+		span = button.querySelector('span');
+		span.innerText = '一键拷贝下载链接';
+		span.style.color = "green";
+		save.append(button);
+		
 	}
 
 	// 下载
 	if (host.includes('lanzouj.com') && !href.includes('fn?')) {
-		const iframe = document.querySelector('iframe')
-		console.log(iframe)
+		const iframe = document.querySelector('iframe');
 		if (!iframe) {
 			// 携带密码访问
 			const href = decodeURI(location.href); // URL 解码
@@ -356,25 +377,14 @@
 			const targetElement = document.getElementById('pwdload');
 			const observer = new MutationObserver(function(mutations) {
 				mutations.forEach(function(mutation) {
-					setLocalData()
+					saveLocalStorage()
 					observer.disconnect(); // 释放
 				});
 			});
 			observer.observe(targetElement, {
 				attributes: true
 			});
-
-		} else { // 下载页面
-
-			// 获取真实下载地址
-			// console.log(iframe.contentDocument)
-			// console.log(iframe.contentDocument.readyState)
-			// setTimeout(() => {
-			// 	console.log('5秒后');
-			// 	console.log(document.querySelector('iframe').contentDocument)
-			// 	console.log(document.querySelector('iframe').contentDocument.querySelector('a'))
-			// }, 1000)
-		}
+		} 
 	}
 	// 真实下载 iframe 页面
 	if (href.includes('fn?')) {

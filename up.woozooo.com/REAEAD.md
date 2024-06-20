@@ -1,11 +1,31 @@
-# 蓝秦云获取外部分享链接
+# 蓝秦云获取链接
 
-- 支持目录
-- 支持文件
-- 支持批量
+蓝秦云获取外部分享链接。内部：批量获取文件夹，文件分享链接；外部：自动提交携带密码的访问链接，批量获取下载链接，分享链接；
 
-[脚本地址](https://greasyfork.org/zh-CN/scripts/498225-%E8%93%9D%E7%A7%A6%E8%8E%B7%E5%8F%96%E5%A4%96%E9%83%A8%E9%93%BE%E6%8E%A5)
+## 内部
 
-## 效果图
+- 批量获取 `文件夹` 分享链接（携带密码）
+- 批量获取 `文件` 分享链接
 
-![批量获取外部链接](./doc/lq.jpg)
+## 外部
+
+- 自动提交携带密码的访问链接
+  - 例如：https://xxxx.lanzouj.com/b0hc2ekvc密码:1234
+
+- 批量获取 `下载`地址分享链接
+- 批量获取 `文件` 分享链接
+
+## 安装
+1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 浏览器扩展，[国内](https://www.crxsoso.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo)安装，黑色的猴子。
+2. 点击 [脚本链接](https://greasyfork.org/zh-CN/scripts/498225) 或手动复制脚本代码。
+3. 在 `Tampermonkey` 中创建一个新脚本，将代码粘贴到编辑器中并保存。
+
+## 使用
+
+### 内部
+
+![批量获取外部链接](./doc/1.png)
+
+### 外部
+
+![批量获取外部链接](./doc/2.png)
