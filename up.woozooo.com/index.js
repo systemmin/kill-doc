@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         蓝秦获取外部链接
+// @name         蓝奏获取外部链接
 // @namespace    http://tampermonkey.net/
 // @homepageURL  https://github.com/systemmin/kill-doc/blob/master/up.woozooo.com/index.js
 // @version      1.0.1
