@@ -5,7 +5,7 @@
 // @version      1.0.1
 // @description  内部：批量获取文件夹，文件分享链接；外部：自动提交携带密码的访问链接，批量获取下载链接，分享链接；
 // @author       MR.Fang
-// @match        https://up.woozooo.com/*
+// @match        https://up.woozooo.com/mydisk.php?*
 // @match        https://*.lanzouj.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=woozooo.com
 // @grant        GM_addStyle
@@ -81,7 +81,6 @@
 
 	// 监听页面消息事件，父子共用
 	window.addEventListener("message", (e) => {
-		console.log(e)
 		const {
 			data
 		} = e;
@@ -208,8 +207,40 @@
 		createBox(htmlStr);
 	}
 
-	const createButton = (content) => {
-		const a = document.createElement('a')
+	const handleShareUrls = async () => {
+		const urls = [];
+		// 文件夹
+		const folders = listFolders();
+		if (folders.length) {
+			let params = {
+				task: 18
+			};
+			for (let key of folders) {
+				params.folder_id = key.id;
+				const url = await external(params)
+				if (url)
+					urls.push(url)
+			}
+		}
+		// 文件
+		const files = listFiles();
+		if (files.length) {
+			let params = {
+				task: 22
+			};
+			for (let key of files) {
+				params.file_id = key.id;
+				const url = await external(params)
+				if (url)
+					urls.push(url)
+			}
+		}
+		GM_setClipboard(urls.join('\n'));
+		showToast('拷贝成功，赶紧去分享吧！go~');
+	}
+
+	const createButton = () => {
+		let a = document.createElement('a')
 		a.innerText = '批量链接';
 		a.title = '一次性获取所有外部链接';
 		a.href = "javascript:;";
@@ -220,6 +251,26 @@
 		}
 		const mydisk_file_bar = document.querySelector('.mydisk_file_bar');
 		if (mydisk_file_bar) {
+			mydisk_file_bar.append(a);
+		}
+	}
+
+	const createShareButton = () => {
+		const fileText = document.getElementById('file-text')
+		if (fileText) {
+			fileText.remove()
+		}
+		if (!document.getElementById('share-btn')) {
+			const mydisk_file_bar = document.querySelector('.mydisk_file_bar');
+			let a = document.createElement('a')
+			a.innerText = '一键分享';
+			a.id = 'share-btn'
+			a.href = "javascript:;";
+			a.className = 'diskdao';
+			a.style.backgroundColor = '#92d14f'
+			a.onclick = function() {
+				handleShareUrls()
+			}
 			mydisk_file_bar.append(a);
 		}
 	}
@@ -261,11 +312,36 @@
 		});
 	}
 
+	const customFolderObserver = () => {
+		const targetElement = document.getElementById("f_tp");
+		const observer = new MutationObserver(function(mutations) {
+			mutations.forEach(function(mutation) {
+				const folderlist = document.getElementById('folderlist')
+				const sharebtn = document.getElementById('share-btn')
+				if (folderlist && folderlist.children) {
+					if (folderlist.children.length) {
+						createShareButton()
+					} else {
+						if (sharebtn)
+							sharebtn.remove()
+					}
+				} else {
+					if (sharebtn)
+						sharebtn.remove()
+				}
+			});
+		});
+		observer.observe(targetElement, {
+			childList: true,
+		});
+	}
+
 	// ===========================内部访问
-	if (host === 'up.woozooo.com' && search) {
-		createButton();
-		customShareObserver("filelist")
-		customShareObserver("sub_folder_list")
+	if (host === 'up.woozooo.com') {
+		createButton(); // 批量按钮列表
+		customShareObserver("filelist") // 监听文件列表加载
+		customShareObserver("sub_folder_list") // 加载目录列表加载
+		customFolderObserver() // 监听二级目录
 	}
 
 	// 创建文件下载页面 table
