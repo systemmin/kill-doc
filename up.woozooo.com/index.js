@@ -2,7 +2,7 @@
 // @name         蓝奏获取外部链接
 // @namespace    http://tampermonkey.net/
 // @homepageURL  https://github.com/systemmin/kill-doc/blob/master/up.woozooo.com/index.js
-// @version      1.0.1
+// @version      1.0.2
 // @description  内部：批量获取文件夹，文件分享链接；外部：自动提交携带密码的访问链接，批量获取下载链接，分享链接；
 // @author       MR.Fang
 // @match        https://up.woozooo.com/mydisk.php?*
