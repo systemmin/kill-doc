@@ -25,12 +25,47 @@
 		host,
 		href,
 		origin,
-		search	
+		search
 	} = location;
 
 	// 获取外链 URL
 	const BASE_URL = 'https://up.woozooo.com/doupload.php';
 
+	/**
+	 * @description 轻提示
+	 * @param {String} message 
+	 * @param {Number} duration
+	 */
+	const showToast = (message, duration) => {
+		const styles = {
+			"position": "fixed",
+			"top": "20px",
+			"left": "50%",
+			"transform": "translateX(-50%)",
+			"z-index": 9999,
+			"background-color": "#333",
+			"color": "#fff",
+			"padding": "10px 20px",
+			"border-radius": "5px",
+			"text-align": "center",
+			"transition": "opacity 0.3s"
+		};
+		// 创建轻提示元素
+		var toast = document.createElement('div');
+		toast.className = 'toast';
+		toast.textContent = message;
+		for (let key of Object.keys(styles)) {
+			toast.style[key] = styles[key];
+		}
+		// 将轻提示添加到页面中
+		document.body.append(toast);
+		// 隐藏轻提示
+		setTimeout(function() {
+			setTimeout(function() {
+				document.body.removeChild(toast);
+			}, 300);
+		}, duration || 1000);
+	}
 	/**
 	 * @description 子 iframe 发送消息 
 	 * @param {String} message 
@@ -55,19 +90,6 @@
 			loadDataIframe(data.value)
 		}
 	})
-
-	/**
-	 * 复制到剪切板
-	 * @param text
-	 */
-	const copyToClipboard = (text) => {
-		var input = document.createElement("textarea");
-		input.value = text;
-		document.body.appendChild(input);
-		input.select();
-		document.execCommand("copy");
-		document.body.removeChild(input);
-	}
 
 	// 获取文件对象 {name,id,size}
 	const listFiles = () => {
@@ -147,6 +169,7 @@
 			div.id = 'file-text'
 			document.getElementById('f_tp').after(div)
 		}
+		showToast('加载结束');
 	}
 
 	// 开始
@@ -192,6 +215,7 @@
 		a.href = "javascript:;";
 		a.className = 'diskdao';
 		a.onclick = function() {
+			showToast('开始加载……');
 			start()
 		}
 		const mydisk_file_bar = document.querySelector('.mydisk_file_bar');
@@ -213,9 +237,9 @@
 		}
 		const url = await external(params)
 		GM_setClipboard(url)
-		alert('拷贝成功，赶紧去分享吧！go~');
+		showToast('拷贝成功，赶紧去分享吧！go~');
 	}
-	
+
 	const customShareObserver = (idStr) => {
 		const targetElement = document.getElementById(idStr);
 		const observer = new MutationObserver(function(mutations) {
@@ -238,8 +262,7 @@
 	}
 
 	// ===========================内部访问
-	if (host === 'up.woozooo.com' && search	) {
-		console.table(location)
+	if (host === 'up.woozooo.com' && search) {
 		createButton();
 		customShareObserver("filelist")
 		customShareObserver("sub_folder_list")
@@ -339,7 +362,7 @@
 			}
 		}
 		if (index === listData.length - 1) {
-			console.log('加载结束')
+			showToast('加载结束')
 			reRendering()
 		}
 	}
@@ -348,6 +371,7 @@
 	const saveLocalStorage = () => {
 		const listData = loadData();
 		localStorage.listData = JSON.stringify(listData);
+		showToast('开始加载…………')
 		loadDataIframe()
 	}
 	// 重新渲染页面
@@ -377,7 +401,7 @@
 		button.target = "_self"
 		button.onclick = function() {
 			GM_setClipboard(urls)
-			alert('拷贝成功');
+			showToast('拷贝成功');
 		}
 		let span = button.querySelector('span');
 		span.innerText = '一键拷贝分享链接';
@@ -389,7 +413,7 @@
 		button.target = "_self"
 		button.onclick = function() {
 			GM_setClipboard(downs)
-			alert('拷贝成功');
+			showToast('拷贝成功');
 		}
 		span = button.querySelector('span');
 		span.innerText = '一键拷贝下载链接';
