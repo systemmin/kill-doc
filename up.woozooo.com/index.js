@@ -17,11 +17,15 @@
 
 (function() {
 	'use strict'
-	GM_addStyle('.td-down{max-width:200px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;} th{text-align: start;}')
+	GM_addStyle(
+		'.td-down{max-width:200px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;} th{text-align: start;} .f_sel{ position: relative;}.share{ position: absolute;right: -51px;top: 0;border-radius:4px;border:1px solid #D5D5D5;background-image:linear-gradient(#FCFCFC,#EEE);background-color:#f7f7f7;text-shadow:0 2px 0 rgba(255,255,255,0.9);font-size:11px;padding:1px 6px;margin:0;height:21px;}'
+	)
+
 	const {
 		host,
 		href,
-		origin
+		origin,
+		search	
 	} = location;
 
 	// 获取外链 URL
@@ -85,24 +89,29 @@
 		});
 	}
 
-	// 获取外部链接
-	const external = async (body, type) => {
+	/**
+	 * @description 获取外部链接
+	 * @param {Object} body:{task,folder_id,file_id}
+	 * @param {String} url 分享地址
+	 */
+	const external = async (body) => {
+		const params = new URLSearchParams(body)
 		const response = await fetch(BASE_URL, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 			},
-			body: body
+			body: params.toString()
 		})
 		if (response.ok) {
 			const data = await response.json();
-			if (type === 1) {
+			if (body.folder_id) {
 				const {
 					pwd,
 					new_url
 				} = data.info;
 				return new_url + '密码:' + pwd;
-			} else if (type === 2) {
+			} else {
 				const {
 					f_id,
 					is_newd
@@ -141,13 +150,17 @@
 	}
 
 	// 开始
-	async function start() {
+	const start = async () => {
 		let htmlStr = '';
 		// 文件夹
 		const folders = listFolders();
 		if (folders.length) {
+			let params = {
+				task: 18
+			};
 			for (let key of folders) {
-				const url = await external(`task=18&folder_id=${key.id}`, 1)
+				params.folder_id = key.id;
+				const url = await external(params)
 				if (url)
 					key['url'] = url
 			}
@@ -157,8 +170,12 @@
 		// 文件
 		const files = listFiles();
 		if (files.length) {
+			let params = {
+				task: 22
+			};
 			for (let key of files) {
-				const url = await external(`task=22&file_id=${key.id}`, 2)
+				params.file_id = key.id;
+				const url = await external(params)
 				if (url)
 					key['url'] = url
 			}
@@ -182,12 +199,52 @@
 			mydisk_file_bar.append(a);
 		}
 	}
-
-	// ===========================内部访问
-	if (host === 'up.woozooo.com') {
-		createButton();
+	/**
+	 * 处理分享链接
+	 */
+	const handleShareUrl = async (id) => {
+		const params = {};
+		if (id.includes('fol')) {
+			params.task = 18;
+			params.folder_id = id.substring(3);
+		} else {
+			params.task = 22;
+			params.file_id = id.substring(1);
+		}
+		const url = await external(params)
+		GM_setClipboard(url)
+		alert('拷贝成功，赶紧去分享吧！go~');
 	}
 	
+	const customShareObserver = (idStr) => {
+		const targetElement = document.getElementById(idStr);
+		const observer = new MutationObserver(function(mutations) {
+			mutations.forEach(function(mutation) {
+				const addeNodes = mutation.addedNodes;
+				if (addeNodes.length) {
+					const button = document.createElement('button')
+					button.innerText = '分享';
+					button.className = 'share'
+					button.onclick = function() {
+						handleShareUrl(this.parentElement.parentElement.id)
+					}
+					addeNodes[0].querySelector('.f_sel').appendChild(button)
+				}
+			});
+		});
+		observer.observe(targetElement, {
+			childList: true,
+		});
+	}
+
+	// ===========================内部访问
+	if (host === 'up.woozooo.com' && search	) {
+		console.table(location)
+		createButton();
+		customShareObserver("filelist")
+		customShareObserver("sub_folder_list")
+	}
+
 	// 创建文件下载页面 table
 	const createTable = (content) => {
 		const d2 = document.querySelector('.d2');
@@ -196,7 +253,6 @@
 			<thead>
 				<tr>
 					<th>文件名</th>
-					<th>下载链接</th>
 					<th>分享链接</th>
 					<th>大小</th>
 					<th>时间</th>
@@ -261,7 +317,7 @@
 			console.log(e)
 		}
 	}
-	
+
 	// 加载真实下载页面
 	const loadDataIframe = async (url) => {
 		const start = Number(localStorage.start) || 0;
@@ -287,7 +343,7 @@
 			reRendering()
 		}
 	}
-	
+
 	// 数据保存到本地
 	const saveLocalStorage = () => {
 		const listData = loadData();
@@ -299,14 +355,13 @@
 		const listData = JSON.parse(localStorage.listData) || [];
 
 		const content = listData.map(item => {
-			return `<tr> <td>&nbsp;<img src="${item.img}" align="absmiddle" border="0">&nbsp;<a href="${item.url}" target="_blank">${item.name}</a></td>
-			<td><div  class="td-down" title="${item.down}">${item.down}</div></td>
+			return `<tr> <td>&nbsp;<img src="${item.img}" align="absmiddle" border="0">&nbsp;<a href="${item.down}" target="_blank">${item.name}</a></td>
 			<td>${item.url}</td>
 			<td>${item.size}</td>
 			<td><time>${item.time}</time></td></tr>`;
 		}).join('\n')
 		createTable(content);
-		
+
 		// 获取下载地址列表
 		const downs = listData.map(item => item.down).join('\n');
 		// 获取外部链接
@@ -340,7 +395,7 @@
 		span.innerText = '一键拷贝下载链接';
 		span.style.color = "green";
 		save.append(button);
-		
+
 	}
 
 	// 下载
@@ -384,7 +439,7 @@
 			observer.observe(targetElement, {
 				attributes: true
 			});
-		} 
+		}
 	}
 	// 真实下载 iframe 页面
 	if (href.includes('fn?')) {
@@ -405,5 +460,4 @@
 			childList: true
 		});
 	}
-
 })();
