@@ -2,9 +2,8 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      3.2
-// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|文泉书局|自然标准|飞书等公开免费文档下载
-// @author       Mr.Fang
+// @version      3.3
+// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|文泉书局|自然标准|交通标准|飞书等公开免费文档下载// @author       Mr.Fang
 // @match        https://*.book118.com/*
 // @match        https://*.renrendoc.com/*
 // @match        https://*.docin.com/*
@@ -36,6 +35,7 @@
 // @match        https://wqbook.wqxuetang.com/deep/read/pdf*
 // @match        http://www.nrsis.org.cn/mnr_kfs/file/read/*
 // @match        https://*.feishu.cn/space/*
+// @match        http://www.jtysbz.cn:8009/pdf/viewer/*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js
@@ -311,6 +311,7 @@
 		wqxuetang: 'wqbook.wqxuetang.com',
 		nrsis: 'www.nrsis.org.cn',
 		feishu: 'feishu.cn',
+		jtysbz: 'jtysbz.cn',
 	};
 	const {
 		host,
@@ -770,6 +771,11 @@
 				btns.splice(1, 5);
 				btns.push(new Box('get-build', '打包下载', 'buildDown()'))
 			}
+		} else if(host.includes(domain.jtysbz)){
+			fileType = "pdf";
+			select = "#viewer .page";
+			btns.splice(1, 0, new Box('speed', '500'));
+			btns.push(new Box('get-text', '获取文本', 'fullText()'))
 		}
 		const query = u.query("#btn_ppt_front_pc"); // 原创
 		if (!query) {
@@ -900,7 +906,7 @@
 			await autoShengTongParsingPPT();
 			return false;
 		}
-		if (host.includes(domain.mbalib) || host.includes(domain.feishu)) {
+		if (host.includes(domain.mbalib) || host.includes(domain.feishu) || host.includes(domain.jtysbz)) {
 			localStorage.setItem('start', '1');
 			localStorage.removeItem('MB_index')
 			dom.scrollTop = 0;
@@ -992,7 +998,7 @@
 					await imageToBase64()
 					conditionDownload();
 				}
-			} else if (host.includes(domain.mbalib) || host.includes(domain.feishu)) {
+			} else if (host.includes(domain.mbalib) || host.includes(domain.feishu) || host.includes(domain.jtysbz)) {
 				conditionDownload();
 			} else if (
 				host.includes(domain.doc88) ||
@@ -1884,7 +1890,7 @@
 				text = u.query('.ql-editor').innerText;
 			}
 
-		} else if (host.includes(domain.mbalib) || host.includes(domain.feishu)) {
+		} else if (host.includes(domain.mbalib) || host.includes(domain.feishu) || host.includes(domain.jtysbz)) {
 			const texts = JSON.parse(localStorage.getItem("MB_text")) || []
 			for (let i = 0; i < texts.length; i++) {
 				let t = texts[i];

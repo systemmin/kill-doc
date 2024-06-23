@@ -70,6 +70,7 @@
 |      [文泉书局](https://wqbook.wqxuetang.com/)      |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 | [自然标准](http://www.nrsis.org.cn/portal/xxcx/std) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |           [飞书](https://www.feishu.cn/)            |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |  ✔️部分   |    ❌    |    ❌     |
+| [交通标准](http://www.jtysbz.cn/ysbz/fg/index.html) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
 
 
 ## 功能
@@ -83,7 +84,7 @@
 | 功能          | 说明                                                         |
 | ------------- | ------------------------------------------------------------ |
 | （0）状态位   | 各个功能执行状态，当前进度。                                 |
-| （0）加载速率 | 单位毫秒（ms），当前仅支持“MBA智库”调整速率，默认500毫秒     |
+| （0）加载速率 | 单位毫秒（ms），当前“MBA智库”，“交通”，“飞书”调整速率，默认500毫秒 |
 | （1）自动预览 | 就是替你滚动页面，让所有页面进入可视范围内。百度须使用自动预览功能，其他手动也行。 |
 | （2）停止预览 | 顾名思义就是停下来，别动了                                   |
 | （3）下载图片 | 图片或文本或HTML等打压缩包下载，方便你们后续二次处理，例如：[OCR识别](https://github.com/hiroi-sora/Umi-OCR) |
@@ -114,51 +115,57 @@
 
 最新版本
 
-- 2024/06/17 `v2.8` 新增飞书
+- 2024/06/23 `v3.3` 新增交通标准
 
 
 历史版本
 
 <details>
-			<summary>点击查看</summary>
-    			<li><span>2024/06/16 </span><code>v2.7</code><span>优化无法下载图片</span></li>
-     			<li><span>2024/06/16 </span><code>v2.6</code><span>新增自然资源</span></li>
-                <li><span>2024/06/06 </span><code>v2.5</code><span>优化文泉空白页面，页面丢失问题</span></li>
-                <li><span>2024/06/06 </span><code>v2.4</code><span>优化文泉记住页码</span></li>
-                <li><span>2024/06/06 </span><code>v2.3</code><span>优化文泉书局 </span></li>
-				<li><span>2024/06/06 </span><code>v2.2</code><span>增加文泉书局 </span></li>
-				<li><span>2024/05/28 </span><code>v2.1</code><span> 大版本更新，影响网站较多，有问题及时反馈</span>
-					<ul>
-						<li>所有网站图片下载处理优化，提升下载速度。来自 <a
-								href="https://greasyfork.org/zh-CN/users/398437-joyoffire">（JoyofFire）</a>建议，脚本反馈处查看详情。
-						</li>
-						<li>MBA智库内容部分修改，脚本也重新做了兼容</li>
-						<li>百度文库、爱问文库、豆丁建筑、道客等优化</li>
-					</ul>
-				</li>
-				<li><span>2024/05/21 </span><code>v2.0</code><span> 豆丁特殊格式优化处理，wxdown 软件上线了</span></li>
-				<li><span>2024/05/18 </span><code>v1.9</code><span> 新增 轻竹办公</span></li>
-				<li><span>2024/05/11 </span><code>v1.8</code><span> 新增 行业标准</span></li>
-				<li><span>2024/05/10 </span><code>v1.7</code><span> 新增 sheng tong </span></li>
-				<li><span>2024/04/26 </span><code>v1.6</code><span> 优化“计量”脚本无法加载菜单问题</span></li>
-				<li><span>2024/04/26 </span><code>v1.5</code><span> 新增“计量”</span></li>
-				<li><span>2024/04/08 </span><code>v1.4</code><span> 淘豆网增加“获取文本”功能、优化原创力 PPTX 文件下载 bug</span></li>
-				<li><span>2024/03/19 </span><code>v1.3</code><span> 增加/优化“获取文本”内容-道客-智库</span></li>
-				<li><span>2024/03/13 </span><code>v1.2</code><span> 增加（GB/gb688）网</span></li>
-				<li><span>2024/03/11 </span><code>v1.1</code><span> 优化百度文库打印文档问题、增加 Word Txt 类型文档获取文本原格式、隐藏文心一言框</span>
-				</li>
-				<li><span>2024/03/04 </span><code>v1.0</code><span> 原创力PPT从自定页码开始预览</span></li>
-				<li><span>2024/02/27 </span><code>v0.9</code><span> 替换 zip 资源路径,因之前引入链接部分区域可能无法正常加载,导致脚本无法正常执行。</span>
-				</li>
-				<li><span>2024/02/27 </span><code>v0.8</code><span> 新增360文库、读根网、搜弘、微传网、淘豆网等5个平台</span></li>
-				<li><span>2024/02/26 </span><code>v0.7</code><span> 修改百度文库 tfview 路径下PPT无法下载问题</span></li>
-				<li><span>2024/02/23 </span><code>v0.6</code><span> 新增5个文库平台</span></li>
-				<li><span>2024/02/21 </span><code>v0.5</code><span> 增加百度-豆丁-道客-豆丁建筑</span></li>
-				<li><span>2024/02/02 </span><code>v0.4</code><span> 优化已知bug</span></li>
-				<li><span>2024/02/01 </span><code>v0.3</code><span> 优化调试信息</span></li>
-				<li><span>2024/02/01 </span><code>v0.2</code><span> 初版发布</span></li>
-			</ul>
-		</details>
+	<summary>点击查看</summary>
+	<li><span>2024/06/19 </span><code>v3.2</code><span>优化导出PDF格式，影响范围自然标准、道客、豆丁、淘豆等全部安装A4格式导出。
+		</span></li>
+	<li><span>2024/06/19 </span><code>v3.1</code><span>更新已知bug</span></li>
+	<li><span>2024/06/19 </span><code>v3.0</code><span>优化横竖文档格式</span></li>
+	<li><span>2024/06/18 </span><code>v2.9</code><span>优化已知bug</span></li>
+	<li><span>2024/06/16 </span><code>v2.8</code><span>新增飞书</span></li>
+	<li><span>2024/06/16 </span><code>v2.7</code><span>优化无法下载图片</span></li>
+	<li><span>2024/06/16 </span><code>v2.6</code><span>新增自然资源</span></li>
+	<li><span>2024/06/06 </span><code>v2.5</code><span>优化文泉空白页面，页面丢失问题</span></li>
+	<li><span>2024/06/06 </span><code>v2.4</code><span>优化文泉记住页码</span></li>
+	<li><span>2024/06/06 </span><code>v2.3</code><span>优化文泉书局 </span></li>
+	<li><span>2024/06/06 </span><code>v2.2</code><span>增加文泉书局 </span></li>
+	<li><span>2024/05/28 </span><code>v2.1</code><span> 大版本更新，影响网站较多，有问题及时反馈</span>
+		<ul>
+			<li>所有网站图片下载处理优化，提升下载速度。来自 <a
+					href="https://greasyfork.org/zh-CN/users/398437-joyoffire">（JoyofFire）</a>建议，脚本反馈处查看详情。
+			</li>
+			<li>MBA智库内容部分修改，脚本也重新做了兼容</li>
+			<li>百度文库、爱问文库、豆丁建筑、道客等优化</li>
+		</ul>
+	</li>
+	​ <li><span>2024/05/21 </span><code>v2.0</code><span> 豆丁特殊格式优化处理，wxdown 软件上线了</span></li>
+	​ <li><span>2024/05/18 </span><code>v1.9</code><span> 新增 轻竹办公</span></li>
+	​ <li><span>2024/05/11 </span><code>v1.8</code><span> 新增 行业标准</span></li>
+	​ <li><span>2024/05/10 </span><code>v1.7</code><span> 新增 sheng tong </span></li>
+	​ <li><span>2024/04/26 </span><code>v1.6</code><span> 优化“计量”脚本无法加载菜单问题</span></li>
+	​ <li><span>2024/04/26 </span><code>v1.5</code><span> 新增“计量”</span></li>
+	​ <li><span>2024/04/08 </span><code>v1.4</code><span> 淘豆网增加“获取文本”功能、优化原创力 PPTX 文件下载 bug</span></li>
+	​ <li><span>2024/03/19 </span><code>v1.3</code><span> 增加/优化“获取文本”内容-道客-智库</span></li>
+	​ <li><span>2024/03/13 </span><code>v1.2</code><span> 增加（GB/gb688）网</span></li>
+	​ <li><span>2024/03/11 </span><code>v1.1</code><span> 优化百度文库打印文档问题、增加 Word Txt 类型文档获取文本原格式、隐藏文心一言框</span>
+		​ </li>
+	​ <li><span>2024/03/04 </span><code>v1.0</code><span> 原创力PPT从自定页码开始预览</span></li>
+	​ <li><span>2024/02/27 </span><code>v0.9</code><span> 替换 zip 资源路径,因之前引入链接部分区域可能无法正常加载,导致脚本无法正常执行。</span>
+		​ </li>
+	​ <li><span>2024/02/27 </span><code>v0.8</code><span> 新增360文库、读根网、搜弘、微传网、淘豆网等5个平台</span></li>
+	​ <li><span>2024/02/26 </span><code>v0.7</code><span> 修改百度文库 tfview 路径下PPT无法下载问题</span></li>
+	​ <li><span>2024/02/23 </span><code>v0.6</code><span> 新增5个文库平台</span></li>
+	​ <li><span>2024/02/21 </span><code>v0.5</code><span> 增加百度-豆丁-道客-豆丁建筑</span></li>
+	​ <li><span>2024/02/02 </span><code>v0.4</code><span> 优化已知bug</span></li>
+	​ <li><span>2024/02/01 </span><code>v0.3</code><span> 优化调试信息</span></li>
+	​ <li><span>2024/02/01 </span><code>v0.2</code><span> 初版发布</span></li>
+	​ </ul>
+</details>
 
 ## 贡献
 
@@ -199,6 +206,6 @@
   - 有钱谁用脚本啊！😲
   - 当然土豪可以随便赏小弟🤭
 
-- [鸣谢](https://github.com/systemmin/kill-doc/blob/master/AMOUNT.md)🫡
+- [鸣谢](https://github.com/systemmin/kill-doc/blob/master/AMOUNT.md) 🫡
 
 ，<img src="https://dtking.cn/pay.png" alt="赞赏" style="zoom: 67%;" />
