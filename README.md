@@ -67,11 +67,11 @@
 |     [GB](https://openstd.samr.gov.cn/bzgk/gb/)      |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |   [JJG](http://jjg.spc.org.cn/resmea/view/index)    |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |        [轻竹办公](https://www.qzoffice.com/)        |  ✅   |    ❌     |    ❌     |    ✅     |    ❌    |    ❌     |    ✅    |    ❌     |
-|      [文泉书局](https://wqbook.wqxuetang.com/)      |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 | [自然标准](http://www.nrsis.org.cn/portal/xxcx/std) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |           [飞书](https://www.feishu.cn/)            |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |  ✔️部分   |    ❌    |    ❌     |
 | [交通标准](http://www.jtysbz.cn/ysbz/fg/index.html) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
 |      [先晓书院](https://xianxiao.ssap.com.cn/)      |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
+|        [高教书苑](https://ebook.hep.com.cn/)        |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 
 
 ## 功能
@@ -109,7 +109,6 @@
 | GB              | 要输入验证码以后才可以进行相应操作                           |
 | JJG             | 文档阅读页面下载                                             |
 | 轻竹办公        | 等待系统生成结束点击 `下载图片` 即可。支持切换模板下载，支持编辑后再重新下载，反正就是能一直下载。<br />**注意**：下载后解压缩包，浏览器打开`index.html`，鼠标右键或 `Ctrl` `+` `P`  打印PDF，布局选择横向即可保存PDF。 |
-| 文泉书局        | 仅支持`PDF`，仅可见内容。 注意切换 **原貌** 预览。           |
 | 飞书            | 支持PDF、PPTX、DOCX、XLSX 、TXT等格式文件。xlsx下载HTML格式需要浏览器打开复制再粘贴到excel中就可以了（保持原始格式） |
 | 先晓书院        | 阅读方式切换“**原貌阅读**”，点击右侧第6个按钮**适配页面**（可下载高清PDF），也可以通过 `+` `-` 调整合适的大小。遇到点击“自动预览”马上又停止了，点击停止预览再点击自动预览或F5刷新。 |
 
@@ -117,13 +116,14 @@
 
 最新版本
 
-- 2024/06/24 `v3.4` 新增先晓书院
+- 2024/06/25 `v3.5` 新增高教书苑，移除文泉，已知bug优化
 
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/06/24 </span><code>v3.4</code><span>新增先晓书院</span></li>
     <li><span>2024/06/23 </span><code>v3.3</code><span>新增交通标准</span></li>
 	<li><span>2024/06/19 </span><code>v3.2</code><span>优化导出PDF格式，影响范围自然标准、道客、豆丁、淘豆等全部安装A4格式导出。
 		</span></li>
@@ -169,6 +169,7 @@
 	<li><span>2024/02/01 </span><code>v0.2</code><span> 初版发布</span></li>
 	</ul>
 </details>
+
 
 
 ## 贡献

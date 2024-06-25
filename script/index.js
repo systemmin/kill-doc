@@ -2,8 +2,8 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      3.4
-// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|文泉书局|自然标准|交通标准|飞书|先晓书院等公开免费文档下载
+// @version      3.5
+// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|文泉书局|自然标准|交通标准|飞书|先晓书院|高教书苑等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
 // @match        https://*.renrendoc.com/*
@@ -33,11 +33,11 @@
 // @match        https://pro-img-brtm.baijiayun.com/*
 // @match        https://hbba.sacinfo.org.cn/attachment/onlineRead/*
 // @match        https://www.qzoffice.com/*
-// @match        https://wqbook.wqxuetang.com/deep/read/pdf*
 // @match        http://www.nrsis.org.cn/mnr_kfs/file/read/*
 // @match        https://*.feishu.cn/space/*
 // @match        http://www.jtysbz.cn:8009/pdf/viewer/*
 // @match        https://xianxiao.ssap.com.cn/readerpdf/static/pdf/web/*
+// @match        https://ebook.hep.com.cn/index.html*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js
@@ -310,11 +310,11 @@
 		shengtongedu: 'pro-img-brtm.baijiayun.com',
 		sacinfo: 'hbba.sacinfo.org.cn',
 		qzoffice: 'www.qzoffice.com',
-		wqxuetang: 'wqbook.wqxuetang.com',
 		nrsis: 'www.nrsis.org.cn',
 		feishu: 'feishu.cn',
 		jtysbz: 'jtysbz.cn',
 		xianxiao: 'xianxiao.ssap.com.cn',
+		ebook: 'ebook.hep.com.cn',
 	};
 	const {
 		host,
@@ -753,12 +753,6 @@
 			title = params.get('content') || 'AI-PPT';
 			btns.splice(1, 2);
 			btns.splice(2, 1);
-		} else if (host.includes(domain.wqxuetang)) {
-			fileType = "pdf";
-			title = u.query('.read-header-title').innerText;
-			select = "#pagebox .page-lmg";
-			dom = u.query('#scroll');
-			btns.splice(1, 0, new Box('speed', '500'));
 		} else if (host.includes(domain.nrsis)) {
 			fileType = "pdf";
 			select = ".page canvas";
@@ -785,6 +779,10 @@
 			dom = u.query('#viewerContainer');
 			btns.splice(1, 0, new Box('speed', '500'));
 			btns.push(new Box('get-text', '获取文本', 'fullText()'));
+		} else if (host.includes(domain.ebook)) {
+			fileType = "pdf";
+			select = ".pdf-main .pdf-page";
+			btns.splice(1, 0, new Box('speed', '500'));
 		}
 		const query = u.query("#btn_ppt_front_pc"); // 原创
 		if (!query) {
@@ -809,7 +807,7 @@
 		localStorage.removeItem('current')
 		localStorage.removeItem('pageData')
 		localStorage.removeItem('down')
-		localStorage.removeItem('MB_text')
+		localStorage.removeItem('SP_text')
 		// 百度服务端渲染
 		if (host.includes(domain.wenku)) {
 			const {
@@ -915,21 +913,15 @@
 			await autoShengTongParsingPPT();
 			return false;
 		}
-		if (host.includes(domain.mbalib) || host.includes(domain.feishu) || host.includes(domain.jtysbz) ||
+		if (host.includes(domain.mbalib) ||
+			host.includes(domain.feishu) ||
+			host.includes(domain.jtysbz) ||
+			host.includes(domain.ebook) ||
 			host.includes(domain.xianxiao)) {
 			localStorage.setItem('start', '1');
-			localStorage.removeItem('MB_index')
+			localStorage.removeItem('SP_index')
 			dom.scrollTop = 0;
-			await scrollMbalib()
-			return false;
-		}
-		if (host.includes(domain.wqxuetang)) {
-			localStorage.setItem('start', '1');
-			let pages = u.query('.page-head-tol').innerText.split('/');
-			let index = Number(pages[0]) - 1 || 0;
-			localStorage.setItem('WQ_index', index)
-			dom.scrollTop = 0;
-			await scrollWQxuetang()
+			await scrollPreview()
 			return false;
 		}
 
@@ -952,8 +944,6 @@
 				scrollPageAreaDocGB()
 			} else if (host.includes(domain.jjg)) {
 				scrollPageAreaJJG()
-			} else if (host.includes(domain.wqxuetang)) {
-				scrollPageAreaDocWQ()
 			} else if (host.includes(domain.nrsis)) {
 				scrollWinArea()
 			}
@@ -1008,8 +998,12 @@
 					await imageToBase64()
 					conditionDownload();
 				}
-			} else if (host.includes(domain.mbalib) || host.includes(domain.feishu) || host.includes(domain
-					.jtysbz) || host.includes(domain.xianxiao)) {
+			} else if (host.includes(domain.mbalib) ||
+				host.includes(domain.feishu) ||
+				host.includes(domain.jtysbz) ||
+				host.includes(domain.xianxiao) ||
+				host.includes(domain.ebook)
+			) {
 				conditionDownload();
 			} else if (
 				host.includes(domain.doc88) ||
@@ -1033,9 +1027,6 @@
 				await downimg()
 			} else if (host.includes(domain.gb688)) {
 				await downBgImg();
-			} else if (host.includes(domain.wqxuetang)) {
-				title = u.query('.read-header-title').innerText;
-				conditionDownload();
 			} else if (host.includes(domain.jjg)) {
 				await parseImage()
 			} else if (host.includes(domain.qzoffice)) {
@@ -1108,7 +1099,10 @@
 	}
 
 	/**
-	 * 判断 dom 是否在可视范围内
+	 * @description 判断 dom 是否在可视范围内
+	 * @author Mr.Fang
+	 * @time 2024-6-25
+	 * @param {HTMLElement} el
 	 */
 	const isElementInViewport = (el) => {
 		const rect = el.getBoundingClientRect();
@@ -1118,78 +1112,105 @@
 	}
 
 	/**
-	 * mba 保存数据
+	 * @description 图片添加到 zip 或 pdf
+	 * @author Mr.Fang
+	 * @time 2024-6-25
+	 * @see http://raw.githack.com/MrRio/jsPDF/master/docs/module-addImage.html#~addImage
+	 * @param {HTMLImageElement | HTMLCanvasElement | Uint8Array | RGBAData} imageData
+	 * @param {Blob} blob
+	 * @param {Number} i 下标
+	 * @param {Number} width 宽 
+	 * @param {Number} height 高
+	 * @param {Boolean} natural 原始高度宽度 true 原始尺寸 false A4
 	 */
-	const saveMbalib = async (i, canvas, textLayer) => {
-		let fileName = i + ".png";
-		let {
-			blob,
-			width,
-			height
-		} = await MF_CanvasToBase64(canvas);
-		zipWriter.add(fileName, new zip.BlobReader(blob));
+	const saveImageAndPDF = (imageData, blob, i, width, height, natural = false) => {
+		let dir = 'p';
+		let target_w = pdf_w;
+		let target_h = pdf_h;
 		if (width > height) {
-			doc.addPage([width * pdf_ratio, height * pdf_ratio], 'l');
-			doc.addImage(canvas, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, i, 'FAST')
-		} else {
-			doc.addPage();
-			doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
+			dir = 'l';
+			target_h = pdf_w;
+			target_w = pdf_h;
 		}
-		if (i === 1) {
-			doc.deletePage(1);
+		if (natural) {
+			target_h = target_h * pdf_ratio;
+			target_w = target_w * pdf_ratio;
 		}
-		// 获取文本内容
-		let texts = JSON.parse(localStorage.getItem('MB_text')) || [];
-		texts.push(fileType.includes('doc') ? textLayer.innerText : textLayer.textContent);
-		localStorage.setItem('MB_text', JSON.stringify(texts))
-		// 更新下标
-		localStorage.setItem('MB_index', i + 1);
-	}
-
-	// wq 保存图片
-	const saveWQImage = async (els, i) => {
-		const {
-			blob,
-			canvas
-		} = await MF_ImageJoinToBlob(els);
-		doc.addPage();
-		doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
-		zipWriter.add(i + ".png", new zip.BlobReader(blob));
-		localStorage.setItem('WQ_index', i + 1);
+		zipWriter.add(`${i}.png`, new zip.BlobReader(blob));
+		doc.addPage([target_w, target_h], dir);
+		doc.addImage(imageData, 'JPEG', 0, 0, target_w, target_h, i, 'FAST')
 		if (doc.internal.pages[1].length === 2) {
 			doc.deletePage(1); // 删除空白页
 		}
 	}
 
 	/**
-	 * mba 边预览边下载
+	 * @description 保存数据
+	 * @author Mr.Fang
+	 * @time 2024-6-25
+	 * @param {Number} i 下标
+	 * @param {HTMLElement} imageData 图片对象
+	 * @param {HTMLElement} textLayer 文本对象
 	 */
-	const scrollMbalib = async () => {
+	const previewSave = async (i, imageData, textLayer) => {
+		if (host.includes(domain.ebook)) {
+			const {
+				uint8,
+				blob,
+				width,
+				height
+			} = await MF_ImageToBase64(imageData.src);
+			saveImageAndPDF(uint8, blob, i, width, height)
+		} else {
+			const {
+				blob,
+				width,
+				height
+			} = await MF_CanvasToBase64(imageData);
+			saveImageAndPDF(imageData, blob, i, width, height)
+			//获取文本内容
+			let texts = JSON.parse(localStorage.getItem('SP_text')) || [];
+			texts.push(fileType.includes('doc') ? textLayer.innerText : textLayer.textContent);
+			localStorage.setItem('SP_text', JSON.stringify(texts))
+		}
+		// 更新下标
+		localStorage.setItem('SP_index', i + 1);
+	}
+
+	/**
+	 * @description 预览&下载
+	 * @author Mr.Fang
+	 * @time 2024-6-25
+	 */
+	const scrollPreview = async () => {
 		if (!localStorage.getItem("start")) {
 			u.preview(-1, null, "已终止");
 			return;
 		}
 		before();
-		let i = Number(localStorage.getItem('MB_index')) || 0;
-		let children = u.queryAll(select)
-		let current = children[i];
+		const i = Number(localStorage.getItem('SP_index')) || 0;
+		const childrens = u.queryAll(select);
+		const current = childrens[i];
+		const length = childrens.length;
 		// 如果当前对象在可视范围内，进行保存添加
-		const canvas = current.querySelector('canvas');
+		let imageData = current.querySelector('canvas');
+		if (host.includes(domain.ebook)) {
+			imageData = current.querySelector('img')
+		}
 		const textLayer = current.querySelector('.textLayer');
-		if (isElementInViewport(current) && canvas) {
-			saveMbalib(i, canvas, textLayer)
-			// 滚动到下一个范围
-			if (i !== children.length - 1)
-				children[i + 1].scrollIntoView({
+		if (isElementInViewport(current) && imageData) {
+			previewSave(i, imageData, textLayer)
+			if (i !== length - 1)
+				childrens[i + 1].scrollIntoView({
 					behavior: "smooth"
 				});
 		} else {
-			children[i].scrollIntoView({
+			current.scrollIntoView({
 				behavior: "smooth"
 			});
 		}
-		u.preview(i, children.length);
-		if (i !== children.length - 1) {
+		u.preview(i, length);
+		if (i !== length - 1) {
 			let speed = 500,
 				MF_speed = Number(u.query('#MF_speed').innerText);
 			if (MF_speed > 0) {
@@ -1199,72 +1220,13 @@
 			}
 			setTimeout(() => {
 				console.log(speed, 'ms 后执行');
-				scrollMbalib()
+				scrollPreview()
 			}, speed)
 		} else {
 			console.log('执行结束');
 			u.preview(-1);
-			localStorage.removeItem('MB_index')
+			localStorage.removeItem('SP_index')
 			localStorage.removeItem('start')
-		}
-	}
-
-	/**
-	 * wq 边预览边下载
-	 */
-	const scrollWQxuetang = async () => {
-		if (!localStorage.getItem("start")) {
-			u.preview(-1, null, "已终止");
-			return;
-		}
-		// 判断图片是否加载完成
-		function isImageLoaded(img) {
-			return img.complete && img.naturalWidth > 0 && img.naturalHeight > 0;
-		}
-
-		function isAllLoaded(childrens) {
-			if (!childrens.length) {
-				return false;
-			}
-			for (let i = 0; i < childrens.length; i++) {
-				if (!isImageLoaded(childrens[i])) {
-					return false;
-				}
-			}
-			return true;
-		}
-		let i = Number(localStorage.getItem('WQ_index')) || 0;
-		let children = u.queryAll(select)
-		if (i === children.length) {
-			console.log('执行结束');
-			u.preview(-1);
-			localStorage.removeItem('WQ_index');
-			localStorage.removeItem('start');
-			return;
-		}
-		let current = children[i];
-		if (isAllLoaded(current.children)) {
-			await saveWQImage(current, i)
-			// 滚动到下一个范围
-			if (i !== children.length - 1) {
-				children[i + 1].scrollIntoView({
-					behavior: "smooth"
-				});
-			}
-		}
-		u.preview(i, children.length);
-		if (i !== children.length) {
-			let speed = 1000,
-				MF_speed = Number(u.query('#MF_speed').innerText);
-			if (MF_speed > 0) {
-				speed = MF_speed
-			} else {
-				u.query('#MF_speed').innerText = speed
-			}
-			setTimeout(() => {
-				console.log(speed, 'ms 后执行');
-				scrollWQxuetang()
-			}, speed)
 		}
 	}
 
@@ -1901,14 +1863,16 @@
 				text = u.query('.ql-editor').innerText;
 			}
 
-		} else if (host.includes(domain.mbalib) || host.includes(domain.feishu) || host.includes(domain
-				.jtysbz) || host.includes(domain.xianxiao)) {
-			const texts = JSON.parse(localStorage.getItem("MB_text")) || []
+		} else if (host.includes(domain.mbalib) ||
+			host.includes(domain.feishu) ||
+			host.includes(domain.jtysbz) ||
+			host.includes(domain.xianxiao)) {
+			const texts = JSON.parse(localStorage.getItem("SP_text")) || []
 			for (let i = 0; i < texts.length; i++) {
 				let t = texts[i];
 				text += `\n\n====第${i+1}页====\n\n` + t;
 			}
-			localStorage.removeItem('MB_text')
+			localStorage.removeItem('SP_text')
 		} else if (host.includes(domain.doc88)) {
 			const texts = Core.api._VM;
 			if (!texts) {
@@ -2050,13 +2014,15 @@
 				try {
 					let canvas = u.createEl('', 'canvas');
 					const {
-						width,
-						height
+						naturalWidth: width,
+						naturalHeight: height
 					} = image;
 					canvas.width = width;
 					canvas.height = height;
-					let context = canvas.getContext('2d');
-					context.drawImage(image, 0, 0, width, height);
+					let ctx = canvas.getContext('2d');
+					ctx.fillStyle = '#FFFFFF';
+					ctx.fillRect(0, 0, width, height);
+					ctx.drawImage(image, 0, 0, width, height);
 					canvas.toBlob(async blob => {
 							// canvas 转 blob 对象
 							// blob 转 uint8 、PDF 需要 uint8 对象
