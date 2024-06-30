@@ -71,7 +71,6 @@
 |           [飞书](https://www.feishu.cn/)            |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |  ✔️部分   |    ❌    |    ❌     |
 | [交通标准](http://www.jtysbz.cn/ysbz/fg/index.html) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
 |      [先晓书院](https://xianxiao.ssap.com.cn/)      |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
-|        [高教书苑](https://ebook.hep.com.cn/)        |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 
 
 ## 功能

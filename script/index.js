@@ -37,7 +37,6 @@
 // @match        https://*.feishu.cn/space/*
 // @match        http://www.jtysbz.cn:8009/pdf/viewer/*
 // @match        https://xianxiao.ssap.com.cn/readerpdf/static/pdf/web/*
-// @match        https://ebook.hep.com.cn/index.html*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js
@@ -314,7 +313,6 @@
 		feishu: 'feishu.cn',
 		jtysbz: 'jtysbz.cn',
 		xianxiao: 'xianxiao.ssap.com.cn',
-		ebook: 'ebook.hep.com.cn',
 	};
 	const {
 		host,
@@ -779,10 +777,6 @@
 			dom = u.query('#viewerContainer');
 			btns.splice(1, 0, new Box('speed', '500'));
 			btns.push(new Box('get-text', '获取文本', 'fullText()'));
-		} else if (host.includes(domain.ebook)) {
-			fileType = "pdf";
-			select = ".pdf-main .pdf-page";
-			btns.splice(1, 0, new Box('speed', '500'));
 		}
 		const query = u.query("#btn_ppt_front_pc"); // 原创
 		if (!query) {
@@ -916,7 +910,6 @@
 		if (host.includes(domain.mbalib) ||
 			host.includes(domain.feishu) ||
 			host.includes(domain.jtysbz) ||
-			host.includes(domain.ebook) ||
 			host.includes(domain.xianxiao)) {
 			localStorage.setItem('start', '1');
 			localStorage.removeItem('SP_index')
@@ -1001,8 +994,7 @@
 			} else if (host.includes(domain.mbalib) ||
 				host.includes(domain.feishu) ||
 				host.includes(domain.jtysbz) ||
-				host.includes(domain.xianxiao) ||
-				host.includes(domain.ebook)
+				host.includes(domain.xianxiao)
 			) {
 				conditionDownload();
 			} else if (
@@ -1153,26 +1145,17 @@
 	 * @param {HTMLElement} textLayer 文本对象
 	 */
 	const previewSave = async (i, imageData, textLayer) => {
-		if (host.includes(domain.ebook)) {
-			const {
-				uint8,
-				blob,
-				width,
-				height
-			} = await MF_ImageToBase64(imageData.src);
-			saveImageAndPDF(uint8, blob, i, width, height)
-		} else {
-			const {
-				blob,
-				width,
-				height
-			} = await MF_CanvasToBase64(imageData);
-			saveImageAndPDF(imageData, blob, i, width, height)
-			//获取文本内容
-			let texts = JSON.parse(localStorage.getItem('SP_text')) || [];
-			texts.push(fileType.includes('doc') ? textLayer.innerText : textLayer.textContent);
-			localStorage.setItem('SP_text', JSON.stringify(texts))
-		}
+
+		const {
+			blob,
+			width,
+			height
+		} = await MF_CanvasToBase64(imageData);
+		saveImageAndPDF(imageData, blob, i, width, height)
+		//获取文本内容
+		let texts = JSON.parse(localStorage.getItem('SP_text')) || [];
+		texts.push(fileType.includes('doc') ? textLayer.innerText : textLayer.textContent);
+		localStorage.setItem('SP_text', JSON.stringify(texts))
 		// 更新下标
 		localStorage.setItem('SP_index', i + 1);
 	}
@@ -1194,9 +1177,6 @@
 		const length = childrens.length;
 		// 如果当前对象在可视范围内，进行保存添加
 		let imageData = current.querySelector('canvas');
-		if (host.includes(domain.ebook)) {
-			imageData = current.querySelector('img')
-		}
 		const textLayer = current.querySelector('.textLayer');
 		if (isElementInViewport(current) && imageData) {
 			previewSave(i, imageData, textLayer)
