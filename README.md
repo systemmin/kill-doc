@@ -20,7 +20,7 @@
 
 ## 安装
 1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 浏览器扩展。[国内](https://www.crxsoso.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo)安装
-2. 点击 [脚本链接](https://greasyfork.org/zh-CN/scripts/486211-%E7%99%BE%E5%BA%A6-%E5%8E%9F%E5%88%9B%E5%8A%9B-%E4%BA%BA%E4%BA%BA-%E8%B1%86%E4%B8%81-%E9%81%93%E5%AE%A2-%E8%B1%86%E4%B8%81%E5%BB%BA%E7%AD%91) 或手动复制脚本代码。
+2. 点击 [脚本链接](https://greasyfork.org/zh-CN/scripts/486211) 或手动复制脚本代码。
 3. 在 Tampermonkey 中创建一个新脚本，将代码粘贴到编辑器中并保存。
 
 ## 留言
@@ -72,6 +72,7 @@
 | [交通标准](http://www.jtysbz.cn/ysbz/fg/index.html) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
 |      [先晓书院](https://xianxiao.ssap.com.cn/)      |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
 
+之前支持后来移除的平台请移步 [kill-e-book](https://greasyfork.org/zh-CN/scripts/497405-kill-e-book) 电子书下载脚本
 
 ## 功能
 
@@ -115,13 +116,13 @@
 
 最新版本
 
-- 2024/06/25 `v3.5` 新增高教书苑，移除文泉，已知bug优化
-
+- 2024/06/30 `v3.6` 移除高教书苑
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/06/24 </span><code>v3.5</code><span>新增高教书苑，移除文泉，已知bug优化</span></li>
     <li><span>2024/06/24 </span><code>v3.4</code><span>新增先晓书院</span></li>
     <li><span>2024/06/23 </span><code>v3.3</code><span>新增交通标准</span></li>
 	<li><span>2024/06/19 </span><code>v3.2</code><span>优化导出PDF格式，影响范围自然标准、道客、豆丁、淘豆等全部安装A4格式导出。
@@ -168,7 +169,6 @@
 	<li><span>2024/02/01 </span><code>v0.2</code><span> 初版发布</span></li>
 	</ul>
 </details>
-
 
 
 ## 贡献
