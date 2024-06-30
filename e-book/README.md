@@ -13,7 +13,7 @@
     <img alt="license" src="https://img.shields.io/badge/license-Apache2.0-blue?style=flat-square">
     </a>
 </p>
-这是一个用于 [Tampermonkey](https://www.tampermonkey.net/) 或其他支持用户脚本的浏览器扩展的 **[e-book](https://github.com/systemmin/kill-doc/blob/master/e-book/index.js)** 篡改猴脚本。
+这是一个用于 [Tampermonkey](https://www.tampermonkey.net/) 或其他支持用户脚本的浏览器扩展的 [e-book](https://github.com/systemmin/kill-doc/blob/master/e-book/index.js) 篡改猴脚本。
 
 电子书分页下载，考虑到文件大小内存等因素，采用分页下载。**请务必使用谷歌浏览器**
 
