@@ -2,7 +2,7 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      3.6
+// @version      3.7
 // @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|文泉书局|自然标准|交通标准|飞书|先晓书院等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
@@ -1145,7 +1145,6 @@
 	 * @param {HTMLElement} textLayer 文本对象
 	 */
 	const previewSave = async (i, imageData, textLayer) => {
-
 		const {
 			blob,
 			width,
@@ -1176,10 +1175,10 @@
 		const current = childrens[i];
 		const length = childrens.length;
 		// 如果当前对象在可视范围内，进行保存添加
-		let imageData = current.querySelector('canvas');
+		const imageData = current.querySelector('canvas');
 		const textLayer = current.querySelector('.textLayer');
-		if (isElementInViewport(current) && imageData) {
-			previewSave(i, imageData, textLayer)
+		if (isElementInViewport(current) && imageData && textLayer) {
+			await previewSave(i, imageData, textLayer)
 			if (i !== length - 1)
 				childrens[i + 1].scrollIntoView({
 					behavior: "smooth"
