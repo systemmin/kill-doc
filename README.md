@@ -122,7 +122,7 @@
 
 <details>
 	<summary>点击查看</summary>
-    <li><span>2024/06/24 </span><code>v3.5</code><span>新增高教书苑，移除文泉，已知bug优化</span></li>
+    <li><span>2024/06/25 </span><code>v3.5</code><span>新增高教书苑，移除文泉，已知bug优化</span></li>
     <li><span>2024/06/24 </span><code>v3.4</code><span>新增先晓书院</span></li>
     <li><span>2024/06/23 </span><code>v3.3</code><span>新增交通标准</span></li>
 	<li><span>2024/06/19 </span><code>v3.2</code><span>优化导出PDF格式，影响范围自然标准、道客、豆丁、淘豆等全部安装A4格式导出。
