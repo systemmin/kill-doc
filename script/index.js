@@ -878,17 +878,14 @@
 	})();
 
 	// load 事件
-	document.onreadystatechange = function() {
-		if (document.readyState === "complete") {
-			console.log('readyState:', document.readyState);
-			// 在这里执行渲染完成后的操作
-			console.log('HTML 渲染完成!');
-			// 监听子页面加载完成，发送消息
-			if (!params.size || !params.get('custom')) {
-				init()
-			}
+	(()=>{
+		// 在这里执行渲染完成后的操作
+		console.log('HTML 渲染完成!');
+		// 监听子页面加载完成，发送消息
+		if (!params.size || !params.get('custom')) {
+			init()
 		}
-	};
+	})();
 
 
 	/**
