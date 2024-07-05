@@ -37,6 +37,7 @@
 // @match        https://*.feishu.cn/space/*
 // @match        http://www.jtysbz.cn:8009/pdf/viewer/*
 // @match        https://xianxiao.ssap.com.cn/readerpdf/static/pdf/web/*
+// @match        https://www.nssi.org.cn/cssn/js/pdfjs/web/preview.jsp*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -310,6 +311,7 @@
 		sacinfo: 'hbba.sacinfo.org.cn',
 		qzoffice: 'www.qzoffice.com',
 		nrsis: 'www.nrsis.org.cn',
+		nssi: 'www.nssi.org.cn',
 		feishu: 'feishu.cn',
 		jtysbz: 'jtysbz.cn',
 		xianxiao: 'xianxiao.ssap.com.cn',
@@ -754,6 +756,11 @@
 		} else if (host.includes(domain.nrsis)) {
 			fileType = "pdf";
 			select = ".page canvas";
+		} else if (host.includes(domain.nssi)) {
+			title = document.title,
+			fileType = "pdf";
+			select = ".page canvas";
+			dom = u.query('#viewerContainer')
 		} else if (host.includes(domain.feishu)) {
 			fileType = "pdf";
 			dom = u.query('#viewerContainer')
@@ -878,7 +885,7 @@
 	})();
 
 	// load 事件
-	(()=>{
+	(() => {
 		// 在这里执行渲染完成后的操作
 		console.log('HTML 渲染完成!');
 		// 监听子页面加载完成，发送消息
@@ -934,7 +941,7 @@
 				scrollPageAreaDocGB()
 			} else if (host.includes(domain.jjg)) {
 				scrollPageAreaJJG()
-			} else if (host.includes(domain.nrsis)) {
+			} else if (host.includes(domain.nrsis) || host.includes(domain.nssi)) {
 				scrollWinArea()
 			}
 		}, 500);
@@ -997,7 +1004,8 @@
 			} else if (
 				host.includes(domain.doc88) ||
 				host.includes(domain.taodocs) ||
-				host.includes(domain.nrsis)
+				host.includes(domain.nrsis) ||
+				host.includes(domain.nssi)
 
 			) {
 				await imageToBase64()
