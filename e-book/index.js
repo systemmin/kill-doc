@@ -2,13 +2,15 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.0.3
-// @description  文泉书局|高教书苑等公开免费电子书下载
+// @version      1.0.4
+// @description  文泉书局|高教书苑|中教经典等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
 // @match        https://ebook.hep.com.cn/index.html*
+// @match        https://www.zjjd.cn/read-book*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
+// @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
 // @icon         https://dtking.cn/favicon.ico
 // @run-at 		 document-idle
 // @grant        none
@@ -207,6 +209,7 @@
 	const domain = {
 		wqxuetang: 'wqxuetang.com',
 		ebook: 'ebook.hep.com.cn',
+		zjjd: 'www.zjjd.cn',
 	};
 	const {
 		host,
@@ -274,6 +277,10 @@
 			selectPages = ".toolbar-process";
 			observeClassName = "pdf-reader";
 			dom = u.query('#viewerContainer');
+		} else if (host.includes(domain.zjjd)) {
+			select = "#pdf-render .item";
+			selectPages = ".precess";
+			dom = u.query('#pdf-render > div');
 		}
 		u.gui(btns);
 		console.log('文件名称：', title);
@@ -326,6 +333,8 @@
 			if (t) {
 				title = t;
 			}
+		} else if (host.includes(domain.zjjd)) {
+			title = u.query('.title').innerText;
 		}
 	}
 
@@ -426,6 +435,8 @@
 			canvas = await MF_ImageJoinToBlob(els);
 		} else if (host.includes(domain.ebook)) {
 			canvas = await MF_ImageToBase64(els.src);
+		} else if (host.includes(domain.zjjd)) {
+			canvas = await MF_ImageToCanvas(els);
 		}
 		doc.addPage();
 		doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
@@ -517,9 +528,26 @@
 						behavior: "smooth"
 					});
 				}
+			} else if (host.includes(domain.zjjd)) {
+				const img = node.querySelector('img')
+				if (isVisible(node) && img && imageComplete(img) ) {
+					// 保存
+					await saveImagePDF(img, k_page_no)
+					// 滚动到下一个范围
+					if (k_page_no !== length - 1) {
+						nodes[k_page_no + 1].scrollIntoView({
+							behavior: "smooth"
+						});
+					}
+				} else {
+					nodes[k_page_no].scrollIntoView({
+						behavior: "smooth"
+					});
+				}
 			}
 			u.preview(k_page_no, length);
 		} catch (e) {
+			console.error(e)
 			u.preview(-1);
 			download().then(() => {
 				handleClean();
@@ -589,7 +617,33 @@
 			resolve(canvas)
 		})
 	}
-
+	
+	const MF_NodeToCanvas = (node)=>{
+		return new Promise((resolve) => {
+			html2canvas(node, {
+				useCORS: true,
+				logging: true,
+			}).then(function(canvas) {
+				resolve(canvas);
+			});
+		})
+	}
+	const MF_ImageToCanvas = (image) => {
+		return new Promise((resolve, reject) => {
+			const canvas = u.createEl('', 'canvas');
+			const {
+				naturalWidth: width,
+				naturalHeight: height
+			} = image;
+			canvas.width = width;
+			canvas.height = height;
+			let ctx = canvas.getContext('2d');
+			ctx.fillStyle = '#FFFFFF';
+			ctx.fillRect(0, 0, width, height);
+			ctx.drawImage(image, 0, 0, width, height);
+			resolve(canvas);
+		})
+	}
 	/**
 	 * @description 加载图片
 	 * @author Mr.Fang
@@ -615,6 +669,7 @@
 					ctx.drawImage(image, 0, 0, width, height);
 					resolve(canvas);
 				} catch (e) {
+					console.error(e);
 					reject(e);
 				}
 			}
