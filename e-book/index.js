@@ -2,10 +2,11 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.0.4
-// @description  文泉书局|高教书苑|中教经典等公开免费电子书下载
+// @version      1.0.6
+// @description  文泉书局(bit)|高教书苑|中教经典等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
+// @match        https://nlibvpn.bit.edu.cn/*/*/deep/read/pdf?bid=*
 // @match        https://ebook.hep.com.cn/index.html*
 // @match        https://www.zjjd.cn/read-book*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
@@ -208,6 +209,7 @@
 
 	const domain = {
 		wqxuetang: 'wqxuetang.com',
+		nlibvpn: 'nlibvpn.bit.edu.cn',
 		ebook: 'ebook.hep.com.cn',
 		zjjd: 'www.zjjd.cn',
 	};
@@ -259,7 +261,7 @@
 			origin
 		})
 		dom = document.documentElement || document.body;
-		if (host.includes(domain.wqxuetang)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.nlibvpn)) {
 			select = "#pagebox .page-lmg";
 			selectPages = ".page-head-tol";
 			observeClassName = "page-lmg";
@@ -286,6 +288,15 @@
 		console.log('文件名称：', title);
 	}
 
+
+	const loginfo = () => {
+		console.log('k_page_size', localStorage.getItem('k_page_size'))
+		console.log('k_page_no', localStorage.getItem('k_page_no'))
+		console.log('k_count', localStorage.getItem('k_count'))
+		console.log('k_total', k_total)
+	}
+
+
 	// load 事件
 	document.onreadystatechange = function() {
 		if (document.readyState === "complete") {
@@ -298,7 +309,6 @@
 					autoPreview();
 				}, 2000)
 			}
-
 			loginfo()
 		}
 	};
@@ -311,7 +321,7 @@
 	 */
 	const before = () => {
 		console.log('before=============>')
-		if (host.includes(domain.wqxuetang)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.nlibvpn)) {
 			if (u.query('.reload_image')) {
 				console.log('重新加载')
 				u.query('.reload_image').click();
@@ -326,8 +336,14 @@
 	 */
 	const after = () => {
 		console.log('after=============>')
-		if (host.includes(domain.wqxuetang)) {
-			title = u.query('.read-header-title').innerText;
+		if (host.includes(domain.wqxuetang) || host.includes(domain.nlibvpn)) {
+			let nodeTitle = u.query('.read-header-title');
+			if (!nodeTitle) {
+				nodeTitle = u.query('.read-header-name');
+			}
+			if (nodeTitle) {
+				title = nodeTitle.innerText;
+			}
 		} else if (host.includes(domain.ebook)) {
 			let t = localStorage.getItem('title');
 			if (t) {
@@ -381,13 +397,6 @@
 		u.preview(-1, null, "已终止");
 	}
 
-	const loginfo = () => {
-		console.log('k_page_size', localStorage.getItem('k_page_size'))
-		console.log('k_page_no', localStorage.getItem('k_page_no'))
-		console.log('k_count', localStorage.getItem('k_count'))
-		console.log('k_total', k_total)
-	}
-
 	/**
 	 * @description 开始方法，自动预览
 	 * @author Mr.Fang
@@ -397,7 +406,7 @@
 		// 开始执行标识
 		localStorage.setItem('k_start', '1');
 		// 初始化页码
-		if (host.includes(domain.wqxuetang)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.nlibvpn)) {
 
 		}
 		// 自动翻页
@@ -431,7 +440,7 @@
 	const saveImagePDF = async (els, i) => {
 		localStorage.setItem('k_page_no', i + 1);
 		let canvas;
-		if (host.includes(domain.wqxuetang)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.nlibvpn)) {
 			canvas = await MF_ImageJoinToBlob(els);
 		} else if (host.includes(domain.ebook)) {
 			canvas = await MF_ImageToBase64(els.src);
@@ -490,14 +499,16 @@
 		if (k_total % k_page_size === 0 && k_total != 0) { // 满足分页条件
 			download().then(() => {
 				localStorage.setItem('k_count', k_count + 1);
-				window.location.reload()
+				setTimeout(() => {
+					window.location.reload()
+				}, 2000)
 			});
 			return;
 		}
 
 		try {
 			const node = nodes[k_page_no];
-			if (host.includes(domain.wqxuetang)) {
+			if (host.includes(domain.wqxuetang) || host.includes(domain.nlibvpn)) {
 				if (nodeComplete(node.children)) {
 					// 保存
 					await saveImagePDF(node, k_page_no)
@@ -547,7 +558,7 @@
 			}
 			u.preview(k_page_no, length);
 		} catch (e) {
-			console.error(e)
+			console.error(e);
 			u.preview(-1);
 			download().then(() => {
 				handleClean();

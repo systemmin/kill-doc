@@ -212,4 +212,4 @@
 
 - [鸣谢](https://github.com/systemmin/kill-doc/blob/master/AMOUNT.md) 🫡
 
-，<img src="https://dtking.cn/pay.png" alt="赞赏" style="zoom: 67%;" />
+<img src="https://dtking.cn/pay.png" alt="赞赏" style="zoom: 67%;" />

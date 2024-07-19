@@ -2,8 +2,8 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      3.8
-// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|文泉书局|自然标准|交通标准|飞书|先晓书院等公开免费文档下载
+// @version      3.9
+// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|先晓书院等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
 // @match        https://*.renrendoc.com/*
@@ -758,7 +758,7 @@
 			select = ".page canvas";
 		} else if (host.includes(domain.nssi)) {
 			title = document.title,
-			fileType = "pdf";
+				fileType = "pdf";
 			select = ".page canvas";
 			dom = u.query('#viewerContainer')
 		} else if (host.includes(domain.feishu)) {
@@ -923,7 +923,8 @@
 		}
 
 		if (interval) return false;
-		dom.scrollTop = 0;
+		if (!host.includes(domain.doc88))
+			dom.scrollTop = 0;
 		interval = setInterval(() => {
 			if (host.includes(domain.book118)) {
 				scrollPageArea()
@@ -1294,7 +1295,8 @@
 		let end = 0;
 		const images = u.queryAll(select);
 		const length = images.length;
-		for (let i = 0; i < length; i++) {
+		const startNum = document.querySelector("#pageNumInput").value - 1 || 0;
+		for (let i = startNum; i < length; i++) {
 			let item = images[i];
 			const {
 				top
@@ -1302,12 +1304,10 @@
 			let previousElementSibling = item.previousElementSibling.previousElementSibling;
 			let fs = u.attr(item, 'fs');
 			let t = previousElementSibling.innerText;
-			if (!fs || t.length) {
+			if (t.length !== 0) {
 				end = 1;
-				dom.scrollTo({
-					top: dom.scrollTop + top,
-					left: 0,
-					behavior: "smooth",
+				item.scrollIntoView({
+					behavior: "smooth"
 				});
 				u.preview(i + 1, length);
 				break;
@@ -1369,11 +1369,19 @@
 		const images = u.queryAll(select);
 		const length = images.length;
 		for (let i = 0; i < length; i++) {
+			const item = images[i];
+			if (host.includes(domain.doc88)) {
+				let previousElementSibling = item.previousElementSibling.previousElementSibling;
+				let t = previousElementSibling.innerText;
+				if (t.length !== 0) {
+					continue;
+				}
+			}
 			let {
 				blob,
 				width,
 				height
-			} = await MF_CanvasToBase64(images[i]);
+			} = await MF_CanvasToBase64(item);
 			let fileName = i + ".png";
 			zipWriter.add(fileName, new zip.BlobReader(blob));
 			if (width > height) { // 横着
