@@ -65,13 +65,13 @@
 |      [行业标准](https://hbba.sacinfo.org.cn/)⬅️      |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
 |         [淘豆网](https://www.taodocs.com/)          |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |     [GB](https://openstd.samr.gov.cn/bzgk/gb/)      |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
-|   [JJG](https://jjg.spc.org.cn/resmea/view/index)    |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+|   [JJG](https://jjg.spc.org.cn/resmea/view/index)   |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |        [轻竹办公](https://www.qzoffice.com/)        |  ✅   |    ❌     |    ❌     |    ✅     |    ❌    |    ❌     |    ✅    |    ❌     |
 | [自然标准](http://www.nrsis.org.cn/portal/xxcx/std) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |           [飞书](https://www.feishu.cn/)            |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |  ✔️部分   |    ❌    |    ❌     |
 | [交通标准](http://www.jtysbz.cn/ysbz/fg/index.html) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
 |      [先晓书院](https://xianxiao.ssap.com.cn/)      |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
-|          [江苏计量](http://www.jsjlw.com)           |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
+|          [江苏计量](http://www.jsjlw.com)           |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |          [水利部](http://gjkj.mwr.gov.cn)           |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 
 之前支持后来移除的平台请移步 [kill-e-book](https://greasyfork.org/zh-CN/scripts/497405-kill-e-book) 电子书下载脚本
