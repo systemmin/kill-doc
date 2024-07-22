@@ -65,12 +65,14 @@
 |      [行业标准](https://hbba.sacinfo.org.cn/)⬅️      |  ✅   |    ❌     |    ❌     |    ✅     |    ✅    |    ❌     |    ❌    |    ✅     |
 |         [淘豆网](https://www.taodocs.com/)          |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |     [GB](https://openstd.samr.gov.cn/bzgk/gb/)      |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
-|   [JJG](http://jjg.spc.org.cn/resmea/view/index)    |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+|   [JJG](https://jjg.spc.org.cn/resmea/view/index)    |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |        [轻竹办公](https://www.qzoffice.com/)        |  ✅   |    ❌     |    ❌     |    ✅     |    ❌    |    ❌     |    ✅    |    ❌     |
 | [自然标准](http://www.nrsis.org.cn/portal/xxcx/std) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |           [飞书](https://www.feishu.cn/)            |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |  ✔️部分   |    ❌    |    ❌     |
 | [交通标准](http://www.jtysbz.cn/ysbz/fg/index.html) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
 |      [先晓书院](https://xianxiao.ssap.com.cn/)      |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
+|          [江苏计量](http://www.jsjlw.com)           |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
+|          [水利部](http://gjkj.mwr.gov.cn)           |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 
 之前支持后来移除的平台请移步 [kill-e-book](https://greasyfork.org/zh-CN/scripts/497405-kill-e-book) 电子书下载脚本
 
@@ -116,17 +118,20 @@
 
 最新版本
 
-- 2024/06/30 `v3.6` 移除高教书苑
+- 2024/07/22 `v4.0` 新增江苏计量、水利部。JJB 协议修改 https
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
-    <li><span>2024/06/25 </span><code>v3.5</code><span>新增高教书苑，移除文泉，已知bug优化</span></li>
-    <li><span>2024/06/24 </span><code>v3.4</code><span>新增先晓书院</span></li>
-    <li><span>2024/06/23 </span><code>v3.3</code><span>新增交通标准</span></li>
-	<li><span>2024/06/19 </span><code>v3.2</code><span>优化导出PDF格式，影响范围自然标准、道客、豆丁、淘豆等全部安装A4格式导出。
-		</span></li>
+    <li><span>2024/07/11 </span><code>v3.9</code><span>道客空页面优化，支持从指定页码开始预览。</span></li>
+    <li><span>2024/06/30 </span><code>v3.8</code><span>优化飞书，新增标准库</span></li>
+    <li><span>2024/06/25 </span><code>v3.7</code><span>优化缺页问题</span></li>
+    <li><span>2024/06/25 </span><code>v3.6</code><span>移除高教书苑</span></li>
+    <li><span>2024/06/24 </span><code>v3.5</code><span>新增高教书苑，移除文泉，已知bug优化</span></li>
+    <li><span>2024/06/23 </span><code>v3.4</code><span>新增先晓书院</span></li>
+    <li><span>2024/06/21 </span><code>v3.3</code><span>新增交通标准</span></li>
+	<li><span>2024/06/19 </span><code>v3.2</code><span>优化导出PDF格式，影响范围自然标准、道客、豆丁、淘豆等全部安装A4格式导出。</span></li>
 	<li><span>2024/06/19 </span><code>v3.1</code><span>更新已知bug</span></li>
 	<li><span>2024/06/19 </span><code>v3.0</code><span>优化横竖文档格式</span></li>
 	<li><span>2024/06/18 </span><code>v2.9</code><span>优化已知bug</span></li>
@@ -138,13 +143,15 @@
 	<li><span>2024/06/06 </span><code>v2.3</code><span>优化文泉书局 </span></li>
 	<li><span>2024/06/06 </span><code>v2.2</code><span>增加文泉书局 </span></li>
 	<li><span>2024/05/28 </span><code>v2.1</code><span> 大版本更新，影响网站较多，有问题及时反馈</span>
-		<ul>
-			<li>所有网站图片下载处理优化，提升下载速度。来自 <a
-					href="https://greasyfork.org/zh-CN/users/398437-joyoffire">（JoyofFire）</a>建议，脚本反馈处查看详情。
-			</li>
-			<li>MBA智库内容部分修改，脚本也重新做了兼容</li>
-			<li>百度文库、爱问文库、豆丁建筑、道客等优化</li>
-		</ul>
+		<li>
+			<ul>
+				<li>所有网站图片下载处理优化，提升下载速度。来自 <a
+						href="https://greasyfork.org/zh-CN/users/398437-joyoffire">（JoyofFire）</a>建议，脚本反馈处查看详情。
+				</li>
+				<li>MBA智库内容部分修改，脚本也重新做了兼容</li>
+				<li>百度文库、爱问文库、豆丁建筑、道客等优化</li>
+			</ul>
+		</li>
 	</li>
 	<li><span>2024/05/21 </span><code>v2.0</code><span> 豆丁特殊格式优化处理，wxdown 软件上线了</span></li>
 	<li><span>2024/05/18 </span><code>v1.9</code><span> 新增 轻竹办公</span></li>

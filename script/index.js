@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
 // @version      4.0
-// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|先晓书院等公开免费文档下载
+// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|先晓书院|江苏计量|水利部等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
 // @match        https://*.renrendoc.com/*
@@ -39,6 +39,7 @@
 // @match        https://xianxiao.ssap.com.cn/readerpdf/static/pdf/web/*
 // @match        https://www.nssi.org.cn/cssn/js/pdfjs/web/preview.jsp*
 // @match        https://online.71nc.cn/*
+// @match        http://121.36.94.83:9008/jsp/yishenqing/appladd/biaozhunfile/flash/previewImg.jsp*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -317,6 +318,7 @@
 		jtysbz: 'jtysbz.cn',
 		xianxiao: 'xianxiao.ssap.com.cn',
 		jsjlw: 'online.71nc.cn',
+		mwr: '121.36.94.83:9008',
 	};
 	const {
 		host,
@@ -790,6 +792,10 @@
 			fileType = "pdf";
 			select = "#ctn img";
 			dom = u.query('#ctn');
+		} else if (host.includes(domain.mwr)) {
+			fileType = "pdf";
+			select = "#imgdiv img";
+			title = u.query('.left_titile').innerText;
 		}
 		const query = u.query("#btn_ppt_front_pc"); // 原创
 		if (!query) {
@@ -950,12 +956,14 @@
 				scrollPageAreaJJG()
 			} else if (host.includes(domain.nrsis) ||
 				host.includes(domain.nssi) ||
+				host.includes(domain.mwr) ||
 				host.includes(domain.jsjlw)
 			) {
 				scrollWinArea()
 			}
 		}, 500);
 	}
+
 
 	/**
 	 * @description 结束方法，停止预览
@@ -969,6 +977,31 @@
 			interval = null;
 		}
 		localStorage.removeItem('start')
+	}
+
+	/**
+	 * @description 结束方法，停止预览，前置方法
+	 * @author Mr.Fang
+	 * @time 2024年7月22日
+	 */
+	const stopBeforePreview = async () => {
+		if (host.includes(domain.mwr)) {
+			const page_index = u.query('.page_index').innerText;
+			const page_total = u.query('.page_total').innerText;
+			if (page_index === page_total) {
+				stopPreview();
+				u.preview(-1);
+			} else { // 向上滚动一次
+				dom.scrollTo({
+					top: dom.scrollTop - 100,
+					left: 0,
+					behavior: "smooth",
+				});
+			}
+		} else {
+			stopPreview();
+			u.preview(-1);
+		}
 	}
 
 	/**
@@ -1039,6 +1072,9 @@
 			} else if (host.includes(domain.qzoffice)) {
 				await handleQzoffice();
 				conditionDownload();
+			} else if (host.includes(domain.mwr)) {
+				await downloadImage();
+				conditionDownload();
 			}
 		} else {
 			conditionDownload();
@@ -1092,8 +1128,7 @@
 		const scrollTop = dom.scrollTop;
 		const height = dom.scrollHeight - dom.clientHeight;
 		if (height <= scrollTop) {
-			stopPreview();
-			u.preview(-1);
+			stopBeforePreview();
 		} else {
 			let top = scrollTop + 500;
 			dom.scrollTo({
@@ -1753,6 +1788,40 @@
 		if (current === length - 1) {
 			conditionDownload();
 		}
+	}
+
+	/**
+	 * 图片下载 
+	 */
+	const downloadImage = async () => {
+		const images = [...u.queryAll(select)];
+		for (let i = 0; i < images.length; i++) {
+			const image = images[i]
+			const canvas = await MF_ImageToCanvas(image);
+			const {
+				blob,
+				width,
+				height
+			} = await MF_CanvasToBase64(canvas);
+			saveImageAndPDF(canvas, blob, i, width, height, false);
+		}
+	}
+
+	const MF_ImageToCanvas = (image) => {
+		return new Promise((resolve, reject) => {
+			const canvas = u.createEl('', 'canvas');
+			const {
+				naturalWidth: width,
+				naturalHeight: height
+			} = image;
+			canvas.width = width;
+			canvas.height = height;
+			let ctx = canvas.getContext('2d');
+			ctx.fillStyle = '#FFFFFF';
+			ctx.fillRect(0, 0, width, height);
+			ctx.drawImage(image, 0, 0, width, height);
+			resolve(canvas);
+		})
 	}
 
 	/**
