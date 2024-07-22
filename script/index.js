@@ -2,7 +2,7 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      3.9
+// @version      4.0
 // @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|先晓书院等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
@@ -29,7 +29,7 @@
 // @match        https://*.360tres.com/*
 // @match        https://www.wenkub.com/*
 // @match        http://c.gb688.cn/*
-// @match        http://jjg.spc.org.cn/resmea/view/stdonline
+// @match        https://jjg.spc.org.cn/resmea/view/stdonline
 // @match        https://pro-img-brtm.baijiayun.com/*
 // @match        https://hbba.sacinfo.org.cn/attachment/onlineRead/*
 // @match        https://www.qzoffice.com/*
@@ -38,6 +38,7 @@
 // @match        http://www.jtysbz.cn:8009/pdf/viewer/*
 // @match        https://xianxiao.ssap.com.cn/readerpdf/static/pdf/web/*
 // @match        https://www.nssi.org.cn/cssn/js/pdfjs/web/preview.jsp*
+// @match        https://online.71nc.cn/*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -315,6 +316,7 @@
 		feishu: 'feishu.cn',
 		jtysbz: 'jtysbz.cn',
 		xianxiao: 'xianxiao.ssap.com.cn',
+		jsjlw: 'online.71nc.cn',
 	};
 	const {
 		host,
@@ -784,6 +786,10 @@
 			dom = u.query('#viewerContainer');
 			btns.splice(1, 0, new Box('speed', '500'));
 			btns.push(new Box('get-text', '获取文本', 'fullText()'));
+		} else if (host.includes(domain.jsjlw)) {
+			fileType = "pdf";
+			select = "#ctn img";
+			dom = u.query('#ctn');
 		}
 		const query = u.query("#btn_ppt_front_pc"); // 原创
 		if (!query) {
@@ -942,7 +948,10 @@
 				scrollPageAreaDocGB()
 			} else if (host.includes(domain.jjg)) {
 				scrollPageAreaJJG()
-			} else if (host.includes(domain.nrsis) || host.includes(domain.nssi)) {
+			} else if (host.includes(domain.nrsis) ||
+				host.includes(domain.nssi) ||
+				host.includes(domain.jsjlw)
+			) {
 				scrollWinArea()
 			}
 		}, 500);
@@ -1025,7 +1034,7 @@
 				await downimg()
 			} else if (host.includes(domain.gb688)) {
 				await downBgImg();
-			} else if (host.includes(domain.jjg)) {
+			} else if (host.includes(domain.jjg) || host.includes(domain.jsjlw)) {
 				await parseImage()
 			} else if (host.includes(domain.qzoffice)) {
 				await handleQzoffice();
