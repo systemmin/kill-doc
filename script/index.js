@@ -2,7 +2,7 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      4.1
+// @version      4.2
 // @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|先晓书院|江苏计量|水利部等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
@@ -348,6 +348,7 @@
 		dom = null,
 		beforeFun = null,
 		interval = null,
+		startPageNo = 0,
 		BASE_URL = 'https://wkretype.bdimg.com/retype',
 		readerInfoBai = null, // 百度文档参数
 		intervalBai = null; // 百度定时任务
@@ -615,19 +616,19 @@
 				u.log('结束');
 				return;
 			}
+			select = "#contentcontainer canvas";
+			const toImg = params.get('toImg');
+			console.log('toImg', toImg);
 			title = u.query('meta[property="og:title"]').content;
 			fileType = u.attr(u.query('h1').children[0], 'title').toLowerCase();
-			if (host === 'jz.docin.com') {
-				select = "#contentcontainer canvas";
-			} else {
-				select = u.query("#contentcontainer img") ? '#contentcontainer img' :
-					"#contentcontainer canvas";
+			if (toImg && toImg === '1') {
+				select = "#contentcontainer img"
 			}
-			u.log(select);
-			if (isUserLogin === '1') {
+			console.log('toImg', select);
+			if (isUserLogin === '1') { // 登录
 				beforeFun = "let eb = u.query('.model-fold-show');if (eb) {eb.click();}";
 			}
-			if (fileType.includes('ppt')) {
+			if (fileType.includes('ppt') || (toImg && toImg === '1')) {
 				btns.push(new Box('PPT', '获取地址', 'downtxt()'))
 			}
 
@@ -821,6 +822,7 @@
 		localStorage.removeItem('pageData')
 		localStorage.removeItem('down')
 		localStorage.removeItem('SP_text')
+
 		// 百度服务端渲染
 		if (host.includes(domain.wenku)) {
 			const {
@@ -935,8 +937,12 @@
 		}
 
 		if (interval) return false;
-		if (!host.includes(domain.doc88))
+		if (host.includes(domain.docin)) {
+			// 起始页码
+			startPageNo = document.querySelector("#page_cur").value - 1 || 0;
+		} else {
 			dom.scrollTop = 0;
+		}
 		interval = setInterval(() => {
 			if (host.includes(domain.book118)) {
 				scrollPageArea()
@@ -1032,7 +1038,7 @@
 					await downimg()
 				}
 			} else if (host.includes(domain.docin)) {
-				if (select.includes('img')) {
+				if (params.get('toImg')) {
 					await parseImage()
 				} else {
 					await imageToBase64()
@@ -1339,7 +1345,8 @@
 		let end = 0;
 		const images = u.queryAll(select);
 		const length = images.length;
-		for (let i = 0; i < length; i++) {
+		const startNum = document.querySelector("#pageNumInput").value - 1 || 0;
+		for (let i = startNum; i < length; i++) {
 			let item = images[i];
 			const {
 				top
@@ -1712,10 +1719,20 @@
 			}
 			if (src) {
 				const page = u.attr(item, 'data-page') || u.attr(item.parentElement, 'data-id');
-				listData.push({
-					page,
-					src
-				})
+				if (host.includes(domain.docin)) {
+					const curr = Number(item.parentElement.id.split('_').pop());
+					if (curr >= startPageNo + 1) {
+						listData.push({
+							page,
+							src
+						})
+					}
+				} else {
+					listData.push({
+						page,
+						src
+					})
+				}
 			}
 		})
 		const store = JSON.stringify(listData);
