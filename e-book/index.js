@@ -2,13 +2,14 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.0.6
-// @description  文泉书局(bit)|高教书苑|中教经典等公开免费电子书下载
+// @version      1.0.7
+// @description  文泉书局(bit)|高教书苑|中教经典|可知等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
 // @match        https://nlibvpn.bit.edu.cn/*/*/deep/read/pdf?bid=*
 // @match        https://ebook.hep.com.cn/index.html*
 // @match        https://www.zjjd.cn/read-book*
+// @match        https://www.keledge.com/pdfReader*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -212,6 +213,7 @@
 		nlibvpn: 'nlibvpn.bit.edu.cn',
 		ebook: 'ebook.hep.com.cn',
 		zjjd: 'www.zjjd.cn',
+		keledge: 'www.keledge.com',
 	};
 	const {
 		host,
@@ -283,6 +285,9 @@
 			select = "#pdf-render .item";
 			selectPages = ".precess";
 			dom = u.query('#pdf-render > div');
+		} else if (host.includes(domain.keledge)) {
+			select = ".pdf-main .pdfViewer";
+			selectPages = ".precess";
 		}
 		u.gui(btns);
 		console.log('文件名称：', title);
@@ -446,6 +451,8 @@
 			canvas = await MF_ImageToBase64(els.src);
 		} else if (host.includes(domain.zjjd)) {
 			canvas = await MF_ImageToCanvas(els);
+		} else if (host.includes(domain.keledge)) {
+			canvas = els;
 		}
 		doc.addPage();
 		doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
@@ -541,9 +548,25 @@
 				}
 			} else if (host.includes(domain.zjjd)) {
 				const img = node.querySelector('img')
-				if (isVisible(node) && img && imageComplete(img) ) {
+				if (isVisible(node) && img && imageComplete(img)) {
 					// 保存
 					await saveImagePDF(img, k_page_no)
+					// 滚动到下一个范围
+					if (k_page_no !== length - 1) {
+						nodes[k_page_no + 1].scrollIntoView({
+							behavior: "smooth"
+						});
+					}
+				} else {
+					nodes[k_page_no].scrollIntoView({
+						behavior: "smooth"
+					});
+				}
+			} else if (host.includes(domain.keledge)) {
+				const canvas = node.querySelector('canvas')
+				if (isVisible(node) && node.style.length && canvas) {
+					// 保存
+					await saveImagePDF(canvas, k_page_no)
 					// 滚动到下一个范围
 					if (k_page_no !== length - 1) {
 						nodes[k_page_no + 1].scrollIntoView({
@@ -628,8 +651,8 @@
 			resolve(canvas)
 		})
 	}
-	
-	const MF_NodeToCanvas = (node)=>{
+
+	const MF_NodeToCanvas = (node) => {
 		return new Promise((resolve) => {
 			html2canvas(node, {
 				useCORS: true,
