@@ -214,6 +214,7 @@
 		ebook: 'ebook.hep.com.cn',
 		zjjd: 'www.zjjd.cn',
 		keledge: 'www.keledge.com',
+		elib: 'www.elib.link',
 	};
 	const {
 		host,
@@ -265,7 +266,6 @@
 		dom = document.documentElement || document.body;
 		if (host.includes(domain.wqxuetang) || host.includes(domain.nlibvpn)) {
 			select = "#pagebox .page-lmg";
-			selectPages = ".page-head-tol";
 			observeClassName = "page-lmg";
 			dom = u.query('#scroll');
 		} else if (host.includes(domain.ebook)) {
@@ -278,16 +278,16 @@
 				return;
 			}
 			select = ".pdf-main .pdf-page";
-			selectPages = ".toolbar-process";
 			observeClassName = "pdf-reader";
 			dom = u.query('#viewerContainer');
 		} else if (host.includes(domain.zjjd)) {
 			select = "#pdf-render .item";
-			selectPages = ".precess";
 			dom = u.query('#pdf-render > div');
 		} else if (host.includes(domain.keledge)) {
 			select = ".pdf-main .pdfViewer";
-			selectPages = ".precess";
+		} else if (host.includes(domain.elib)) {
+			select = "#virtual .listitem";
+			dom = u.query('#virtual')
 		}
 		u.gui(btns);
 		console.log('文件名称：', title);
@@ -512,72 +512,39 @@
 			});
 			return;
 		}
-
+		let conditions = false;
+		let currentNode = undefined;
 		try {
 			const node = nodes[k_page_no];
 			if (host.includes(domain.wqxuetang) || host.includes(domain.nlibvpn)) {
-				if (nodeComplete(node.children)) {
-					// 保存
-					await saveImagePDF(node, k_page_no)
-					// 滚动到下一个范围
-					if (k_page_no !== length - 1) {
-						nodes[k_page_no + 1].scrollIntoView({
-							behavior: "smooth"
-						});
-					}
-				} else {
-					nodes[k_page_no].scrollIntoView({
-						behavior: "smooth"
-					});
-				}
+				conditions = nodeComplete(node.children);
+				currentNode = node;
 			} else if (host.includes(domain.ebook)) {
 				const img = node.querySelector('img')
-				if (isVisible(node) && img) {
-					// 保存
-					await saveImagePDF(img, k_page_no)
-					// 滚动到下一个范围
-					if (k_page_no !== length - 1) {
-						nodes[k_page_no + 1].scrollIntoView({
-							behavior: "smooth"
-						});
-					}
-				} else {
-					nodes[k_page_no].scrollIntoView({
-						behavior: "smooth"
-					});
-				}
+				conditions = isVisible(node) && img;
+				currentNode = img;
 			} else if (host.includes(domain.zjjd)) {
 				const img = node.querySelector('img')
-				if (isVisible(node) && img && imageComplete(img)) {
-					// 保存
-					await saveImagePDF(img, k_page_no)
-					// 滚动到下一个范围
-					if (k_page_no !== length - 1) {
-						nodes[k_page_no + 1].scrollIntoView({
-							behavior: "smooth"
-						});
-					}
-				} else {
-					nodes[k_page_no].scrollIntoView({
-						behavior: "smooth"
-					});
-				}
+				conditions = isVisible(node) && img && imageComplete(img)
+				currentNode = img;
 			} else if (host.includes(domain.keledge)) {
 				const canvas = node.querySelector('canvas')
-				if (isVisible(node) && node.style.length && canvas) {
-					// 保存
-					await saveImagePDF(canvas, k_page_no)
-					// 滚动到下一个范围
-					if (k_page_no !== length - 1) {
-						nodes[k_page_no + 1].scrollIntoView({
-							behavior: "smooth"
-						});
-					}
-				} else {
-					nodes[k_page_no].scrollIntoView({
+				conditions = isVisible(node) && node.style.length && canvas
+				currentNode = canvas;
+			} 
+			if (conditions && currentNode) {
+				// 保存
+				await saveImagePDF(currentNode, k_page_no)
+				// 滚动到下一个范围
+				if (k_page_no !== length - 1) {
+					nodes[k_page_no + 1].scrollIntoView({
 						behavior: "smooth"
 					});
 				}
+			} else {
+				nodes[k_page_no].scrollIntoView({
+					behavior: "smooth"
+				});
 			}
 			u.preview(k_page_no, length);
 		} catch (e) {
