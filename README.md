@@ -70,7 +70,6 @@
 | [自然标准](http://www.nrsis.org.cn/portal/xxcx/std) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |           [飞书](https://www.feishu.cn/)            |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |  ✔️部分   |    ❌    |    ❌     |
 | [交通标准](http://www.jtysbz.cn/ysbz/fg/index.html) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
-|      [先晓书院](https://xianxiao.ssap.com.cn/)      |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
 |          [江苏计量](http://www.jsjlw.com)           |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |          [水利部](http://gjkj.mwr.gov.cn)           |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 
@@ -149,12 +148,13 @@
 
 最新版本
 
-- 2024/07/24 `v4.2` 豆丁优化，从指定页码开始预览
+- 2024/07/30 `v4.3` 移除先晓书院，迁至 kill-e-book
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/07/24 </span><code>v4.2</code><span>豆丁优化，从指定页码开始预览</span></li>
     <li><span>2024/07/23 </span><code>v4.1</code><span>优化道客，删除记住页码功能</span></li>
     <li><span>2024/07/23 </span><code>v4.0</code><span>新增江苏计量、水利部。JJB 协议修改 https</span></li>
     <li><span>2024/07/11 </span><code>v3.9</code><span>道客空页面优化，支持从指定页码开始预览。</span></li>
