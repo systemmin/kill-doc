@@ -2,14 +2,15 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.0.7
-// @description  文泉书局(bit)|高教书苑|中教经典|可知等公开免费电子书下载
+// @version      1.0.8
+// @description  文泉书局(bit)|高教书苑|中教经典|可知|可知|先晓书院等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
 // @match        https://nlibvpn.bit.edu.cn/*/*/deep/read/pdf?bid=*
 // @match        https://ebook.hep.com.cn/index.html*
 // @match        https://www.zjjd.cn/read-book*
 // @match        https://www.keledge.com/pdfReader*
+// @match        https://xianxiao.ssap.com.cn/readerpdf/static/pdf/web/*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -215,6 +216,7 @@
 		zjjd: 'www.zjjd.cn',
 		keledge: 'www.keledge.com',
 		elib: 'www.elib.link',
+		xianxiao: 'xianxiao.ssap.com.cn',
 	};
 	const {
 		host,
@@ -288,6 +290,9 @@
 		} else if (host.includes(domain.elib)) {
 			select = "#virtual .listitem";
 			dom = u.query('#virtual')
+		} else if (host.includes(domain.xianxiao)) {
+			select = "#viewer .page";
+			dom = u.query('#viewerContainer');
 		}
 		u.gui(btns);
 		console.log('文件名称：', title);
@@ -453,6 +458,8 @@
 			canvas = await MF_ImageToCanvas(els);
 		} else if (host.includes(domain.keledge)) {
 			canvas = els;
+		} else if (host.includes(domain.xianxiao)) {
+			canvas = els;
 		}
 		doc.addPage();
 		doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
@@ -531,7 +538,11 @@
 				const canvas = node.querySelector('canvas')
 				conditions = isVisible(node) && node.style.length && canvas
 				currentNode = canvas;
-			} 
+			} else if (host.includes(domain.xianxiao)) {
+				const canvas = node.querySelector('canvas')
+				conditions = isVisible(node) && canvas
+				currentNode = canvas;
+			}
 			if (conditions && currentNode) {
 				// 保存
 				await saveImagePDF(currentNode, k_page_no)
