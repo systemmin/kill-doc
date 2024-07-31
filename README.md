@@ -72,6 +72,7 @@
 | [交通标准](http://www.jtysbz.cn/ysbz/fg/index.html) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
 |          [江苏计量](http://www.jsjlw.com)           |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |          [水利部](http://gjkj.mwr.gov.cn)           |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+|    [招投标](https://bulletin.cebpubservice.com/)    |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
 
 之前支持后来移除的平台请移步 [kill-e-book](https://greasyfork.org/zh-CN/scripts/497405-kill-e-book) 电子书下载脚本
 
@@ -140,20 +141,24 @@
 
 支持 `PDF`、`PPTX`、`DOCX`、`XLSX` 、`TXT` 等格式文件。xlsx下载HTML格式需要浏览器打开复制再粘贴到excel中就可以了（保持原始格式）
 
-
 阅读方式切换“**原貌阅读**”，点击右侧第6个按钮**适配页面**（可下载高清PDF），也可以通过 `+` `-` 调整合适的大小。遇到点击“自动预览”马上又停止了，点击停止预览再点击自动预览或F5刷新。
+
+### 招投标
+
+在文当预览页面有右侧第一个链接 **原始发布地址** ，点击进行预览下载。
 
 
 ## 历史
 
 最新版本
 
-- 2024/07/30 `v4.3` 移除先晓书院，迁至 kill-e-book
+- 2024/07/31 `v4.5` 新增 招投标
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/07/30 </span><code>v4.3</code><span>移除先晓书院，迁至 kill-e-book</span></li>
     <li><span>2024/07/24 </span><code>v4.2</code><span>豆丁优化，从指定页码开始预览</span></li>
     <li><span>2024/07/23 </span><code>v4.1</code><span>优化道客，删除记住页码功能</span></li>
     <li><span>2024/07/23 </span><code>v4.0</code><span>新增江苏计量、水利部。JJB 协议修改 https</span></li>
@@ -209,6 +214,7 @@
 	<li><span>2024/02/01 </span><code>v0.2</code><span> 初版发布</span></li>
 	</ul>
 </details>
+
 
 ## 贡献
 

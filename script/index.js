@@ -2,8 +2,8 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      4.3
-// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部等公开免费文档下载
+// @version      4.5
+// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
 // @match        https://*.renrendoc.com/*
@@ -38,6 +38,7 @@
 // @match        http://www.jtysbz.cn:8009/pdf/viewer/*
 // @match        https://www.nssi.org.cn/cssn/js/pdfjs/web/preview.jsp*
 // @match        https://online.71nc.cn/*
+// @match        https://bulletin.cebpubservice.com/resource/ceb/js/pdfjs-dist/web/viewer.html*
 // @match        http://121.36.94.83:9008/jsp/yishenqing/appladd/biaozhunfile/flash/previewImg.jsp*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
@@ -52,7 +53,6 @@
 // @grant        unsafeWindow
 // @license      Apache-2.0
 // ==/UserScript==
-
 (function() {
 	'use strict';
 	let MF =
@@ -70,6 +70,7 @@
 		writable: false,
 		configurable: false
 	});
+
 
 	/**
 	 * @description 添加 URL 到本地缓存
@@ -317,6 +318,7 @@
 		jtysbz: 'jtysbz.cn',
 		jsjlw: 'online.71nc.cn',
 		mwr: '121.36.94.83:9008',
+		cebpubservice: 'bulletin.cebpubservice.com',
 	};
 	const {
 		host,
@@ -776,12 +778,12 @@
 				btns.splice(1, 5);
 				btns.push(new Box('get-build', '打包下载', 'buildDown()'))
 			}
-		} else if (host.includes(domain.jtysbz)) {
+		} else if (host.includes(domain.jtysbz) || host.includes(domain.cebpubservice)) {
 			fileType = "pdf";
 			select = "#viewer .page";
 			btns.splice(1, 0, new Box('speed', '500'));
 			btns.push(new Box('get-text', '获取文本', 'fullText()'))
-		}  else if (host.includes(domain.jsjlw)) {
+		} else if (host.includes(domain.jsjlw)) {
 			fileType = "pdf";
 			select = "#ctn img";
 			dom = u.query('#ctn');
@@ -919,7 +921,8 @@
 		}
 		if (host.includes(domain.mbalib) ||
 			host.includes(domain.feishu) ||
-			host.includes(domain.jtysbz) ) {
+			host.includes(domain.cebpubservice) ||
+			host.includes(domain.jtysbz)) {
 			localStorage.setItem('start', '1');
 			localStorage.removeItem('SP_index')
 			dom.scrollTop = 0;
@@ -1037,7 +1040,8 @@
 				}
 			} else if (host.includes(domain.mbalib) ||
 				host.includes(domain.feishu) ||
-				host.includes(domain.jtysbz) 
+				host.includes(domain.cebpubservice) ||
+				host.includes(domain.jtysbz)
 			) {
 				conditionDownload();
 			} else if (
@@ -1476,7 +1480,8 @@
 				// 添加PDF
 				// 794px*1123px ;
 				doc.addPage([canvas.width * pdf_ratio, canvas.height * pdf_ratio], 'l');
-				doc.addImage(canvas, 'JPEG', 0, 0, canvas.width * pdf_ratio, canvas.height *
+				doc.addImage(canvas, 'JPEG', 0, 0, canvas.width * pdf_ratio, canvas
+					.height *
 					pdf_ratio, max_index + "_" + a_len, 'FAST')
 				if (max_index === 1) {
 					doc.deletePage(1);
@@ -1487,7 +1492,8 @@
 		if (a_len === 0) {
 			try {
 				const detail = bgs.map((item, i) => {
-					return zipWriter.add(max_index + "/" + i + ".png", new zip.HttpReader(item));
+					return zipWriter.add(max_index + "/" + i + ".png", new zip.HttpReader(
+						item));
 				});
 				await Promise.all(detail);
 				zipWriter.add(max_index + "/" + "文本描述.txt", new zip.TextReader(current.innerText));
@@ -1573,7 +1579,8 @@
 				// 添加PDF
 				// 794px*1123px ;
 				doc.addPage([canvas.width * pdf_ratio, canvas.height * pdf_ratio], 'l');
-				doc.addImage(data, 'JPEG', 0, 0, canvas.width * pdf_ratio, canvas.height *
+				doc.addImage(data, 'JPEG', 0, 0, canvas.width * pdf_ratio, canvas
+					.height *
 					pdf_ratio, max_index + "_" + a_len, 'FAST')
 				if (max_index === 1) {
 					doc.deletePage(1);
@@ -1586,7 +1593,8 @@
 		if (a_len === 0) {
 			try {
 				const detail = bgs.map((item, i) => {
-					return zipWriter.add(max_index + "/" + i + ".png", new zip.HttpReader(item));
+					return zipWriter.add(max_index + "/" + i + ".png", new zip.HttpReader(
+						item));
 				});
 				await Promise.all(detail);
 				zipWriter.add(max_index + "/" + "文本描述.txt", new zip.TextReader(current.innerText));
@@ -1758,7 +1766,8 @@
 				} = await MF_ImageToBase64(src);
 				if (fileType.includes('ppt') || width > height) {
 					doc.addPage([width * pdf_ratio, height * pdf_ratio], 'l');
-					doc.addImage(uint8, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, index, 'FAST')
+					doc.addImage(uint8, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, index,
+						'FAST')
 				} else {
 					doc.addPage();
 					doc.addImage(uint8, 'JPEG', 0, 0, pdf_w, pdf_h, index, 'FAST')
@@ -1941,7 +1950,8 @@
 
 		} else if (host.includes(domain.mbalib) ||
 			host.includes(domain.feishu) ||
-			host.includes(domain.jtysbz) ) {
+			host.includes(domain.cebpubservice) ||
+			host.includes(domain.jtysbz)) {
 			const texts = JSON.parse(localStorage.getItem("SP_text")) || []
 			for (let i = 0; i < texts.length; i++) {
 				let t = texts[i];
