@@ -2,8 +2,8 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      4.5
-// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标等公开免费文档下载
+// @version      4.6
+// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标|能源标准等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
 // @match        https://*.renrendoc.com/*
@@ -38,6 +38,7 @@
 // @match        http://www.jtysbz.cn:8009/pdf/viewer/*
 // @match        https://www.nssi.org.cn/cssn/js/pdfjs/web/preview.jsp*
 // @match        https://online.71nc.cn/*
+// @match        http://114.251.111.103:18080/kfs/file/read/*
 // @match        https://bulletin.cebpubservice.com/resource/ceb/js/pdfjs-dist/web/viewer.html*
 // @match        http://121.36.94.83:9008/jsp/yishenqing/appladd/biaozhunfile/flash/previewImg.jsp*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
@@ -52,6 +53,8 @@
 // @grant       GM_notification
 // @grant        unsafeWindow
 // @license      Apache-2.0
+// @downloadURL https://update.greasyfork.org/scripts/486211/%E3%80%90%E6%9C%80%E5%BC%BA%E6%97%A0%E5%A5%97%E8%B7%AF%E8%84%9A%E6%9C%AC%E3%80%91%E4%BD%A0%E8%83%BD%E7%9C%8B%E8%A7%81%E5%A4%9A%E5%B0%91%E6%88%91%E8%83%BD%E4%B8%8B%E8%BD%BD%E5%A4%9A%E5%B0%91%E4%B8%8B%E8%BD%BD%E5%85%AC%E5%BC%80%E5%85%8D%E8%B4%B9%E7%9A%84PPT%E3%80%81PDF%E3%80%81DOC%E3%80%81TXT%E7%AD%89%E6%96%87%E4%BB%B6.user.js
+// @updateURL https://update.greasyfork.org/scripts/486211/%E3%80%90%E6%9C%80%E5%BC%BA%E6%97%A0%E5%A5%97%E8%B7%AF%E8%84%9A%E6%9C%AC%E3%80%91%E4%BD%A0%E8%83%BD%E7%9C%8B%E8%A7%81%E5%A4%9A%E5%B0%91%E6%88%91%E8%83%BD%E4%B8%8B%E8%BD%BD%E5%A4%9A%E5%B0%91%E4%B8%8B%E8%BD%BD%E5%85%AC%E5%BC%80%E5%85%8D%E8%B4%B9%E7%9A%84PPT%E3%80%81PDF%E3%80%81DOC%E3%80%81TXT%E7%AD%89%E6%96%87%E4%BB%B6.meta.js
 // ==/UserScript==
 (function() {
 	'use strict';
@@ -313,6 +316,7 @@
 		sacinfo: 'hbba.sacinfo.org.cn',
 		qzoffice: 'www.qzoffice.com',
 		nrsis: 'www.nrsis.org.cn',
+        nea: '114.251.111.103:18080',
 		nssi: 'www.nssi.org.cn',
 		feishu: 'feishu.cn',
 		jtysbz: 'jtysbz.cn',
@@ -761,6 +765,9 @@
 		} else if (host.includes(domain.nrsis)) {
 			fileType = "pdf";
 			select = ".page canvas";
+        } else if (host.includes(domain.nea)) {
+			fileType = "pdf";
+			select = ".page canvas";
 		} else if (host.includes(domain.nssi)) {
 			title = document.title,
 				fileType = "pdf";
@@ -955,6 +962,7 @@
 			} else if (host.includes(domain.jjg)) {
 				scrollPageAreaJJG()
 			} else if (host.includes(domain.nrsis) ||
+                host.includes(domain.nea) ||
 				host.includes(domain.nssi) ||
 				host.includes(domain.mwr) ||
 				host.includes(domain.jsjlw)
@@ -1048,6 +1056,7 @@
 				host.includes(domain.doc88) ||
 				host.includes(domain.taodocs) ||
 				host.includes(domain.nrsis) ||
+                host.includes(domain.nea) ||
 				host.includes(domain.nssi)
 
 			) {
