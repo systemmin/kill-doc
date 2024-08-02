@@ -52,3 +52,6 @@ https://jjg.spc.org.cn/resmea/view/stdonline
 
 https://bulletin.cebpubservice.com/biddingBulletin/2024-07-31/13549627.html
 https://bulletin.cebpubservice.com/biddingBulletin/2024-07-31/13554923.html
+
+能源标准化信息平台
+http://114.251.111.103:18080/kfs/file/read/4d7004fcb57661b40249ba05da3bc52f
