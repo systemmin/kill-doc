@@ -73,6 +73,7 @@
 |          [江苏计量](http://www.jsjlw.com)           |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |          [水利部](http://gjkj.mwr.gov.cn)           |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |    [招投标](https://bulletin.cebpubservice.com/)    |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
+| [能源标准](http://114.251.111.103:18080/zxd/portal) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 
 之前支持后来移除的平台请移步 [kill-e-book](https://greasyfork.org/zh-CN/scripts/497405-kill-e-book) 电子书下载脚本
 
@@ -152,12 +153,13 @@
 
 最新版本
 
-- 2024/07/31 `v4.5` 新增 招投标
+- 2024/08/02 `v4.6` 新增 能源标准
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/07/31 </span><code>v4.5</code><span>新增 招投标</span></li>
     <li><span>2024/07/30 </span><code>v4.3</code><span>移除先晓书院，迁至 kill-e-book</span></li>
     <li><span>2024/07/24 </span><code>v4.2</code><span>豆丁优化，从指定页码开始预览</span></li>
     <li><span>2024/07/23 </span><code>v4.1</code><span>优化道客，删除记住页码功能</span></li>
@@ -214,11 +216,15 @@
 	<li><span>2024/02/01 </span><code>v0.2</code><span> 初版发布</span></li>
 	</ul>
 </details>
-
-
 ## 贡献
 
 我们欢迎任何形式的贡献，包括报告问题、提出建议、提交代码或文档。请参考[贡献指南](https://github.com/systemmin/kill-doc/issues)了解如何参与贡献。
+
+*感谢💪所有贡献者*
+
+<a href="https://github.com/kristyzhy" target="_blank" rel="noopener">
+<img width="50px" src="https://avatars.githubusercontent.com/u/27731955?s=50" style="max-width: 100%;">
+</a>
 
 ## 授权
 

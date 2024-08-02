@@ -316,7 +316,7 @@
 		sacinfo: 'hbba.sacinfo.org.cn',
 		qzoffice: 'www.qzoffice.com',
 		nrsis: 'www.nrsis.org.cn',
-        nea: '114.251.111.103:18080',
+		nea: '114.251.111.103:18080',
 		nssi: 'www.nssi.org.cn',
 		feishu: 'feishu.cn',
 		jtysbz: 'jtysbz.cn',
@@ -765,7 +765,7 @@
 		} else if (host.includes(domain.nrsis)) {
 			fileType = "pdf";
 			select = ".page canvas";
-        } else if (host.includes(domain.nea)) {
+		} else if (host.includes(domain.nea)) {
 			fileType = "pdf";
 			select = ".page canvas";
 		} else if (host.includes(domain.nssi)) {
@@ -962,7 +962,7 @@
 			} else if (host.includes(domain.jjg)) {
 				scrollPageAreaJJG()
 			} else if (host.includes(domain.nrsis) ||
-                host.includes(domain.nea) ||
+				host.includes(domain.nea) ||
 				host.includes(domain.nssi) ||
 				host.includes(domain.mwr) ||
 				host.includes(domain.jsjlw)
@@ -1056,7 +1056,7 @@
 				host.includes(domain.doc88) ||
 				host.includes(domain.taodocs) ||
 				host.includes(domain.nrsis) ||
-                host.includes(domain.nea) ||
+				host.includes(domain.nea) ||
 				host.includes(domain.nssi)
 
 			) {
