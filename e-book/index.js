@@ -2,8 +2,8 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.0.8
-// @description  文泉书局(bit)|高教书苑|中教经典|可知|可知|先晓书院等公开免费电子书下载
+// @version      1.0.9
+// @description  文泉书局(bit)|高教书苑|中教经典|可知|可知|先晓书院|工程科技(校)等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
 // @match        https://nlibvpn.bit.edu.cn/*/*/deep/read/pdf?bid=*
@@ -11,6 +11,8 @@
 // @match        https://www.zjjd.cn/read-book*
 // @match        https://www.keledge.com/pdfReader*
 // @match        https://xianxiao.ssap.com.cn/readerpdf/static/pdf/web/*
+// @match        https://ersp.lib.whu.edu.cn/*
+// @match        https://dcd.cmpkgs.com/*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -217,6 +219,8 @@
 		keledge: 'www.keledge.com',
 		elib: 'www.elib.link',
 		xianxiao: 'xianxiao.ssap.com.cn',
+		ersp: 'ersp.lib.whu.edu.cn',
+		cmpkgs: 'dcd.cmpkgs.com',
 	};
 	const {
 		host,
@@ -259,7 +263,7 @@
 	 * @author Mr.Fang
 	 * @time 2024年2月2日
 	 */
-	const init = () => {
+	const MF_init = () => {
 		console.table({
 			host,
 			href,
@@ -293,13 +297,24 @@
 		} else if (host.includes(domain.xianxiao)) {
 			select = "#viewer .page";
 			dom = u.query('#viewerContainer');
+		} else if (host.includes(domain.ersp)) {
+			// 重置链接 
+			const SkuExternalId = params.get('SkuExternalId')
+			if (SkuExternalId) {
+				const target = href.replaceAll('ersp.lib.whu.edu.cn/s/com/cmpkgs/dcd/G.https',
+					'dcd.cmpkgs.com');
+				window.location.href = target;
+			}
+			return;
+		} else if (host.includes(domain.cmpkgs)) {
+			select = ".pdf-main .pdf-page";
 		}
 		u.gui(btns);
 		console.log('文件名称：', title);
 	}
 
 
-	const loginfo = () => {
+	const MF_loginfo = () => {
 		console.log('k_page_size', localStorage.getItem('k_page_size'))
 		console.log('k_page_no', localStorage.getItem('k_page_no'))
 		console.log('k_count', localStorage.getItem('k_count'))
@@ -308,20 +323,32 @@
 
 
 	// load 事件
-	document.onreadystatechange = function() {
-		if (document.readyState === "complete") {
-			init()
-			const k_start = localStorage.getItem('k_start');
-			k_count = Number(localStorage.getItem('k_count')) || 0;
-			k_page_size = Number(localStorage.getItem('k_page_size')) || 0;
-			if (k_start) {
-				setTimeout(() => {
-					autoPreview();
-				}, 2000)
-			}
-			loginfo()
+	(() => {
+		MF_init()
+		const k_start = localStorage.getItem('k_start');
+		k_count = Number(localStorage.getItem('k_count')) || 0;
+		k_page_size = Number(localStorage.getItem('k_page_size')) || 0;
+		if (k_start) {
+			setTimeout(() => {
+				autoPreview();
+			}, 2000)
 		}
-	};
+		MF_loginfo()
+	})()
+	// document.onreadystatechange = function() {
+	// 	if (document.readyState === "complete") {
+	// 		init()
+	// 		const k_start = localStorage.getItem('k_start');
+	// 		k_count = Number(localStorage.getItem('k_count')) || 0;
+	// 		k_page_size = Number(localStorage.getItem('k_page_size')) || 0;
+	// 		if (k_start) {
+	// 			setTimeout(() => {
+	// 				autoPreview();
+	// 			}, 2000)
+	// 		}
+	// 		loginfo()
+	// 	}
+	// };
 
 
 	/**
@@ -460,6 +487,8 @@
 			canvas = els;
 		} else if (host.includes(domain.xianxiao)) {
 			canvas = els;
+		} else if (host.includes(domain.cmpkgs)) {
+			canvas = els
 		}
 		doc.addPage();
 		doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
@@ -542,6 +571,10 @@
 				const canvas = node.querySelector('canvas')
 				conditions = isVisible(node) && canvas
 				currentNode = canvas;
+			} else if (host.includes(domain.cmpkgs)) {
+				const canvas = node.querySelector('canvas')
+				conditions = isVisible(node) && canvas
+				currentNode = canvas;
 			}
 			if (conditions && currentNode) {
 				// 保存
@@ -566,7 +599,7 @@
 			})
 			return;
 		}
-		loginfo()
+		MF_loginfo()
 
 		if (k_page_no !== length) { // 继续执行
 			setTimeout(async () => {
