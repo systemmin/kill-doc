@@ -2,8 +2,8 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.0.9
-// @description  文泉书局(bit)|高教书苑|中教经典|可知|可知|先晓书院|工程科技(校)等公开免费电子书下载
+// @version      1.1.0
+// @description  文泉书局(bit)|高教书苑|中教经典|可知|可知|先晓书院|工程科技(校)|悦读(校)等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
 // @match        https://nlibvpn.bit.edu.cn/*/*/deep/read/pdf?bid=*
@@ -13,6 +13,7 @@
 // @match        https://xianxiao.ssap.com.cn/readerpdf/static/pdf/web/*
 // @match        https://ersp.lib.whu.edu.cn/*
 // @match        https://dcd.cmpkgs.com/*
+// @match        https://sso.zslib.cn/*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -221,6 +222,7 @@
 		xianxiao: 'xianxiao.ssap.com.cn',
 		ersp: 'ersp.lib.whu.edu.cn',
 		cmpkgs: 'dcd.cmpkgs.com',
+		zslib: 'sso.zslib.cn',
 	};
 	const {
 		host,
@@ -308,6 +310,12 @@
 			return;
 		} else if (host.includes(domain.cmpkgs)) {
 			select = ".pdf-main .pdf-page";
+		}else if (host.includes(domain.zslib)) {
+			if(!href.includes('pdfReader')){
+				return;
+			}
+			select = "#canvas_box .pdf_box";
+			dom = u.query('.pdf_reader');
 		}
 		u.gui(btns);
 		console.log('文件名称：', title);
@@ -487,7 +495,7 @@
 			canvas = els;
 		} else if (host.includes(domain.xianxiao)) {
 			canvas = els;
-		} else if (host.includes(domain.cmpkgs)) {
+		} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib)) {
 			canvas = els
 		}
 		doc.addPage();
@@ -571,7 +579,7 @@
 				const canvas = node.querySelector('canvas')
 				conditions = isVisible(node) && canvas
 				currentNode = canvas;
-			} else if (host.includes(domain.cmpkgs)) {
+			} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib)) {
 				const canvas = node.querySelector('canvas')
 				conditions = isVisible(node) && canvas
 				currentNode = canvas;
