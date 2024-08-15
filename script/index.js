@@ -2,7 +2,7 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      4.6
+// @version      4.7
 // @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标|能源标准等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
@@ -1184,9 +1184,13 @@
 			target_w = pdf_h;
 		}
 		if (natural) {
+			target_h = height * pdf_ratio;
+			target_w = width * pdf_ratio;
+		} else {
 			target_h = target_h * pdf_ratio;
 			target_w = target_w * pdf_ratio;
 		}
+
 		zipWriter.add(`${i}.png`, new zip.BlobReader(blob));
 		doc.addPage([target_w, target_h], dir);
 		doc.addImage(imageData, 'JPEG', 0, 0, target_w, target_h, i, 'FAST')
@@ -1435,18 +1439,7 @@
 				width,
 				height
 			} = await MF_CanvasToBase64(item);
-			let fileName = i + ".png";
-			zipWriter.add(fileName, new zip.BlobReader(blob));
-			if (width > height) { // 横着
-				doc.addPage([pdf_h, pdf_w], 'l');
-				doc.addImage(images[i], 'JPEG', 0, 0, pdf_h, pdf_w, i, 'FAST')
-			} else { // 竖着
-				doc.addPage([pdf_w, pdf_h], 'p');
-				doc.addImage(images[i], 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
-			}
-			if (i === 1) {
-				doc.deletePage(1);
-			}
+			saveImageAndPDF(item, blob, i, width, height, host.includes(domain.doc88))
 			await u.preview(i + 1, length);
 		}
 		console.log('处理完成', length);
