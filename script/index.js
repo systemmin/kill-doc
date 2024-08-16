@@ -1961,7 +1961,8 @@
 			}
 			localStorage.removeItem('SP_text')
 		} else if (host.includes(domain.doc88)) {
-			const texts = Core.api._VM;
+			// const texts = Core.api._VM;
+			const texts = Core.api._bf;
 			if (!texts) {
 				alert('没有文本内容')
 				return
