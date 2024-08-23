@@ -47,8 +47,8 @@ http://121.36.94.83:9008/jsp/yishenqing/appladd/biaozhunfile/flash/previewImg.js
 http://121.36.94.83:9008/jsp/yishenqing/appladd/biaozhunfile/flash/previewImg.jsp?bzMax=SL%252FT%2B534-2023
 
 JJB 
-
-https://jjg.spc.org.cn/resmea/view/stdonline
+https://jjg.spc.org.cn/resmea/standard/JJF%25202131-2024/?
+https://jjg.spc.org.cn/resmea/standard/JJF%25202111-2024/?
 
 https://bulletin.cebpubservice.com/biddingBulletin/2024-07-31/13549627.html
 https://bulletin.cebpubservice.com/biddingBulletin/2024-07-31/13554923.html
