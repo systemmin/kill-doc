@@ -74,6 +74,7 @@
 |          [水利部](http://gjkj.mwr.gov.cn)           |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |    [招投标](https://bulletin.cebpubservice.com/)    |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
 | [能源标准](http://114.251.111.103:18080/zxd/portal) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+|       [认证认可标准](http://rbtest.cnca.cn/)        |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 
 之前支持后来移除的平台请移步 [kill-e-book](https://greasyfork.org/zh-CN/scripts/497405-kill-e-book) 电子书下载脚本
 
@@ -99,6 +100,8 @@
 | （4）打包下载 | 包含html内容和txt内，在浏览器打开html方便复制到excel中       |
 
 ## 使用说明
+
+*如果下载 `PDF` 模糊，可 `下载图片`自行合并*
 
 ### 百度文库
 
@@ -153,12 +156,13 @@
 
 最新版本
 
-- 2024/08/23 `v4.8` 优化JJB放大后下载
+- 2024/08/28 `v4.9` 新增 认证认可标准
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/08/23 </span><code>v4.8</code><span>优化JJB放大后下载</span></li>
     <li><span>2024/08/15 </span><code>v4.7</code><span>优化道客巴巴PDF格式问题</span></li>
     <li><span>2024/08/02 </span><code>v4.6</code><span>新增 能源标准</span></li>
     <li><span>2024/07/31 </span><code>v4.5</code><span>新增 招投标</span></li>

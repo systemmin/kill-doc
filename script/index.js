@@ -2,8 +2,8 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      4.8
-// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标|能源标准等公开免费文档下载
+// @version      4.9
+// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标|能源标准|认证认可标准等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
 // @match        https://*.renrendoc.com/*
@@ -41,6 +41,7 @@
 // @match        http://114.251.111.103:18080/kfs/file/read/*
 // @match        https://bulletin.cebpubservice.com/resource/ceb/js/pdfjs-dist/web/viewer.html*
 // @match        http://121.36.94.83:9008/jsp/yishenqing/appladd/biaozhunfile/flash/previewImg.jsp*
+// @match        http://rbtest.cnca.cn/cnca_kfs/file/read/*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -323,6 +324,7 @@
 		jsjlw: 'online.71nc.cn',
 		mwr: '121.36.94.83:9008',
 		cebpubservice: 'bulletin.cebpubservice.com',
+		rbtest: 'rbtest.cnca.cn',
 	};
 	const {
 		host,
@@ -799,6 +801,9 @@
 			fileType = "pdf";
 			select = "#imgdiv img";
 			title = u.query('.left_titile').innerText;
+		}else if (host.includes(domain.rbtest)) {
+			fileType = "pdf";
+			select = ".page canvas";
 		}
 		const query = u.query("#btn_ppt_front_pc"); // 原创
 		if (!query) {
@@ -966,7 +971,8 @@
 				host.includes(domain.nea) ||
 				host.includes(domain.nssi) ||
 				host.includes(domain.mwr) ||
-				host.includes(domain.jsjlw)
+				host.includes(domain.jsjlw) || 
+				host.includes(domain.rbtest) 
 			) {
 				scrollWinArea()
 			}
@@ -1058,7 +1064,8 @@
 				host.includes(domain.taodocs) ||
 				host.includes(domain.nrsis) ||
 				host.includes(domain.nea) ||
-				host.includes(domain.nssi)
+				host.includes(domain.nssi) ||
+				host.includes(domain.rbtest) 
 
 			) {
 				await imageToBase64()
@@ -1449,7 +1456,7 @@
 				width,
 				height
 			} = await MF_CanvasToBase64(item);
-			saveImageAndPDF(item, blob, i, width, height, host.includes(domain.doc88))
+			saveImageAndPDF(item, blob, i, width, height, host.includes(domain.doc88) || host.includes(domain.rbtest))
 			await u.preview(i + 1, length);
 		}
 		console.log('处理完成', length);
