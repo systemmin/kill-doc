@@ -2,7 +2,7 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      4.7
+// @version      4.8
 // @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标|能源标准等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
@@ -748,7 +748,8 @@
 			select = "#viewer .page";
 		} else if (host.includes(domain.jjg)) {
 			fileType = ".pdf";
-			select = "#docViewer_ViewContainer .fwr-page-image img";
+			select = "#docViewer_ViewContainer .fwr-page-invisible";
+			// select = "#docViewer_ViewContainer .fwr-page-image img";
 		} else if (host.includes(domain.shengtongedu)) {
 			fileType = "ppt";
 		} else if (host.includes(domain.sacinfo)) {
@@ -1076,8 +1077,11 @@
 				await downimg()
 			} else if (host.includes(domain.gb688)) {
 				await downBgImg();
-			} else if (host.includes(domain.jjg) || host.includes(domain.jsjlw)) {
+			} else if (host.includes(domain.jsjlw)) {
 				await parseImage()
+			} else if (host.includes(domain.jjg)) {
+				await downloadElement()
+				conditionDownload();
 			} else if (host.includes(domain.qzoffice)) {
 				await handleQzoffice();
 				conditionDownload();
@@ -1399,13 +1403,19 @@
 	}
 
 	const scrollPageAreaJJG = () => {
-		const clientHeight = dom.clientHeight;
 		let end = 0;
+		// 放大
+		if (u.query('.fwr-rb-zoom-box input').value === '100%') {
+			u.query('.fwr-rb-bottom-zoomin').click();
+			return;
+		}
+		const pages = u.query(".fwr-rb-bottom-tabs input").value.split('/');
 		const els = u.queryAll(select);
 		const length = els.length;
-		for (let i = 0; i < length; i++) {
-			let item = els[i];
-			if (!u.attr(item, 'src')) {
+		for (let i = Number(pages[0].trim()) - 1; i < length; i++) {
+			const item = els[i];
+			const page = item.querySelector('.fwr-page-tile')
+			if (!page) {
 				end = 1;
 				u.query('.fwr-rb-bottom-page-next').click();
 				u.preview(i + 1, length);
@@ -1812,7 +1822,8 @@
 	 */
 	const downloadImage = async () => {
 		const images = [...u.queryAll(select)];
-		for (let i = 0; i < images.length; i++) {
+		const len = images.length;
+		for (let i = 0; i < len; i++) {
 			const image = images[i]
 			const canvas = await MF_ImageToCanvas(image);
 			const {
@@ -1821,6 +1832,21 @@
 				height
 			} = await MF_CanvasToBase64(canvas);
 			saveImageAndPDF(canvas, blob, i, width, height, false);
+			u.preview(i, len);
+		}
+	}
+
+	const downloadElement = async () => {
+		const nodes = u.queryAll(select + ' .fwr-page-tile');
+		const len = nodes.length;
+		for (let i = 0; i < len; i++) {
+			const node = nodes[i]
+			const {
+				blob,
+				canvas
+			} = await MF_ImageStitchingToCanvas(node);
+			saveImageAndPDF(canvas, blob, i, canvas.width, canvas.height, true);
+			u.preview(i, len);
 		}
 	}
 
@@ -2205,6 +2231,55 @@
 			}
 			image.onerror = reject;
 			image.src = fullUrl;
+		})
+	}
+
+	const MF_ImageStitchingToCanvas = (node) => {
+
+		return new Promise((resolve, reject) => {
+			try {
+				// 获取最后一个分辨率 / tiles-layer-125 分辨率/ div/ 行 div [img]
+				const children = node.lastElementChild.children;
+				const firstNode = children[0];
+				// 计算画布宽度
+				const cwidth = [...firstNode.querySelectorAll('img')].reduce((start, item) => start +
+					item.width, 0);
+				const cheight = children.length * firstNode.querySelector('img').height;
+				const canvas = u.createEl('', 'canvas');
+				canvas.width = cwidth;
+				canvas.height = cheight;
+				// 获取上下文对象
+				const ctx = canvas.getContext('2d');
+				ctx.fillStyle = "#fff";
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+				// 拼接
+				for (let i = 0; i < children.length; i++) {
+					const chils = [...children[i].querySelectorAll('img')];
+					let iw = 0;
+					for (let j = 0; j < chils.length; j++) {
+						const {
+							width,
+							height
+						} = chils[j];
+						ctx.drawImage(chils[j], iw, i * height, width, height);
+						iw += width
+					}
+				}
+				canvas.toBlob(
+					(blob) => {
+						resolve({
+							blob,
+							canvas,
+						});
+					},
+					"image/png",
+					1,
+				);
+			} catch (e) {
+				//TODO handle the exception
+				reject(e)
+			}
+
 		})
 	}
 

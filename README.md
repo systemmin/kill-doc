@@ -153,12 +153,13 @@
 
 最新版本
 
-- 2024/08/15 `v4.7` 优化道客巴巴PDF格式问题
+- 2024/08/23 `v4.8` 优化JJB放大后下载
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/08/15 </span><code>v4.7</code><span>优化道客巴巴PDF格式问题</span></li>
     <li><span>2024/08/02 </span><code>v4.6</code><span>新增 能源标准</span></li>
     <li><span>2024/07/31 </span><code>v4.5</code><span>新增 招投标</span></li>
     <li><span>2024/07/30 </span><code>v4.3</code><span>移除先晓书院，迁至 kill-e-book</span></li>
@@ -217,6 +218,7 @@
 	<li><span>2024/02/01 </span><code>v0.2</code><span> 初版发布</span></li>
 	</ul>
 </details>
+
 ## 贡献
 
 我们欢迎任何形式的贡献，包括报告问题、提出建议、提交代码或文档。请参考[贡献指南](https://github.com/systemmin/kill-doc/issues)了解如何参与贡献。
