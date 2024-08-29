@@ -2,7 +2,7 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      4.9
+// @version      5.0
 // @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标|能源标准|认证认可标准等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
@@ -801,7 +801,7 @@
 			fileType = "pdf";
 			select = "#imgdiv img";
 			title = u.query('.left_titile').innerText;
-		}else if (host.includes(domain.rbtest)) {
+		} else if (host.includes(domain.rbtest)) {
 			fileType = "pdf";
 			select = ".page canvas";
 		}
@@ -971,8 +971,8 @@
 				host.includes(domain.nea) ||
 				host.includes(domain.nssi) ||
 				host.includes(domain.mwr) ||
-				host.includes(domain.jsjlw) || 
-				host.includes(domain.rbtest) 
+				host.includes(domain.jsjlw) ||
+				host.includes(domain.rbtest)
 			) {
 				scrollWinArea()
 			}
@@ -1065,7 +1065,7 @@
 				host.includes(domain.nrsis) ||
 				host.includes(domain.nea) ||
 				host.includes(domain.nssi) ||
-				host.includes(domain.rbtest) 
+				host.includes(domain.rbtest)
 
 			) {
 				await imageToBase64()
@@ -1083,7 +1083,7 @@
 			) {
 				await downimg()
 			} else if (host.includes(domain.gb688)) {
-				await downBgImg();
+				await downloadGBImage();
 			} else if (host.includes(domain.jsjlw)) {
 				await parseImage()
 			} else if (host.includes(domain.jjg)) {
@@ -1388,6 +1388,10 @@
 	}
 
 	const scrollPageAreaDocGB = () => {
+		// 100% 预览
+		if (u.query('#scaleSelect').selectedIndex < 9) {
+			u.query('#zoomIn').click()
+		}
 		const clientHeight = dom.clientHeight;
 		let end = 0;
 		const els = u.queryAll(select);
@@ -1456,7 +1460,8 @@
 				width,
 				height
 			} = await MF_CanvasToBase64(item);
-			saveImageAndPDF(item, blob, i, width, height, host.includes(domain.doc88) || host.includes(domain.rbtest))
+			saveImageAndPDF(item, blob, i, width, height, host.includes(domain.doc88) || host.includes(
+				domain.rbtest))
 			await u.preview(i + 1, length);
 		}
 		console.log('处理完成', length);
@@ -1877,7 +1882,7 @@
 	/**
 	 * bg pdf 下载
 	 */
-	const downBgImg = async () => {
+	const downloadGBImage = async () => {
 		const els = u.queryAll(select);
 		const length = els.length;
 		for (let i = 0; i < length; i++) {
@@ -1889,21 +1894,7 @@
 			if (!blob) {
 				break;
 			}
-			const {
-				width,
-				height
-			} = canvas;
-			if (fileType.includes('ppt') || width > height) {
-				doc.addPage([width * pdf_ratio, height * pdf_ratio], 'l');
-				doc.addImage(canvas, 'JPEG', 0, 0, width * pdf_ratio, height * pdf_ratio, index, 'FAST')
-			} else {
-				doc.addPage();
-				doc.addImage(canvas, 'JPEG', 0, 0, pdf_w, pdf_h, i, 'FAST')
-			}
-			if (i === 1) {
-				doc.deletePage(1);
-			}
-			zipWriter.add(i + ".png", new zip.BlobReader(blob));
+			saveImageAndPDF(canvas, blob, i, canvas.width, canvas.height, true)
 			await u.preview(i + 1, length);
 		}
 		// 非当前域下载文件下标会多加一个数值
@@ -2175,11 +2166,9 @@
 	 */
 	const MF_ImagePositionToBase64 = (el) => {
 		const base_gb = "http://c.gb688.cn/bzgk/gb/";
-		// 父节点
-		const {
-			x,
-			y
-		} = el.getBoundingClientRect();
+		const style = el.style;
+		const cw = Number(style.width.replace('px', ''));
+		const ch = Number(style.height.replace('px', ''));
 		// 所有子节点
 		const childrens = el.children;
 		// 背景图片地址处理
@@ -2199,8 +2188,8 @@
 			image.onload = function() {
 				try {
 					let canvas = u.createEl('', 'canvas');
-					canvas.width = 1190;
-					canvas.height = 1680;
+					canvas.width = cw;
+					canvas.height = ch;
 					// 获取上下文对象
 					const ctx = canvas.getContext('2d');
 					ctx.fillStyle = "#fff";
@@ -2208,16 +2197,17 @@
 					for (var i = 0; i < childrens.length; i++) {
 						const child = childrens[i];
 						const pos = child.style.backgroundPosition.split(' ');
+						const coord = child.className.split('-');
+						const dx = Number(coord[1]);
+						const dy = Number(coord[2]);
 						const sx = Math.abs(pos[0].replace('px', ''));
 						const sy = Math.abs(pos[1].replace('px', ''));
 						const rect = child.getBoundingClientRect();
-						const dx = rect.x - x;
-						const dy = rect.y - y;
 						const {
 							width: sw,
 							height: sh
 						} = rect;
-						ctx.drawImage(image, sx, sy, sw, sh, dx, dy, sw, sh);
+						ctx.drawImage(image, sx, sy, sw, sh, dx * sw, dy * sh, sw, sh);
 						if (i === childrens.length - 1) {
 							// 转 base64 输出
 							canvas.toBlob(
