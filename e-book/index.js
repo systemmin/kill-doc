@@ -2,8 +2,8 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.1.0
-// @description  文泉书局(bit)|高教书苑|中教经典|可知|可知|先晓书院|工程科技(校)|悦读(校)等公开免费电子书下载
+// @version      1.1.1
+// @description  文泉书局(bit)|高教书苑|中教经典|可知|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
 // @match        https://nlibvpn.bit.edu.cn/*/*/deep/read/pdf?bid=*
@@ -585,23 +585,31 @@
 				const canvas = node.querySelector('canvas')
 				conditions = isVisible(node) && canvas
 				currentNode = canvas;
-			} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib) || host.includes(domain.sklib)) {
+			} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib)) {
 				const canvas = node.querySelector('canvas')
 				conditions = isVisible(node) && canvas
 				currentNode = canvas;
-			} 
+			} else if (host.includes(domain.sklib)) {
+				const canvas = node.querySelector('canvas')
+				const dataLoaded = u.attr(node, 'data-loaded')
+				if (dataLoaded && canvas) {
+					conditions = true
+					currentNode = canvas;
+				}
+
+			}
 			if (conditions && currentNode) {
 				// 保存
 				await saveImagePDF(currentNode, k_page_no)
 				// 滚动到下一个范围
 				if (k_page_no !== length - 1) {
 					nodes[k_page_no + 1].scrollIntoView({
-						behavior: "smooth", block: "start"
+						behavior: "smooth"
 					});
 				}
 			} else {
 				nodes[k_page_no].scrollIntoView({
-					behavior: "smooth", block: "start"
+					behavior: "smooth"
 				});
 			}
 			u.preview(k_page_no, length);
