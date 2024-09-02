@@ -2,7 +2,7 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      5.0
+// @version      5.1
 // @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标|能源标准|认证认可标准等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
@@ -774,8 +774,9 @@
 		} else if (host.includes(domain.nssi)) {
 			title = document.title,
 				fileType = "pdf";
-			select = ".page canvas";
+			select = "#viewer .page";
 			dom = u.query('#viewerContainer')
+			btns.splice(1, 0, new Box('speed', '500'));
 		} else if (host.includes(domain.feishu)) {
 			fileType = "pdf";
 			dom = u.query('#viewerContainer')
@@ -933,6 +934,7 @@
 			return false;
 		}
 		if (host.includes(domain.mbalib) ||
+			host.includes(domain.nssi) ||
 			host.includes(domain.feishu) ||
 			host.includes(domain.cebpubservice) ||
 			host.includes(domain.jtysbz)) {
@@ -969,7 +971,6 @@
 				scrollPageAreaJJG()
 			} else if (host.includes(domain.nrsis) ||
 				host.includes(domain.nea) ||
-				host.includes(domain.nssi) ||
 				host.includes(domain.mwr) ||
 				host.includes(domain.jsjlw) ||
 				host.includes(domain.rbtest)
@@ -1055,6 +1056,7 @@
 				}
 			} else if (host.includes(domain.mbalib) ||
 				host.includes(domain.feishu) ||
+				host.includes(domain.nssi) ||
 				host.includes(domain.cebpubservice) ||
 				host.includes(domain.jtysbz)
 			) {
@@ -1064,9 +1066,7 @@
 				host.includes(domain.taodocs) ||
 				host.includes(domain.nrsis) ||
 				host.includes(domain.nea) ||
-				host.includes(domain.nssi) ||
 				host.includes(domain.rbtest)
-
 			) {
 				await imageToBase64()
 				conditionDownload();
@@ -1198,8 +1198,8 @@
 			target_h = height * pdf_ratio;
 			target_w = width * pdf_ratio;
 		} else {
-			target_h = target_h * pdf_ratio;
-			target_w = target_w * pdf_ratio;
+			target_h = target_h;
+			target_w = target_w;
 		}
 
 		zipWriter.add(`${i}.png`, new zip.BlobReader(blob));
@@ -1224,7 +1224,7 @@
 			width,
 			height
 		} = await MF_CanvasToBase64(imageData);
-		saveImageAndPDF(imageData, blob, i, width, height)
+		saveImageAndPDF(imageData, blob, i, width, height, false)
 		//获取文本内容
 		let texts = JSON.parse(localStorage.getItem('SP_text')) || [];
 		texts.push(fileType.includes('doc') ? textLayer.innerText : textLayer.textContent);
