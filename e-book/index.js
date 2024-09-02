@@ -14,6 +14,7 @@
 // @match        https://ersp.lib.whu.edu.cn/*
 // @match        https://dcd.cmpkgs.com/*
 // @match        https://sso.zslib.cn/*
+// @match        https://www.sklib.cn/pdf_reader/index.html*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -223,6 +224,7 @@
 		ersp: 'ersp.lib.whu.edu.cn',
 		cmpkgs: 'dcd.cmpkgs.com',
 		zslib: 'sso.zslib.cn',
+		sklib: 'www.sklib.cn',
 	};
 	const {
 		host,
@@ -239,7 +241,7 @@
 	//  794 x 1123 px
 	let pdf_w = 446,
 		pdf_h = 631,
-		loading = 500, // 毫秒
+		loading = 800, // 毫秒
 		pdf_ratio = 0.56,
 		title = document.title,
 		select = null,
@@ -310,12 +312,15 @@
 			return;
 		} else if (host.includes(domain.cmpkgs)) {
 			select = ".pdf-main .pdf-page";
-		}else if (host.includes(domain.zslib)) {
-			if(!href.includes('pdfReader')){
+		} else if (host.includes(domain.zslib)) {
+			if (!href.includes('pdfReader')) {
 				return;
 			}
 			select = "#canvas_box .pdf_box";
 			dom = u.query('.pdf_reader');
+		} else if (host.includes(domain.sklib)) {
+			select = "#viewer .page";
+			dom = u.query('#viewerContainer');
 		}
 		u.gui(btns);
 		console.log('文件名称：', title);
@@ -495,7 +500,8 @@
 			canvas = els;
 		} else if (host.includes(domain.xianxiao)) {
 			canvas = els;
-		} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib)) {
+		} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib) || host.includes(domain
+				.sklib)) {
 			canvas = els
 		}
 		doc.addPage();
@@ -579,23 +585,23 @@
 				const canvas = node.querySelector('canvas')
 				conditions = isVisible(node) && canvas
 				currentNode = canvas;
-			} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib)) {
+			} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib) || host.includes(domain.sklib)) {
 				const canvas = node.querySelector('canvas')
 				conditions = isVisible(node) && canvas
 				currentNode = canvas;
-			}
+			} 
 			if (conditions && currentNode) {
 				// 保存
 				await saveImagePDF(currentNode, k_page_no)
 				// 滚动到下一个范围
 				if (k_page_no !== length - 1) {
 					nodes[k_page_no + 1].scrollIntoView({
-						behavior: "smooth"
+						behavior: "smooth", block: "start"
 					});
 				}
 			} else {
 				nodes[k_page_no].scrollIntoView({
-					behavior: "smooth"
+					behavior: "smooth", block: "start"
 				});
 			}
 			u.preview(k_page_no, length);
