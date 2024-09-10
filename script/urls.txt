@@ -60,3 +60,10 @@ http://114.251.111.103:18080/kfs/file/read/4d7004fcb57661b40249ba05da3bc52f
 认证认可标准化信息服务平台
 http://rbtest.cnca.cn/
 http://rbtest.cnca.cn/portal/stdDetail/500096
+
+GB
+画布
+https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=FAF1035088CD300F15FE1D1C0DCB56F2
+http://c.gb688.cn/bzgk/gb/showGb?type=online&hcno=FAF1035088CD300F15FE1D1C0DCB56F2
+图片
+http://c.gb688.cn/bzgk/gb/showGb?type=online&hcno=E61C3252DE0D0EC88247E9ED79AA055E

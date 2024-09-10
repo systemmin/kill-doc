@@ -131,9 +131,13 @@
    - 例如：原始地址 `https://www.example.com/p-123456.html` 改用 `https://www.example.com/p-123456.html?toImg=1` 地址访问。
    - 分页下载：先预览 100 页面，停止预览，下点下载。**刷新页面**，修改页码到100页，点击开始，继续重复上面步骤直到全部下载完成自行合并。
 
-### GB
+### GB688
+- 有两种格式
 
-要输入验证码以后才可以进行相应操作
+  * canvas 格式 ：可调整预览速率
+
+  * 图片 格式 ：要输入验证码以后才可以进行相应操作
+
 
 ### 轻竹办公
 
@@ -156,12 +160,13 @@
 
 最新版本
 
-- 2024/09/10 `v5.3` 优化 GB 遇到空白页 bug
+- 2024/09/10 `v5.4` 增加 GB 画布格式处理
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/09/10 </span><code>v5.3</code><span>优化 GB 遇到空白页 bug</span></li>
     <li><span>2024/09/10 </span><code>v5.2</code><span>优化 GB 遇到空白页 bug</span></li>
     <li><span>2024/08/02 </span><code>v5.1</code><span>优化标准观只能下载10页问题</span></li>
     <li><span>2024/08/29 </span><code>v5.0</code><span>GB优化在100%状态下预览</span></li>
