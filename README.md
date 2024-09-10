@@ -156,12 +156,16 @@
 
 最新版本
 
-- 2024/08/28 `v4.9` 新增 认证认可标准
+- 2024/09/10 `v5.3` 优化 GB 遇到空白页 bug
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/09/10 </span><code>v5.2</code><span>优化 GB 遇到空白页 bug</span></li>
+    <li><span>2024/08/02 </span><code>v5.1</code><span>优化标准观只能下载10页问题</span></li>
+    <li><span>2024/08/29 </span><code>v5.0</code><span>GB优化在100%状态下预览</span></li>
+    <li><span>2024/08/28 </span><code>v4.9</code><span>新增 认证认可标准</span></li>
     <li><span>2024/08/23 </span><code>v4.8</code><span>优化JJB放大后下载</span></li>
     <li><span>2024/08/15 </span><code>v4.7</code><span>优化道客巴巴PDF格式问题</span></li>
     <li><span>2024/08/02 </span><code>v4.6</code><span>新增 能源标准</span></li>
@@ -250,7 +254,7 @@
 
 ## 联系方式
 
-如果您有任何问题或建议或合作或定制，请通过以下方式联系我们：
+如果您有任何问题或建议或合作或定制（有偿），请通过以下方式联系我们：
 
 - 邮箱：[2441553829@qq.com](mailto:2441553829@qq.com)
 - GitHub：[kill-doc](https://github.com/systemmin/kill-doc)
