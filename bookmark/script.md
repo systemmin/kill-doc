@@ -5,3 +5,7 @@
 ```js
 javascript: const src=document.querySelector('iframe').src;const downloadUrl=src.substring(80);const target=decodeURIComponent(downloadUrl);const news=target.substring(0,target.length-9);console.log('news: ',news);window.open(news,'_blank');
 ```
+
+## 书签脚本如何使用？
+
+[谷歌书签脚本](https://dtking.cn/blog/BookmarkScript/)
