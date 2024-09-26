@@ -2,8 +2,8 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.1.1
-// @description  文泉书局(bit)|高教书苑|中教经典|可知|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库等公开免费电子书下载
+// @version      1.1.2
+// @description  文泉书局(bit)|高教书苑|中教经典|可知|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库|畅想之星等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
 // @match        https://nlibvpn.bit.edu.cn/*/*/deep/read/pdf?bid=*
@@ -15,6 +15,7 @@
 // @match        https://dcd.cmpkgs.com/*
 // @match        https://sso.zslib.cn/*
 // @match        https://www.sklib.cn/pdf_reader/index.html*
+// @match        https://www.cxstar.com/onlineepub*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -225,6 +226,7 @@
 		cmpkgs: 'dcd.cmpkgs.com',
 		zslib: 'sso.zslib.cn',
 		sklib: 'www.sklib.cn',
+		cxstar: 'www.cxstar.com',
 	};
 	const {
 		host,
@@ -321,6 +323,8 @@
 		} else if (host.includes(domain.sklib)) {
 			select = "#viewer .page";
 			dom = u.query('#viewerContainer');
+		} else if (host.includes(domain.cxstar)) {
+			select = "#epub-area .page-div-wrapper";
 		}
 		u.gui(btns);
 		console.log('文件名称：', title);
@@ -501,7 +505,7 @@
 		} else if (host.includes(domain.xianxiao)) {
 			canvas = els;
 		} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib) || host.includes(domain
-				.sklib)) {
+				.sklib) || host.includes(domain.cxstar)) {
 			canvas = els
 		}
 		doc.addPage();
@@ -585,7 +589,7 @@
 				const canvas = node.querySelector('canvas')
 				conditions = isVisible(node) && canvas
 				currentNode = canvas;
-			} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib)) {
+			} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib) || host.includes(domain.cxstar)) {
 				const canvas = node.querySelector('canvas')
 				conditions = isVisible(node) && canvas
 				currentNode = canvas;
