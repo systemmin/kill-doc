@@ -2,8 +2,8 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.1.2
-// @description  文泉书局(bit)|高教书苑|中教经典|可知|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库|畅想之星等公开免费电子书下载
+// @version      1.1.3
+// @description  文泉书局(bit)|高教书苑|中教经典|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库|畅想之星|书递等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
 // @match        https://nlibvpn.bit.edu.cn/*/*/deep/read/pdf?bid=*
@@ -16,6 +16,7 @@
 // @match        https://sso.zslib.cn/*
 // @match        https://www.sklib.cn/pdf_reader/index.html*
 // @match        https://www.cxstar.com/onlineepub*
+// @match        https://www.elib.link/pdf/*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -298,7 +299,7 @@
 		} else if (host.includes(domain.keledge)) {
 			select = ".pdf-main .pdfViewer";
 		} else if (host.includes(domain.elib)) {
-			select = "#virtual .listitem";
+			select = "#virtual [role='listitem']";
 			dom = u.query('#virtual')
 		} else if (host.includes(domain.xianxiao)) {
 			select = "#viewer .page";
@@ -352,21 +353,6 @@
 		}
 		MF_loginfo()
 	})()
-	// document.onreadystatechange = function() {
-	// 	if (document.readyState === "complete") {
-	// 		init()
-	// 		const k_start = localStorage.getItem('k_start');
-	// 		k_count = Number(localStorage.getItem('k_count')) || 0;
-	// 		k_page_size = Number(localStorage.getItem('k_page_size')) || 0;
-	// 		if (k_start) {
-	// 			setTimeout(() => {
-	// 				autoPreview();
-	// 			}, 2000)
-	// 		}
-	// 		loginfo()
-	// 	}
-	// };
-
 
 	/**
 	 * @description 前置方法
@@ -380,6 +366,8 @@
 				console.log('重新加载')
 				u.query('.reload_image').click();
 			}
+		} else if (host.includes(domain.elib)) {
+			title = document.title
 		}
 	}
 
@@ -498,7 +486,7 @@
 			canvas = await MF_ImageJoinToBlob(els);
 		} else if (host.includes(domain.ebook)) {
 			canvas = await MF_ImageToBase64(els.src);
-		} else if (host.includes(domain.zjjd)) {
+		} else if (host.includes(domain.zjjd) || host.includes(domain.elib)) {
 			canvas = await MF_ImageToCanvas(els);
 		} else if (host.includes(domain.keledge)) {
 			canvas = els;
@@ -577,19 +565,24 @@
 				const img = node.querySelector('img')
 				conditions = isVisible(node) && img;
 				currentNode = img;
-			} else if (host.includes(domain.zjjd)) {
+			} else if (host.includes(domain.zjjd) || host.includes(domain.elib)) {
 				const img = node.querySelector('img')
 				conditions = isVisible(node) && img && imageComplete(img)
 				currentNode = img;
 			} else if (host.includes(domain.keledge)) {
 				const canvas = node.querySelector('canvas')
-				conditions = isVisible(node) && node.style.length && canvas
+				if (node.style.length && canvas) {
+					conditions = true;
+				} else {
+					conditions = false;
+				}
 				currentNode = canvas;
 			} else if (host.includes(domain.xianxiao)) {
 				const canvas = node.querySelector('canvas')
 				conditions = isVisible(node) && canvas
 				currentNode = canvas;
-			} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib) || host.includes(domain.cxstar)) {
+			} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib) || host.includes(domain
+					.cxstar)) {
 				const canvas = node.querySelector('canvas')
 				conditions = isVisible(node) && canvas
 				currentNode = canvas;
