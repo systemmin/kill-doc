@@ -2,7 +2,7 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.1.3
+// @version      1.1.4
 // @description  文泉书局(bit)|高教书苑|中教经典|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库|畅想之星|书递等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
@@ -487,6 +487,7 @@
 		} else if (host.includes(domain.ebook)) {
 			canvas = await MF_ImageToBase64(els.src);
 		} else if (host.includes(domain.zjjd) || host.includes(domain.elib)) {
+			console.log('下标', i)
 			canvas = await MF_ImageToCanvas(els);
 		} else if (host.includes(domain.keledge)) {
 			canvas = els;
@@ -541,7 +542,7 @@
 		//======================== 前置条件判断
 		// 当前页码
 		const nodes = u.queryAll(select);
-		const length = nodes.length;
+		let length = nodes.length;
 		const k_page_no = Number(localStorage.getItem('k_page_no')) || 0;
 
 		// 多增加一页码，防止缺页
@@ -557,7 +558,7 @@
 		let conditions = false;
 		let currentNode = undefined;
 		try {
-			const node = nodes[k_page_no];
+			let node = nodes[k_page_no];
 			if (host.includes(domain.wqxuetang) || host.includes(domain.nlibvpn)) {
 				conditions = nodeComplete(node.children);
 				currentNode = node;
@@ -565,9 +566,26 @@
 				const img = node.querySelector('img')
 				conditions = isVisible(node) && img;
 				currentNode = img;
-			} else if (host.includes(domain.zjjd) || host.includes(domain.elib)) {
+			} else if (host.includes(domain.zjjd)) {
 				const img = node.querySelector('img')
 				conditions = isVisible(node) && img && imageComplete(img)
+				currentNode = img;
+			} else if (host.includes(domain.elib)) {
+				// pdf_page_5
+				length = Number(document.querySelector('.pdf-top-page').lastElementChild.textContent);
+				node = u.query('#pdf_page_' + k_page_no)
+				// 等待 2 秒，让页面进行刷新
+				if (!node) {
+					await new Promise(resolve => {
+						setTimeout(() => {
+							node = u.query('#pdf_page_' + k_page_no);
+							console.log('等待')
+							resolve()
+						}, 2000)
+					})
+				}
+				const img = node.querySelector('img')
+				conditions = img && imageComplete(img)
 				currentNode = img;
 			} else if (host.includes(domain.keledge)) {
 				const canvas = node.querySelector('canvas')
@@ -600,14 +618,29 @@
 				await saveImagePDF(currentNode, k_page_no)
 				// 滚动到下一个范围
 				if (k_page_no !== length - 1) {
-					nodes[k_page_no + 1].scrollIntoView({
+					if (host.includes(domain.elib)) {
+						const idStr =`#pdf_page_${Number(k_page_no) + 1}`;
+						const scrollNode = u.query(idStr)
+						scrollNode.scrollIntoView({
+							behavior: "smooth"
+						});
+					} else {
+						nodes[k_page_no + 1].scrollIntoView({
+							behavior: "smooth"
+						});
+					}
+				}
+
+			} else {
+				if (host.includes(domain.elib)) {
+					node.scrollIntoView({
+						behavior: "smooth"
+					});
+				} else {
+					nodes[k_page_no].scrollIntoView({
 						behavior: "smooth"
 					});
 				}
-			} else {
-				nodes[k_page_no].scrollIntoView({
-					behavior: "smooth"
-				});
 			}
 			u.preview(k_page_no, length);
 		} catch (e) {
