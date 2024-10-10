@@ -75,6 +75,7 @@
 |    [招投标](https://bulletin.cebpubservice.com/)    |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
 | [能源标准](http://114.251.111.103:18080/zxd/portal) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |       [认证认可标准](http://rbtest.cnca.cn/)        |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+|        [腾讯文档（来自微云）](https://weboffice.qq.com)         |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 
 之前支持后来移除的平台请移步 [kill-e-book](https://greasyfork.org/zh-CN/scripts/497405-kill-e-book) 电子书下载脚本
 
@@ -155,17 +156,22 @@
 
 在文当预览页面有右侧第一个链接 **原始发布地址** ，点击进行预览下载。
 
+### 腾讯文档
+
+支持放大进行预览，要是文档模糊可以下载图片。预览中遇到卡顿可鼠标滚动一下页面。
+
 
 ## 历史
 
 最新版本
 
-- 2024/09/10 `v5.4` 增加 GB 画布格式处理
+- 2024/10/10 `v5.5` 增加 腾讯文档
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/09/10 </span><code>v5.4</code><span>增加 GB 画布格式处理</span></li>
     <li><span>2024/09/10 </span><code>v5.3</code><span>优化 GB 遇到空白页 bug</span></li>
     <li><span>2024/09/10 </span><code>v5.2</code><span>优化 GB 遇到空白页 bug</span></li>
     <li><span>2024/08/02 </span><code>v5.1</code><span>优化标准观只能下载10页问题</span></li>
