@@ -42,6 +42,7 @@
 // @match        https://bulletin.cebpubservice.com/resource/ceb/js/pdfjs-dist/web/viewer.html*
 // @match        http://121.36.94.83:9008/jsp/yishenqing/appladd/biaozhunfile/flash/previewImg.jsp*
 // @match        http://rbtest.cnca.cn/cnca_kfs/file/read/*
+// @match        https://weboffice.qq.com/pdf/*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -325,6 +326,7 @@
 		mwr: '121.36.94.83:9008',
 		cebpubservice: 'bulletin.cebpubservice.com',
 		rbtest: 'rbtest.cnca.cn',
+		weboffice: 'weboffice.qq.com',
 	};
 	const {
 		host,
@@ -807,6 +809,10 @@
 		} else if (host.includes(domain.rbtest)) {
 			fileType = "pdf";
 			select = ".page canvas";
+		} else if (host.includes(domain.weboffice)) {
+			fileType = "pdf";
+			select = "#viewer .page";
+			btns.splice(1, 0, new Box('speed', '500'));
 		}
 		const query = u.query("#btn_ppt_front_pc"); // 原创
 		if (!query) {
@@ -939,8 +945,9 @@
 			host.includes(domain.nssi) ||
 			host.includes(domain.feishu) ||
 			host.includes(domain.cebpubservice) ||
-			host.includes(domain.jtysbz) || (host.includes(domain.gb688) && !u.query('#viewer').style
-				.transform)) {
+			host.includes(domain.jtysbz) ||
+			(host.includes(domain.gb688) && !u.query('#viewer').style.transform) ||
+			host.includes(domain.weboffice)) {
 			localStorage.setItem('start', '1');
 			localStorage.removeItem('SP_index')
 			dom.scrollTop = 0;
@@ -1061,6 +1068,7 @@
 				host.includes(domain.feishu) ||
 				host.includes(domain.nssi) ||
 				host.includes(domain.cebpubservice) ||
+				host.includes(domain.weboffice) ||
 				host.includes(domain.jtysbz)
 			) {
 				conditionDownload();
@@ -1256,9 +1264,14 @@
 		const current = childrens[i];
 		const length = childrens.length;
 		// 如果当前对象在可视范围内，进行保存添加
-		const imageData = current.querySelector('canvas');
+		let dataLoaded;
+		let imageData = current.querySelector('canvas');
+		if (!imageData) {
+			imageData = current.querySelector('.canvasWrapper canvas');
+			dataLoaded = current.getAttribute('data-loaded')
+		}
 		const textLayer = current.querySelector('.textLayer');
-		if (isElementInViewport(current) && imageData && textLayer) {
+		if ((dataLoaded || isElementInViewport(current)) && imageData && textLayer) {
 			await previewSave(i, imageData, textLayer)
 			if (i !== length - 1)
 				childrens[i + 1].scrollIntoView({
