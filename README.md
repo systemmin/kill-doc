@@ -165,12 +165,13 @@
 
 最新版本
 
-- 2024/10/10 `v5.5` 增加 腾讯文档
+- 2024/10/17 `v5.6` 优化失效文档
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/10/10 </span><code>v5.5</code><span>增加 腾讯文档</span></li>
     <li><span>2024/09/10 </span><code>v5.4</code><span>增加 GB 画布格式处理</span></li>
     <li><span>2024/09/10 </span><code>v5.3</code><span>优化 GB 遇到空白页 bug</span></li>
     <li><span>2024/09/10 </span><code>v5.2</code><span>优化 GB 遇到空白页 bug</span></li>
