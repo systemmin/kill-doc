@@ -165,12 +165,13 @@
 
 最新版本
 
-- 2024/10/17 `v5.6` 优化失效文档
+- 2024/10/30 `v5.7` JJG缺少最后一页；删除百度AI拦截
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/10/17 </span><code>v5.6</code><span>优化失效文档</span></li>
     <li><span>2024/10/10 </span><code>v5.5</code><span>增加 腾讯文档</span></li>
     <li><span>2024/09/10 </span><code>v5.4</code><span>增加 GB 画布格式处理</span></li>
     <li><span>2024/09/10 </span><code>v5.3</code><span>优化 GB 遇到空白页 bug</span></li>
@@ -275,7 +276,7 @@
 
 ## 鼓励作者
 
-**您**的鼓励💪就是我前进得动力🫶鼓励方式有多种，选择你喜欢的😍，当然不鼓励也没关系哦！😄
+**您**的鼓励💪就是我前进的动力🫶鼓励方式有多种，选择你喜欢的😍，当然不鼓励也没关系哦！😄
 
 - [好评 ](https://greasyfork.org/zh-CN/scripts/486211-%E6%9C%80%E5%BC%BA%E6%97%A0%E5%A5%97%E8%B7%AF%E8%84%9A%E6%9C%AC-%E4%BD%A0%E8%83%BD%E7%9C%8B%E8%A7%81%E5%A4%9A%E5%B0%91%E6%88%91%E8%83%BD%E4%B8%8B%E8%BD%BD%E5%A4%9A%E5%B0%91-%E4%B8%8B%E8%BD%BD%E5%85%AC%E5%BC%80%E5%85%8D%E8%B4%B9%E7%9A%84ppt-pdf-doc-txt%E7%AD%89%E6%96%87%E4%BB%B6/feedback)✍️
 - [GitHub Start](https://github.com/systemmin/kill-doc)⭐
