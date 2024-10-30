@@ -1882,7 +1882,7 @@
 	}
 
 	const downloadElement = async () => {
-		const nodes = u.queryAll(select + ' .fwr-page-tile');
+		const nodes = u.queryAll('#docViewer_ViewContainer .fwr-page-tile');
 		const len = nodes.length;
 		for (let i = 0; i < len; i++) {
 			const node = nodes[i]
