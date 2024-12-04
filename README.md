@@ -18,10 +18,17 @@
 
 看到经常有小伙伴们需要下载一些免费文档，但是相关网站浏览体验不好各种广告，各种登录验证，需要很多步骤才能下载文档，该脚本就是为了解决您的烦恼而诞生，尽可能做到自动化。
 
+
 ## 安装
 1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 浏览器扩展。[国内](https://www.crxsoso.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo)安装
 2. 点击 [脚本链接](https://greasyfork.org/zh-CN/scripts/486211) 或手动复制脚本代码。
 3. 在 Tampermonkey 中创建一个新脚本，将代码粘贴到编辑器中并保存。
+
+## Q&A
+
+### 1. 脚本已安装，页面没有右侧功能按钮？
+
+[Q209: 开发者模式用于运行用户脚本](https://www.tampermonkey.net/faq.php#Q209)
 
 ## 留言
 
@@ -133,11 +140,8 @@
    - 分页下载：先预览 100 页面，停止预览，下点下载。**刷新页面**，修改页码到100页，点击开始，继续重复上面步骤直到全部下载完成自行合并。
 
 ### GB688
-- 有两种格式
-
-  * canvas 格式 ：可调整预览速率
-
-  * 图片 格式 ：要输入验证码以后才可以进行相应操作
+* **canvas 格式** ：可调整预览速率
+* **图片 格式** ：要输入验证码以后才可以进行相应操作
 
 
 ### 轻竹办公
@@ -165,12 +169,13 @@
 
 最新版本
 
-- 2024/10/30 `v5.7` JJG缺少最后一页，删除百度AI拦截
+- 2024/12/04 `v5.8` GB 网站更新优化
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/10/30 </span><code>v5.7</code><span>JJG缺少最后一页，删除百度AI拦截</span></li>
     <li><span>2024/10/17 </span><code>v5.6</code><span>优化失效文档</span></li>
     <li><span>2024/10/10 </span><code>v5.5</code><span>增加 腾讯文档</span></li>
     <li><span>2024/09/10 </span><code>v5.4</code><span>增加 GB 画布格式处理</span></li>
