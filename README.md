@@ -82,7 +82,8 @@
 |    [招投标](https://bulletin.cebpubservice.com/)    |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
 | [能源标准](http://114.251.111.103:18080/zxd/portal) |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |       [认证认可标准](http://rbtest.cnca.cn/)        |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
-|        [腾讯文档（来自微云）](https://weboffice.qq.com)         |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+|  [腾讯文档（来自微云）](https://weboffice.qq.com)   |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+|          [绿色建站](https://gbservice.cn/)          |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 
 之前支持后来移除的平台请移步 [kill-e-book](https://greasyfork.org/zh-CN/scripts/497405-kill-e-book) 电子书下载脚本
 
@@ -164,17 +165,25 @@
 
 支持放大进行预览，要是文档模糊可以下载图片。预览中遇到卡顿可鼠标滚动一下页面。
 
+### 绿色建站
+
+- 默认预览页面文档较小，下载不清晰，加载是会自动打开原始地址预览（高清）
+- 页面加载出来比较慢，大概10秒左右耐心等待
+- 页面会*提示弹出窗口*，**请允许弹框**
+
 
 ## 历史
 
 最新版本
 
-- 2024/12/04 `v5.8` GB 网站更新优化
+- 2024/12/12 `v6.0` 新增绿色网站😂 
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/10/05 </span><code>v5.9</code><span>优化GB页面错乱，预览时自动百分百</span></li>
+    <li><span>2024/12/04 </span><code>v5.8</code><span>GB 网站更新优化</span></li>
     <li><span>2024/10/30 </span><code>v5.7</code><span>JJG缺少最后一页，删除百度AI拦截</span></li>
     <li><span>2024/10/17 </span><code>v5.6</code><span>优化失效文档</span></li>
     <li><span>2024/10/10 </span><code>v5.5</code><span>增加 腾讯文档</span></li>

@@ -2,8 +2,8 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      5.9
-// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标|能源标准|认证认可标准|腾讯文档等公开免费文档下载
+// @version      6.0
+// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标|能源标准|认证认可标准|腾讯文档|绿色建站等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
 // @match        https://*.renrendoc.com/*
@@ -43,6 +43,7 @@
 // @match        http://121.36.94.83:9008/jsp/yishenqing/appladd/biaozhunfile/flash/previewImg.jsp*
 // @match        http://rbtest.cnca.cn/cnca_kfs/file/read/*
 // @match        https://weboffice.qq.com/pdf/*
+// @match        https://gbservice.cn/*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -76,12 +77,14 @@
 		writable: false,
 		configurable: false
 	});
-	
+
 	// 重写 setTimeout
 	const originalSetTimeout = unsafeWindow.setTimeout;
 	unsafeWindow.setTimeout = function(callback, delay, ...args) {
 		if (callback.toString().includes('revokeObjectURL')) return true;
-		const wrappedCallback = function() {callback(...args);};
+		const wrappedCallback = function() {
+			callback(...args);
+		};
 		return originalSetTimeout(wrappedCallback, delay);
 	};
 
@@ -347,6 +350,7 @@
 		cebpubservice: 'bulletin.cebpubservice.com',
 		rbtest: 'rbtest.cnca.cn',
 		weboffice: 'weboffice.qq.com',
+		gbservice: 'gbservice.cn',
 	};
 	const {
 		host,
@@ -833,6 +837,21 @@
 			fileType = "pdf";
 			select = "#viewer .page";
 			btns.splice(1, 0, new Box('speed', '500'));
+		} else if (host.includes(domain.gbservice)) {
+			// 首页-跳转详情页面
+			if (href.includes('basicbzDetail')) {
+				let id = location.href.split("id=").pop();
+				window.open(
+					`https://gbservice.cn/pdfjs/web/viewer.html?file=https://api.gbservice.cn/api/standard/fileurl?id=${id}`
+				)
+				return;
+			} else if (!href.includes('pdfjs')) {
+				return false;
+			}
+			fileType = "pdf";
+			dom = u.query('#viewerContainer');
+			select = "#viewer .page";
+			btns.splice(1, 0, new Box('speed', '500'));
 		}
 		const query = u.query("#btn_ppt_front_pc"); // 原创
 		if (!query) {
@@ -914,7 +933,7 @@
 			setTimeout(() => {
 				baiduCopy()
 			}, 500)
-			
+
 		}
 
 	})();
@@ -952,7 +971,9 @@
 			host.includes(domain.cebpubservice) ||
 			host.includes(domain.jtysbz) ||
 			(host.includes(domain.gb688) && !u.query('#viewer').style.transform) ||
-			host.includes(domain.weboffice)) {
+			host.includes(domain.weboffice) ||
+			host.includes(domain.gbservice)
+		) {
 			localStorage.setItem('start', '1');
 			localStorage.removeItem('SP_index')
 			dom.scrollTop = 0;
@@ -1074,6 +1095,7 @@
 				host.includes(domain.nssi) ||
 				host.includes(domain.cebpubservice) ||
 				host.includes(domain.weboffice) ||
+				host.includes(domain.gbservice) ||
 				host.includes(domain.jtysbz)
 			) {
 				conditionDownload();
