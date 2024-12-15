@@ -30,6 +30,10 @@
 
 [Q209: 开发者模式用于运行用户脚本](https://www.tampermonkey.net/faq.php#Q209)
 
+### 2. 无法下载或文档失效
+
+反馈问题请提供文档地址，不要直接说下载不了，用不了等等。**描述不清楚**一律不再回复。
+
 ## 留言
 
 - **新增网站 [BASE64](https://base64.us/) 编码后**留言，留下网站首页以及文档详情页。
@@ -176,12 +180,13 @@
 
 最新版本
 
-- 2024/12/12 `v6.0` 新增绿色网站😂 
+- 2024/12/15 `v6.1` GB无法下载ZIP bug 
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/12/12 </span><code>v6.0</code><span>新增绿色网站😂 </span></li>
     <li><span>2024/10/05 </span><code>v5.9</code><span>优化GB页面错乱，预览时自动百分百</span></li>
     <li><span>2024/12/04 </span><code>v5.8</code><span>GB 网站更新优化</span></li>
     <li><span>2024/10/30 </span><code>v5.7</code><span>JJG缺少最后一页，删除百度AI拦截</span></li>
