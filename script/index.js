@@ -2060,9 +2060,16 @@
 	 * @time 2024年2月2日
 	 */
 	const downzip = () => {
+		// 修改无法触发浏览器下载问题 see https://github.com/systemmin/kill-doc/issues/8
 		zipWriter.close().then(blob => {
-			GM_download(URL.createObjectURL(blob), `${title}.zip`);
-			URL.revokeObjectURL(blob);
+			var link = document.createElement('a');
+			link.href = URL.createObjectURL(blob);
+			link.download = `${title}.zip`; 
+			
+			// 触发下载
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
 		}).catch(error => {
 			console.error(error);
 		});
