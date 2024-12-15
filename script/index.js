@@ -81,7 +81,8 @@
 	// 重写 setTimeout
 	const originalSetTimeout = unsafeWindow.setTimeout;
 	unsafeWindow.setTimeout = function(callback, delay, ...args) {
-		if (callback.toString().includes('revokeObjectURL')) return true;
+		let toStr = callback?.toString();
+		if (toStr && toStr.includes('revokeObjectURL')) return true;
 		const wrappedCallback = function() {
 			callback(...args);
 		};
@@ -2064,8 +2065,8 @@
 		zipWriter.close().then(blob => {
 			var link = document.createElement('a');
 			link.href = URL.createObjectURL(blob);
-			link.download = `${title}.zip`; 
-			
+			link.download = `${title}.zip`;
+
 			// 触发下载
 			document.body.appendChild(link);
 			link.click();
