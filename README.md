@@ -88,6 +88,7 @@
 |       [认证认可标准](http://rbtest.cnca.cn/)        |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |  [腾讯文档（来自微云）](https://weboffice.qq.com)   |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |          [绿色建站](https://gbservice.cn/)          |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
+|          [电网](https://ecp.sgcc.com.cn/)          |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
 
 之前支持后来移除的平台请移步 [kill-e-book](https://greasyfork.org/zh-CN/scripts/497405-kill-e-book) 电子书下载脚本
 
@@ -180,12 +181,13 @@
 
 最新版本
 
-- 2024/12/15 `v6.1` GB无法下载ZIP bug 
+- 2024/12/16 `v6.2` 新增电网 
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/12/15 </span><code>v6.1</code><span>GB无法下载ZIP bug </span></li>
     <li><span>2024/12/12 </span><code>v6.0</code><span>新增绿色网站😂 </span></li>
     <li><span>2024/10/05 </span><code>v5.9</code><span>优化GB页面错乱，预览时自动百分百</span></li>
     <li><span>2024/12/04 </span><code>v5.8</code><span>GB 网站更新优化</span></li>
