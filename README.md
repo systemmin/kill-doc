@@ -181,12 +181,13 @@
 
 最新版本
 
-- 2024/12/16 `v6.2` 新增电网 
+- 2024/12/19 `v6.3` 优化百度PPT缺页问题 
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/12/16 </span><code>v6.2</code><span>新增电网 </span></li>
     <li><span>2024/12/15 </span><code>v6.1</code><span>GB无法下载ZIP bug </span></li>
     <li><span>2024/12/12 </span><code>v6.0</code><span>新增绿色网站😂 </span></li>
     <li><span>2024/10/05 </span><code>v5.9</code><span>优化GB页面错乱，预览时自动百分百</span></li>

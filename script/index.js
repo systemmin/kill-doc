@@ -2,7 +2,7 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      6.2
+// @version      6.3
 // @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标|能源标准|认证认可标准|腾讯文档|绿色建站|电网等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
@@ -111,7 +111,8 @@
 	 * @param key
 	 */
 	const MF_addURL = (urls, key = 'listData') => {
-		let listData = JSON.parse(localStorage.getItem(key)) || [];
+		const value = GM_getValue(key) || "[]";
+		let listData = JSON.parse(value);
 		let index = 0;
 		let length = listData.length;
 		urls.forEach((url) => {
@@ -124,10 +125,9 @@
 				index++;
 			}
 		})
-		// 将更新后的URL数组存储回localStorage
 		localStorage.setItem(key, JSON.stringify(listData));
 		GM_setValue(key, JSON.stringify(listData))
-		console.log('URL已添加：');
+		console.log('已添加URL：', urls.length);
 	}
 	/**
 	 * Url 地址拼接，无需预览直接从 HTML 中读取相应的参数即可
@@ -402,15 +402,11 @@
 
 	// 百度拷贝文本
 	const baiduCopy = () => {
-		const observerOptions = {
-			characterData: true,
-			subtree: true
-		};
-		// dom 监听器
-		const observer = new MutationObserver(function(mutationList, observer) {
-			const mutation = mutationList[0];
-			let data = mutation.target.data;
-			let result = data.substring(data.indexOf('“') + 1, data.lastIndexOf('”'));
+		const copyEvent = () => {
+			let link = document.querySelector('.link');
+			let textContent = link ? link.textContent : "";
+			let result = textContent ? textContent.substring(textContent.indexOf('“') + 1, textContent
+				.lastIndexOf('”')) : window.getSelection().toString();
 			let textarea = u.query('#MF_textarea');
 			if (textarea) {
 				textarea.innerText = result;
@@ -426,23 +422,31 @@
 					border: "1px solid rgb(204, 204, 204)"
 				}
 				u.style(textarea, style)
-				textarea.innerText = result;
+				document.querySelector('.mdInput-text').innerText = result;
 				let box = u.query('#catalog-main') || u.query('.catalog-main') || u.query(
 					'.related-doc-list')
 				box.before(textarea);
 			}
-		});
-		const targetNode2 = document.querySelector('.link')
-		// 触发监听
-		observer.observe(targetNode2, observerOptions);
-	}
-
-	// 监听页面卸载，移除百度定时删除广告等 DOM 定时器
-	window.onunload = function() {
-		if (intervalBai) {
-			clearInterval(intervalBai);
-			intervalBai = null;
 		}
+
+		const observerOptions = {
+			characterData: true,
+			subtree: true
+		};
+		// dom 监听器
+		const observer = new MutationObserver(function(mutationList, observer) {
+			copyEvent()
+		});
+		const targetNodeWrap = document.querySelector('.search-result-wrap');
+		// 触发监听
+		observer.observe(targetNodeWrap, observerOptions);
+
+		document.addEventListener('mouseup', function() {
+			var selection = window.getSelection();
+			if (selection.rangeCount > 0) {
+				copyEvent()
+			}
+		});
 	}
 
 	// 百度 xhr 数据监听
@@ -875,83 +879,92 @@
 		console.log('文件类型：', fileType);
 	}
 
+	// b d  接口数据处理
+	const handleRenderData = () => {
+		const {
+			readerInfo,
+			viewBiz
+		} = pageData;
+		fileType = viewBiz.docInfo.fileType;
+		title = viewBiz.docInfo.aiQueryTitle;
+		readerInfoBai = readerInfo;
+		const htmlUrls = readerInfo.htmlUrls;
+		if (htmlUrls) {
+			if (fileType.includes('ppt')) {
+				MF_addURL(htmlUrls);
+			} else if (fileType.includes('pdf')) {
+				let images = [];
+				if (htmlUrls.png) {
+					images = htmlUrls.png.map(item => {
+						return item.pageLoadUrl
+					})
+				} else {
+					images = htmlUrls;
+				}
+				MF_addURL(images);
+			}
+			// 文本内容地址保存
+			if (htmlUrls.json) {
+				let pageLoadUrl = htmlUrls.json.map(item => {
+					return item.pageLoadUrl
+				})
+				MF_addURL(pageLoadUrl, 'pageData');
+			}
+		}
+		// 纯文本类型文件
+		if (fileType === "txt") { // 纯文本类型
+			let urls = [];
+			const {
+				docId,
+				freePage,
+				rsign,
+				showPage,
+				md5sum
+			} = readerInfoBai;
+			for (var i = 1; i < showPage + 1; i++) {
+				let x = md5sum.substring(1);
+				let n = ["pn=" + i, "rn=1", "type=txt", "spr=0", "rsign=" + rsign,
+					"callback=wenku_" + i
+				].join("&");
+				let url = BASE_URL + "/text/" + docId + "?" + x + "&" + n;
+				urls.push(url)
+			}
+			MF_addURL(urls, 'pageData');
+		}
+		setTimeout(() => {
+			baiduCopy()
+		}, 500)
+	}
 
-	(function() {
+	// 清理缓存
+	const clearCache = () => {
 		// 移除多余 iframe
 		document.querySelectorAll('iframe').forEach(item => {
 			item.remove()
 		})
 
 		// 清空系统缓存数据
-		localStorage.removeItem('listData')
-		localStorage.removeItem('length')
-		localStorage.removeItem('current')
-		localStorage.removeItem('pageData')
-		localStorage.removeItem('down')
-		localStorage.removeItem('SP_text')
+		localStorage.removeItem('listData');
+		localStorage.removeItem('length');
+		localStorage.removeItem('current');
+		localStorage.removeItem('pageData');
+		localStorage.removeItem('down');
+		localStorage.removeItem('SP_text');
 
-		// 百度服务端渲染
 		if (host.includes(domain.wenku)) {
-			const {
-				readerInfo,
-				viewBiz
-			} = pageData;
-			fileType = viewBiz.docInfo.fileType;
-			title = viewBiz.docInfo.aiQueryTitle;
-			readerInfoBai = readerInfo;
-			const htmlUrls = readerInfo.htmlUrls;
-			if (htmlUrls) {
-				if (fileType.includes('ppt')) {
-					MF_addURL(htmlUrls);
-				} else if (fileType.includes('pdf')) {
-					let images = [];
-					if (htmlUrls.png) {
-						images = htmlUrls.png.map(item => {
-							return item.pageLoadUrl
-						})
-					} else {
-						images = htmlUrls;
-					}
-					MF_addURL(images);
-				}
-				// 文本内容地址保存
-				if (htmlUrls.json) {
-					let pageLoadUrl = htmlUrls.json.map(item => {
-						return item.pageLoadUrl
-					})
-					MF_addURL(pageLoadUrl, 'pageData');
-				}
+			// 加载主页面
+			if (href.includes('tfview') || href.includes('view')) {
+				GM_deleteValue('listData'); // 删除缓存
+				handleRenderData()
 			}
-			// 纯文本类型文件
-			if (fileType === "txt") { // 纯文本类型
-				let urls = [];
-				const {
-					docId,
-					freePage,
-					rsign,
-					showPage,
-					md5sum
-				} = readerInfoBai;
-				for (var i = 1; i < showPage + 1; i++) {
-					let x = md5sum.substring(1);
-					let n = ["pn=" + i, "rn=1", "type=txt", "spr=0", "rsign=" + rsign,
-						"callback=wenku_" + i
-					].join("&");
-					let url = BASE_URL + "/text/" + docId + "?" + x + "&" + n;
-					urls.push(url)
-				}
-				MF_addURL(urls, 'pageData');
-			}
-			setTimeout(() => {
-				baiduCopy()
-			}, 500)
-
+		} else {
+			GM_deleteValue('listData')
 		}
-
-	})();
+	}
 
 	// load 事件
 	(() => {
+		clearCache()
 		// 在这里执行渲染完成后的操作
 		console.log('HTML 渲染完成!');
 		// 监听子页面加载完成，发送消息
