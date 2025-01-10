@@ -29,7 +29,7 @@
 (function() {
 	'use strict';
 	let MF =
-		'#MF_fixed{position:fixed;top:50%;transform:translateY(-50%);right:20px;gap:10px;flex-direction:column;z-index:2147483647;display:flex}';
+		'#MF_fixed{position:fixed;top:50%;transform:translateY(-50%);right:58px;gap:10px;flex-direction:column;z-index:2147483647;display:flex}';
 	MF +=
 		'.MF_box{padding:10px;cursor:pointer;border-color:rgb(0,102,255);border-radius:5px;background-color:white;color:rgb(0,102,255);}.MF_active{color: green}#MF_k_page_no,#MF_k_page_size{color: red;}';
 	const prefix = "MF_";
@@ -239,7 +239,7 @@
 	const doc = new jsPDF({
 		orientation: 'p',
 		unit: 'px',
-		compress: true
+		compress: true,
 	});
 	//  794 x 1123 px
 	let pdf_w = 446,
@@ -487,7 +487,6 @@
 		} else if (host.includes(domain.ebook)) {
 			canvas = await MF_ImageToBase64(els.src);
 		} else if (host.includes(domain.zjjd) || host.includes(domain.elib)) {
-			console.log('下标', i)
 			canvas = await MF_ImageToCanvas(els);
 		} else if (host.includes(domain.keledge)) {
 			canvas = els;
@@ -597,7 +596,7 @@
 				currentNode = canvas;
 			} else if (host.includes(domain.xianxiao)) {
 				const canvas = node.querySelector('canvas')
-				conditions = isVisible(node) && canvas
+				conditions = node.getAttribute("data-loaded") === "true" && canvas
 				currentNode = canvas;
 			} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib) || host.includes(domain
 					.cxstar)) {
@@ -619,7 +618,7 @@
 				// 滚动到下一个范围
 				if (k_page_no !== length - 1) {
 					if (host.includes(domain.elib)) {
-						const idStr =`#pdf_page_${Number(k_page_no) + 1}`;
+						const idStr = `#pdf_page_${Number(k_page_no) + 1}`;
 						const scrollNode = u.query(idStr)
 						scrollNode.scrollIntoView({
 							behavior: "smooth"
