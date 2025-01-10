@@ -13,6 +13,8 @@
     <img alt="license" src="https://img.shields.io/badge/license-Apache2.0-blue?style=flat-square">
     </a>
 </p>
+
+
 这是一个用于 [Tampermonkey](https://www.tampermonkey.net/) 或其他支持用户脚本的浏览器扩展的 [e-book](https://github.com/systemmin/kill-doc/blob/master/e-book/index.js) 篡改猴脚本。
 
 电子书分页下载，考虑到文件大小内存等因素，采用分页下载。**请务必使用谷歌浏览器**
@@ -96,7 +98,7 @@ loading = 800, // 毫秒
 
 ## 历史
 
-最新版本 `v1.1.4` 书递预览跳页问题处理
+最新版本 `v1.1.5` 优化 先晓预览问题
 
 - 2024/06/30 `v1.0.3` 新增 高教书苑
 - 2024/07/11 `v1.0.4` 新增 bit
@@ -110,7 +112,8 @@ loading = 800, // 毫秒
 - 2024/09/19 `v1.1.2` 新增 畅想之星
 - 2024/09/19 `v1.1.3` 新增 书递；优化可知自动预览 bug
 - 2024/10/08 `v1.1.4` 书递预览跳页问题处理
-
+- 2025/01/10 `v1.1.5` 优化 先晓预览问题
+- 
 ## 贡献
 
 我们欢迎任何形式的贡献，包括报告问题、提出建议、提交代码或文档。请参考[贡献指南](https://github.com/systemmin/kill-doc/issues)了解如何参与贡献。
