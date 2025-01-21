@@ -181,12 +181,13 @@
 
 最新版本
 
-- 2024/12/23 `v6.4` 360 无法下载 bug 处理 
+- 2025/01/21 `v6.5` 金锄头无法下载 bug 处理 
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2024/12/23 </span><code>v6.4</code><span>360 无法下载 bug 处理  </span></li>
     <li><span>2024/12/19 </span><code>v6.3</code><span>优化百度PPT缺页问题 </span></li>
     <li><span>2024/12/16 </span><code>v6.2</code><span>新增电网 </span></li>
     <li><span>2024/12/15 </span><code>v6.1</code><span>GB无法下载ZIP bug </span></li>
