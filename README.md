@@ -293,7 +293,7 @@
 
 如果您有任何问题或建议或合作或定制（有偿），请通过以下方式联系我们：
 
-- 邮箱：[2441553829@qq.com](mailto:2441553829@qq.com)
+- 邮箱：[robots_user@qq.com](mailto:robots_user@qq.com)
 - GitHub：[kill-doc](https://github.com/systemmin/kill-doc)
 
 感谢使用篡改猴脚本！
