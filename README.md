@@ -90,7 +90,7 @@
 |          [绿色建站](https://gbservice.cn/)          |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |          [电网](https://ecp.sgcc.com.cn/)          |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
 
-之前支持后来移除的平台请移步 [kill-e-book](https://greasyfork.org/zh-CN/scripts/497405-kill-e-book) 电子书下载脚本
+之前支持后来移除的平台请移步 [kill-e-book](https://cn-greasyfork.org/zh-CN/scripts/497405-kill-e-book) 电子书下载脚本
 
 ## 功能
 
