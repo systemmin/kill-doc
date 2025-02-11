@@ -21,7 +21,7 @@
 
 ## 安装
 1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 浏览器扩展。[国内](https://www.crxsoso.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo)安装
-2. 点击 [脚本链接](https://greasyfork.org/zh-CN/scripts/486211) 或手动复制脚本代码。
+2. 点击 [脚本链接](https://cn-greasyfork.org/zh-CN/scripts/486211) 或手动复制脚本代码。
 3. 在 Tampermonkey 中创建一个新脚本，将代码粘贴到编辑器中并保存。
 
 ## Q&A

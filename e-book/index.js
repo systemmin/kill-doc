@@ -25,6 +25,8 @@
 // @run-at 		 document-idle
 // @grant        none
 // @license      Apache-2.0
+// @downloadURL  https://update.cn-greasyfork.org/scripts/497405/kill-e-book.user.js
+// @updateURL    https://update.cn-greasyfork.org/scripts/497405/kill-e-book.meta.js
 // ==/UserScript==
 
 (function() {
