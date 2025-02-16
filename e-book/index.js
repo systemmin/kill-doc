@@ -2,7 +2,7 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.1.7
+// @version      1.1.8
 // @description  文泉|文泉(scau)|文泉(bit)|高教书苑|中教经典|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库|畅想之星|书递等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
@@ -25,8 +25,6 @@
 // @run-at 		 document-idle
 // @grant        none
 // @license      Apache-2.0
-// @downloadURL  https://update.cn-greasyfork.org/scripts/497405/kill-e-book.user.js
-// @updateURL    https://update.cn-greasyfork.org/scripts/497405/kill-e-book.meta.js
 // ==/UserScript==
 
 (function() {
@@ -178,6 +176,9 @@
 				if (item.id === 'k_page_no') {
 					this.attr(el, 'contenteditable', true)
 				}
+				if (item.id === 'k_speed') {
+					this.attr(el, 'contenteditable', true)
+				}
 				if (item.id === 'k_page_size') {
 					this.attr(el, 'contenteditable', true)
 				}
@@ -209,6 +210,7 @@
 
 	const btns = [
 		new Box('text', '状态 0 %'),
+		new Box('k_speed', '2-5').setTitle('每页预览时间，默认2-5秒直接随机时间'),
 		new Box('k_page_no', '1').setTitle('指定页码，从第几页开始'),
 		new Box('k_page_size', '100').setTitle('指定每次下载多少页面'), ,
 		new Box('handleStart', '开始执行', 'handleStart()'),
@@ -220,7 +222,7 @@
 
 	const domain = {
 		wqxuetang: 'wqxuetang.com',
-		scau:"lib--scau-wqxuetang-com-s.vpn.scau.edu.cn",
+		scau: "lib--scau-wqxuetang-com-s.vpn.scau.edu.cn",
 		nlibvpn: 'nlibvpn.bit.edu.cn',
 		ebook: 'ebook.hep.com.cn',
 		zjjd: 'www.zjjd.cn',
@@ -339,6 +341,7 @@
 	const MF_loginfo = () => {
 		console.log('k_page_size', localStorage.getItem('k_page_size'))
 		console.log('k_page_no', localStorage.getItem('k_page_no'))
+		console.log('k_speed', localStorage.getItem('k_speed'))
 		console.log('k_count', localStorage.getItem('k_count'))
 		console.log('k_total', k_total)
 	}
@@ -357,6 +360,33 @@
 		}
 		MF_loginfo()
 	})()
+
+	/**
+	 * @description 随机数方法
+	 * @param {Object} speed
+	 */
+	function randomMillisecon(speed) {
+		if (!speed) {
+			return loading
+		}
+
+		// 1、两个参数 正则表达式 匹配 开始时间-结束时间 支持浮点数
+		const pattern = /^\d+(\.\d+)?-\d+(\.\d+)?$/;
+		if (pattern.test(speed)) {
+			const speeds = speed.split("-");
+			const startTime = parseFloat(speeds[0])
+			const endTime = parseFloat(speeds[1])
+			// 计算时间范围的总秒数
+			const timeRange = endTime - startTime;
+			const randomSeconds = Math.floor(Math.random() * timeRange);
+			const randomMilliseconds = startTime * 1000 + randomSeconds * 1000;
+			return randomMilliseconds;
+		} else if (/^\d+(\.\d+)?$/.test(speed)) { // 2、一个参数
+			return parseFloat(speed) * 1000;
+		}
+		return loading; // 默认参数
+	}
+
 
 	/**
 	 * @description 前置方法
@@ -382,7 +412,7 @@
 	 */
 	const after = () => {
 		console.log('after=============>')
-		if (host.includes(domain.wqxuetang) || host.includes(domain.scau)|| host.includes(domain.nlibvpn)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn)) {
 			let nodeTitle = u.query('.read-header-title');
 			if (!nodeTitle) {
 				nodeTitle = u.query('.read-header-name');
@@ -414,6 +444,14 @@
 			localStorage.setItem('k_page_no', 0)
 		}
 
+		// 重新设置页码参数
+		const k_speed = Number(u.query('#MF_k_speed').innerText);
+		if (k_speed > 0) {
+			localStorage.setItem('k_speed', k_speed)
+		} else {
+			localStorage.setItem('k_speed', "2-5")
+		}
+
 		// 设置页面容量
 		k_page_size = localStorage.getItem('k_page_size');
 		const size = Number(u.query('#MF_k_page_size').innerText);
@@ -437,6 +475,7 @@
 		k_count = 0;
 		localStorage.removeItem('k_page_size')
 		localStorage.removeItem('k_page_no')
+		localStorage.removeItem('k_speed')
 		localStorage.removeItem('k_count')
 		localStorage.removeItem('k_total')
 		localStorage.removeItem('k_start')
@@ -452,7 +491,8 @@
 		// 开始执行标识
 		localStorage.setItem('k_start', '1');
 		// 初始化页码
-		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain
+				.nlibvpn)) {
 
 		}
 		// 自动翻页
@@ -486,7 +526,8 @@
 	const saveImagePDF = async (els, i) => {
 		localStorage.setItem('k_page_no', i + 1);
 		let canvas;
-		if (host.includes(domain.wqxuetang) || host.includes(domain.scau)|| host.includes(domain.nlibvpn)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain
+				.nlibvpn)) {
 			canvas = await MF_ImageJoinToBlob(els);
 		} else if (host.includes(domain.ebook)) {
 			canvas = await MF_ImageToBase64(els.src);
@@ -562,7 +603,8 @@
 		let currentNode = undefined;
 		try {
 			let node = nodes[k_page_no];
-			if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn)) {
+			if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain
+					.nlibvpn)) {
 				conditions = nodeComplete(node.children);
 				currentNode = node;
 			} else if (host.includes(domain.ebook)) {
@@ -657,10 +699,12 @@
 		MF_loginfo()
 
 		if (k_page_no !== length) { // 继续执行
+			let tt = randomMillisecon(localStorage.getItem("k_speed"));
+			console.log(tt);
 			setTimeout(async () => {
 				await autoPager()
-				console.log(loading, 'ms 后执行');
-			}, loading)
+				console.log(tt, 'ms 后执行');
+			}, tt)
 		}
 	}
 
