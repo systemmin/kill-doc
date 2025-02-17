@@ -2,7 +2,7 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.1.8
+// @version      1.1.9
 // @description  文泉|文泉(scau)|文泉(bit)|高教书苑|中教经典|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库|畅想之星|书递等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
@@ -18,6 +18,7 @@
 // @match        https://www.sklib.cn/sk_reader/reader.html*
 // @match        https://www.cxstar.com/onlineepub*
 // @match        https://www.elib.link/pdf/*
+// @match        https://libresource.bit.edu.cn/https/443/cn/51zhy/yd/yitlink/ebook/reader/*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -234,6 +235,7 @@
 		zslib: 'sso.zslib.cn',
 		sklib: 'www.sklib.cn',
 		cxstar: 'www.cxstar.com',
+		libresource: 'libresource.bit.edu.cn',
 	};
 	const {
 		host,
@@ -332,6 +334,9 @@
 			dom = u.query('#viewerContainer');
 		} else if (host.includes(domain.cxstar)) {
 			select = "#epub-area .page-div-wrapper";
+		} else if (host.includes(domain.libresource)) {
+			select = "#canvas_box .pdf_box";
+			dom = u.query('.pdf_reader');
 		}
 		u.gui(btns);
 		console.log('文件名称：', title);
@@ -427,6 +432,8 @@
 			}
 		} else if (host.includes(domain.zjjd)) {
 			title = u.query('.title').innerText;
+		} else if (host.includes(domain.libresource)) {
+			title = document.title;
 		}
 	}
 
@@ -539,6 +546,8 @@
 			canvas = els;
 		} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib) || host.includes(domain
 				.sklib) || host.includes(domain.cxstar)) {
+			canvas = els
+		} else if (host.includes(domain.libresource)) {
 			canvas = els
 		}
 		doc.addPage();
@@ -657,6 +666,13 @@
 					currentNode = canvas;
 				}
 
+			} else if (host.includes(domain.libresource)) {
+				const canvas = node.querySelector('canvas')
+				const dataLoaded = u.attr(node, 'style')
+				if (dataLoaded && canvas) {
+					conditions = true
+					currentNode = canvas;
+				}
 			}
 			if (conditions && currentNode) {
 				// 保存
