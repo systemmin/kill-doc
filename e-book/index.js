@@ -2,7 +2,7 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.1.9
+// @version      1.2.0
 // @description  文泉|文泉(scau)|文泉(bit)|高教书苑|中教经典|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库|畅想之星|书递等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
@@ -452,8 +452,8 @@
 		}
 
 		// 重新设置页码参数
-		const k_speed = Number(u.query('#MF_k_speed').innerText);
-		if (k_speed > 0) {
+		const k_speed = u.query('#MF_k_speed').innerText;
+		if (k_speed) {
 			localStorage.setItem('k_speed', k_speed)
 		} else {
 			localStorage.setItem('k_speed', "2-5")
