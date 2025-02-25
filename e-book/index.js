@@ -2,12 +2,13 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.2.0
+// @version      1.2.1
 // @description  文泉|文泉(scau)|文泉(bit)|高教书苑|中教经典|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库|畅想之星|书递等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
 // @match        https://lib--scau-wqxuetang-com-s.vpn.scau.edu.cn/deep/read/*
 // @match        https://nlibvpn.bit.edu.cn/*/*/deep/read/pdf?bid=*
+// @match        https://xwfw.hut.edu.cn/*/*/deep/read/pdf?bid=*
 // @match        https://ebook.hep.com.cn/index.html*
 // @match        https://www.zjjd.cn/read-book*
 // @match        https://www.keledge.com/pdfReader*
@@ -225,6 +226,7 @@
 		wqxuetang: 'wqxuetang.com',
 		scau: "lib--scau-wqxuetang-com-s.vpn.scau.edu.cn",
 		nlibvpn: 'nlibvpn.bit.edu.cn',
+		xwfw: 'xwfw.hut.edu.cn',
 		ebook: 'ebook.hep.com.cn',
 		zjjd: 'www.zjjd.cn',
 		keledge: 'www.keledge.com',
@@ -285,8 +287,8 @@
 			origin
 		})
 		dom = document.documentElement || document.body;
-		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn)) {
-			select = "#pagebox .page-lmg";
+		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn) || host.includes(domain.xwfw)) {
+			select = "#pb .plg";
 			observeClassName = "page-lmg";
 			dom = u.query('#scroll');
 		} else if (host.includes(domain.ebook)) {
@@ -400,7 +402,7 @@
 	 */
 	const before = () => {
 		console.log('before=============>')
-		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn) || host.includes(domain.xwfw)) {
 			if (u.query('.reload_image')) {
 				console.log('重新加载')
 				u.query('.reload_image').click();
@@ -417,7 +419,7 @@
 	 */
 	const after = () => {
 		console.log('after=============>')
-		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn) || host.includes(domain.xwfw)) {
 			let nodeTitle = u.query('.read-header-title');
 			if (!nodeTitle) {
 				nodeTitle = u.query('.read-header-name');
@@ -498,8 +500,7 @@
 		// 开始执行标识
 		localStorage.setItem('k_start', '1');
 		// 初始化页码
-		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain
-				.nlibvpn)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn) || host.includes(domain.xwfw)) {
 
 		}
 		// 自动翻页
@@ -533,8 +534,7 @@
 	const saveImagePDF = async (els, i) => {
 		localStorage.setItem('k_page_no', i + 1);
 		let canvas;
-		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain
-				.nlibvpn)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn) || host.includes(domain.xwfw)) {
 			canvas = await MF_ImageJoinToBlob(els);
 		} else if (host.includes(domain.ebook)) {
 			canvas = await MF_ImageToBase64(els.src);
@@ -612,8 +612,7 @@
 		let currentNode = undefined;
 		try {
 			let node = nodes[k_page_no];
-			if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain
-					.nlibvpn)) {
+			if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn) || host.includes(domain.xwfw)) {
 				conditions = nodeComplete(node.children);
 				currentNode = node;
 			} else if (host.includes(domain.ebook)) {
