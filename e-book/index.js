@@ -2,7 +2,7 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.2.1
+// @version      1.2.2
 // @description  文泉|文泉(scau)|文泉(bit)|高教书苑|中教经典|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库|畅想之星|书递等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
@@ -20,6 +20,7 @@
 // @match        https://www.cxstar.com/onlineepub*
 // @match        https://www.elib.link/pdf/*
 // @match        https://libresource.bit.edu.cn/https/443/cn/51zhy/yd/yitlink/ebook/reader/*
+// @match        https://yd.51zhy.cn/ebook/reader/*
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -238,6 +239,7 @@
 		sklib: 'www.sklib.cn',
 		cxstar: 'www.cxstar.com',
 		libresource: 'libresource.bit.edu.cn',
+		ydzhy: 'yd.51zhy.cn',
 	};
 	const {
 		host,
@@ -287,7 +289,8 @@
 			origin
 		})
 		dom = document.documentElement || document.body;
-		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn) || host.includes(domain.xwfw)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn) ||
+			host.includes(domain.xwfw)) {
 			select = "#pb .plg";
 			observeClassName = "page-lmg";
 			dom = u.query('#scroll');
@@ -336,7 +339,7 @@
 			dom = u.query('#viewerContainer');
 		} else if (host.includes(domain.cxstar)) {
 			select = "#epub-area .page-div-wrapper";
-		} else if (host.includes(domain.libresource)) {
+		} else if (host.includes(domain.libresource) || host.includes(domain.ydzhy)) {
 			select = "#canvas_box .pdf_box";
 			dom = u.query('.pdf_reader');
 		}
@@ -402,7 +405,8 @@
 	 */
 	const before = () => {
 		console.log('before=============>')
-		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn) || host.includes(domain.xwfw)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn) ||
+			host.includes(domain.xwfw)) {
 			if (u.query('.reload_image')) {
 				console.log('重新加载')
 				u.query('.reload_image').click();
@@ -419,7 +423,8 @@
 	 */
 	const after = () => {
 		console.log('after=============>')
-		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn) || host.includes(domain.xwfw)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn) ||
+			host.includes(domain.xwfw)) {
 			let nodeTitle = u.query('.read-header-title');
 			if (!nodeTitle) {
 				nodeTitle = u.query('.read-header-name');
@@ -434,7 +439,7 @@
 			}
 		} else if (host.includes(domain.zjjd)) {
 			title = u.query('.title').innerText;
-		} else if (host.includes(domain.libresource)) {
+		} else if (host.includes(domain.libresource) || host.includes(domain.ydzhy)) {
 			title = document.title;
 		}
 	}
@@ -500,7 +505,8 @@
 		// 开始执行标识
 		localStorage.setItem('k_start', '1');
 		// 初始化页码
-		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn) || host.includes(domain.xwfw)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain
+			.nlibvpn) || host.includes(domain.xwfw)) {
 
 		}
 		// 自动翻页
@@ -534,7 +540,8 @@
 	const saveImagePDF = async (els, i) => {
 		localStorage.setItem('k_page_no', i + 1);
 		let canvas;
-		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn) || host.includes(domain.xwfw)) {
+		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain
+			.nlibvpn) || host.includes(domain.xwfw)) {
 			canvas = await MF_ImageJoinToBlob(els);
 		} else if (host.includes(domain.ebook)) {
 			canvas = await MF_ImageToBase64(els.src);
@@ -547,7 +554,7 @@
 		} else if (host.includes(domain.cmpkgs) || host.includes(domain.zslib) || host.includes(domain
 				.sklib) || host.includes(domain.cxstar)) {
 			canvas = els
-		} else if (host.includes(domain.libresource)) {
+		} else if (host.includes(domain.libresource) || host.includes(domain.ydzhy)) {
 			canvas = els
 		}
 		doc.addPage();
@@ -612,7 +619,8 @@
 		let currentNode = undefined;
 		try {
 			let node = nodes[k_page_no];
-			if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain.nlibvpn) || host.includes(domain.xwfw)) {
+			if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain
+					.nlibvpn) || host.includes(domain.xwfw)) {
 				conditions = nodeComplete(node.children);
 				currentNode = node;
 			} else if (host.includes(domain.ebook)) {
@@ -665,7 +673,7 @@
 					currentNode = canvas;
 				}
 
-			} else if (host.includes(domain.libresource)) {
+			} else if (host.includes(domain.libresource) || host.includes(domain.ydzhy)) {
 				const canvas = node.querySelector('canvas')
 				const dataLoaded = u.attr(node, 'style')
 				if (dataLoaded && canvas) {
