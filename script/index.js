@@ -2,7 +2,7 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      6.5
+// @version      6.6
 // @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标|能源标准|认证认可标准|腾讯文档|绿色建站|电网等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
@@ -63,13 +63,25 @@
 // ==/UserScript==
 (function() {
 	'use strict';
-	let MF =
-		'#MF_fixed{position:fixed;top:50%;transform:translateY(-50%);right:20px;gap:20px;flex-direction:column;z-index:2147483647;display:flex}';
-	MF +=
-		'.MF_box{padding:10px;cursor:pointer;border-color:rgb(0,102,255);border-radius:5px;background-color:white;color:rgb(0,102,255);margin-right:10px;box-shadow:rgb(207,207,207) 1px 1px 9px 3px}.MF_active{color: green}#MF_speed{color: red;}';
-	MF +=
-		'@media print{html{height:auto !important}body{display:block !important}#app-left{display:none !important}#app-right{display:none !important}#MF_fixed{display:none !important}.menubar{display:none !important}.top-bar-right{display:none !important}.user-guide{display:none !important}#app-reader-editor-below{display:none !important}.no-full-screen{display:none !important}.comp-vip-pop{display:none !important}.center-wrapper{width:auto !important}.reader-thumb,.related-doc-list,.fold-page-content,.try-end-fold-page,.lazy-load,#MF_textarea,#nav-menu-wrap{display:none !important}}'
-	const prefix = "MF_";
+
+	function generateRandomString() {
+		let result = '';
+		const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+		const charactersLength = characters.length;
+		for (let i = 0; i < 5; i++) {
+			result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		}
+		return result;
+	}
+	const prefix = generateRandomString() + "_";
+	const boxId = generateRandomString()
+	let styles =
+		`#${prefix}${boxId}{position:fixed;top:50%;transform:translateY(-50%);right:20px;gap:20px;flex-direction:column;z-index:2147483647;display:flex}`;
+	styles +=
+		`.${prefix}box{padding:10px;cursor:pointer;border-color:rgb(0,102,255);border-radius:5px;background-color:white;color:rgb(0,102,255);margin-right:10px;box-shadow:rgb(207,207,207) 1px 1px 9px 3px}.${prefix}active{color: green}#${prefix}speed{color: red;}`;
+	styles +=
+		`@media print{html{height:auto !important}body{display:block !important}#app-left{display:none !important}#app-right{display:none !important}#${prefix}fixed{display:none !important}.menubar{display:none !important}.top-bar-right{display:none !important}.user-guide{display:none !important}#app-reader-editor-below{display:none !important}.no-full-screen{display:none !important}.comp-vip-pop{display:none !important}.center-wrapper{width:auto !important}.reader-thumb,.related-doc-list,.fold-page-content,.try-end-fold-page,.lazy-load,#${prefix}textarea,#nav-menu-wrap{display:none !important}}`
+
 	// canvas 禁止重写 drawImage
 	const canvasRenderingContext2DPrototype = CanvasRenderingContext2D.prototype;
 	const originalDrawImage = canvasRenderingContext2DPrototype.drawImage;
@@ -92,18 +104,9 @@
 		return originalSetTimeout(wrappedCallback, delay);
 	};
 
-	function generateRandomString() {
-		let result = '';
-		const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-		const charactersLength = characters.length;
-		for (let i = 0; i < 5; i++) {
-			result += characters.charAt(Math.floor(Math.random() * charactersLength));
-		}
-		return result;
-	}
-	const boxId = generateRandomString()
-	const mainStyle = MF.replaceAll('MF_fixed', prefix + boxId);
-	GM_addStyle(mainStyle)
+
+	// const mainStyle = MF.replaceAll('MF_fixed', prefix + boxId);
+	GM_addStyle(styles)
 
 	/**
 	 * @description 添加 URL 到本地缓存
@@ -410,11 +413,11 @@
 			let textContent = link ? link.textContent : "";
 			let result = textContent ? textContent.substring(textContent.indexOf('“') + 1, textContent
 				.lastIndexOf('”')) : window.getSelection().toString();
-			let textarea = u.query('#MF_textarea');
+			let textarea = u.query(`#${prefix}textarea`);
 			if (textarea) {
 				textarea.innerText = result;
 			} else {
-				textarea = u.createEl('MF_textarea', 'textarea');
+				textarea = u.createEl(prefix+'textarea', 'textarea');
 				let style = {
 					width: "100%",
 					height: "200px",
@@ -962,7 +965,7 @@
 				GM_deleteValue('listData'); // 删除缓存
 				handleRenderData()
 			}
-		} 
+		}
 	}
 
 	// load 事件
@@ -1350,11 +1353,11 @@
 		u.preview(i, length);
 		if (i !== length - 1) {
 			let speed = 500,
-				MF_speed = Number(u.query('#MF_speed').innerText);
+				MF_speed = Number(u.query(`#${prefix}speed`).innerText);
 			if (MF_speed > 0) {
 				speed = MF_speed
 			} else {
-				u.query('#MF_speed').innerText = 500
+				u.query(`#${prefix}speed`).innerText = 500
 			}
 			setTimeout(() => {
 				console.log(speed, 'ms 后执行');
