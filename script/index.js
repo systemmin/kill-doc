@@ -80,7 +80,7 @@
 	styles +=
 		`.${prefix}box{padding:10px;cursor:pointer;border-color:rgb(0,102,255);border-radius:5px;background-color:white;color:rgb(0,102,255);margin-right:10px;box-shadow:rgb(207,207,207) 1px 1px 9px 3px}.${prefix}active{color: green}#${prefix}speed{color: red;}`;
 	styles +=
-		`@media print{html{height:auto !important}body{display:block !important}#app-left{display:none !important}#app-right{display:none !important}#${prefix}fixed{display:none !important}.menubar{display:none !important}.top-bar-right{display:none !important}.user-guide{display:none !important}#app-reader-editor-below{display:none !important}.no-full-screen{display:none !important}.comp-vip-pop{display:none !important}.center-wrapper{width:auto !important}.reader-thumb,.related-doc-list,.fold-page-content,.try-end-fold-page,.lazy-load,#${prefix}textarea,#nav-menu-wrap{display:none !important}}`
+		`@media print{html{height:auto !important}body{display:block !important}#app-left{display:none !important}#app-right{display:none !important}#${prefix}${boxId}{display:none !important}.menubar{display:none !important}.top-bar-right{display:none !important}.user-guide{display:none !important}#app-reader-editor-below{display:none !important}.no-full-screen{display:none !important}.comp-vip-pop{display:none !important}.center-wrapper{width:auto !important}.reader-thumb,.related-doc-list,.fold-page-content,.try-end-fold-page,.lazy-load,#${prefix}textarea,#nav-menu-wrap{display:none !important}}`
 
 	// canvas 禁止重写 drawImage
 	const canvasRenderingContext2DPrototype = CanvasRenderingContext2D.prototype;
