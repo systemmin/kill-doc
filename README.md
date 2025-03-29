@@ -181,12 +181,14 @@
 
 最新版本
 
-- 2025/01/21 `v6.5` 金锄头无法下载 bug 处理 
+- 2025/03/29 `v6.7` 花时间好好研究研究js，想想怎么改进页面预览，老是搞怎么隐藏dom怎么删除dom，研究一点有技术含量的，有助于提高技能。例如可以学习一下百度文库。----给道客前端维护者
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2025/03/24 </span><code>v6.6</code><span>道客 css 优化</span></li>
+    <li><span>2025/01/21 </span><code>v6.5</code><span>金锄头无法下载 bug 处理</span></li>
     <li><span>2024/12/23 </span><code>v6.4</code><span>360 无法下载 bug 处理  </span></li>
     <li><span>2024/12/19 </span><code>v6.3</code><span>优化百度PPT缺页问题 </span></li>
     <li><span>2024/12/16 </span><code>v6.2</code><span>新增电网 </span></li>
