@@ -181,12 +181,37 @@
 
 最新版本
 
-- 2025/03/29 `v6.7` 花时间好好研究研究js，想想怎么改进页面预览，老是搞怎么隐藏dom怎么删除dom，研究一点有技术含量的，有助于提高技能。例如可以学习一下百度文库。----给道客前端维护者
+- 2025/03/30 `v6.8` 随机数
+
+定时器，正则匹配，隐藏并清空子节点。
+
+```js
+window.onload = function () {
+	setInterval(function(){
+			document.querySelectorAll('body > div[id]').forEach(el => {
+			if (/^[a-zA-Z0-9]{5}_[a-zA-Z0-9]{5}$/.test(el.id)) {
+				el.style.display = 'none';
+				el.innerHTML = '';
+			}
+		});
+	}, 1000);
+};
+```
+
+随机种子
+
+```js
+let factor = 0
+while (factor == 0) {
+	factor = Math.floor(Math.random() * 10)
+}
+```
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2025/03/29 </span><code>v6.7</code><span>花时间好好研究研究js，想想怎么改进页面预览，老是搞怎么隐藏dom怎么删除dom，研究一点有技术含量的，有助于提高技能。例如可以学习一下百度文库。----给道客前端维护者</span></li>
     <li><span>2025/03/24 </span><code>v6.6</code><span>道客 css 优化</span></li>
     <li><span>2025/01/21 </span><code>v6.5</code><span>金锄头无法下载 bug 处理</span></li>
     <li><span>2024/12/23 </span><code>v6.4</code><span>360 无法下载 bug 处理  </span></li>
