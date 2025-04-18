@@ -1,0 +1,14 @@
+{
+  "name": "kill-doc",
+  "version": "1.0.0",
+  "description": "user script",
+  "main": "main.js",
+  "scripts": {
+    "build": "node main.js"
+  },
+  "author": "Mr.Fang",
+  "license": "Apache 2.0",
+  "dependencies": {
+    "terser": "^5.39.0"
+  }
+}
