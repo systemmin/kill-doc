@@ -2,7 +2,6 @@ javascript: (async () => {
 	'use strict';
 
 	let loading = false;
-	alert('已开始！');
 	const script = document.createElement('script');
 	script.src = "https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js";
 	script.fetchpriority = "high";
@@ -34,6 +33,23 @@ javascript: (async () => {
 		hotfixes: ["px_scaling"]
 	});
 
+	function updateState(params) {
+		const url = new URL(window.location.href);
+		url.searchParams.set('状态', params);
+		history.pushState({}, '', url.href);
+	}
+
+	updateState('开始预览');
+
+	function updateProgress(current, total) {
+		let p = (current / total) * 100;
+		let ps = p.toFixed(0) > 100 ? 100 : p.toFixed(0);
+		console.log('当前进度', ps);
+		let url = new URL(window.location.href);
+		url.searchParams.set('p', ps);
+		history.pushState({}, '', url.href);
+	}
+
 	function addDataPage(data, i, width, height) {
 		let target_h = height,
 			target_w = width;
@@ -60,9 +76,11 @@ javascript: (async () => {
 			if (t.length !== 0) {
 				continue;
 			}
+			updateProgress(i + 1, len);
 			addDataPage(item, i, item.width, item.height);
 		}
 		console.log('处理完成', length);
+		updateState('正在下载');
 		doc.save(`${title}.pdf`, {
 			returnPromise: true
 		}).then(res => {
@@ -103,12 +121,12 @@ javascript: (async () => {
 					behavior: "smooth"
 				});
 				finish = false;
+				updateProgress(i + 1, len);
 				break;
 			}
 		}
 		if (finish) {
-			console.log('预览结束');
-			console.log('开始保存');
+			updateState('开始下载');
 			traverseSaveCanvas();
 			clearTimer();
 		} else {
@@ -129,5 +147,6 @@ javascript: (async () => {
 		let end = previewPage();
 		console.log('定时器');
 	}, 500)
+
 
 })();
