@@ -2,7 +2,7 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.2.2
+// @version      1.2.3
 // @description  文泉|文泉(scau)|文泉(bit)|高教书苑|中教经典|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库|畅想之星|书递等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
@@ -506,7 +506,7 @@
 		localStorage.setItem('k_start', '1');
 		// 初始化页码
 		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain
-			.nlibvpn) || host.includes(domain.xwfw)) {
+				.nlibvpn) || host.includes(domain.xwfw)) {
 
 		}
 		// 自动翻页
@@ -532,16 +532,22 @@
 	 */
 	const isVisible = (el) => {
 		const rect = el.getBoundingClientRect();
-		return (
-			rect.top >= 0 && rect.top <= (window.innerHeight || document.documentElement.clientHeight)
-		);
+		const height = rect.height + 10; // 误差
+		const top = rect.top - 10; // 
+		if (top <= 0 && top >= -height) {
+			return true;
+		} else if (bottom >= 0 && bottom <= height) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	// wq 保存图片
 	const saveImagePDF = async (els, i) => {
 		localStorage.setItem('k_page_no', i + 1);
 		let canvas;
 		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain
-			.nlibvpn) || host.includes(domain.xwfw)) {
+				.nlibvpn) || host.includes(domain.xwfw)) {
 			canvas = await MF_ImageJoinToBlob(els);
 		} else if (host.includes(domain.ebook)) {
 			canvas = await MF_ImageToBase64(els.src);
