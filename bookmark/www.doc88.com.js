@@ -27,7 +27,7 @@ javascript: (async () => {
 
 	const jsPDF = jspdf.jsPDF;
 	const doc = new jsPDF({
-		orientation: 'p',
+		orientation: 'l',
 		unit: 'px',
 		compress: true,
 		hotfixes: ["px_scaling"]
@@ -51,16 +51,12 @@ javascript: (async () => {
 	}
 
 	function addDataPage(data, i, width, height) {
-		let target_h = height,
-			target_w = width;
 		let dir = 'p';
 		if (width > height) {
 			dir = 'l';
-			target_h = width;
-			target_w = height;
 		}
-		doc.addPage([target_w, target_h], dir);
-		doc.addImage(data, 'JPEG', 0, 0, target_w, target_h, i, 'FAST');
+		doc.addPage([width, height], dir);
+		doc.addImage(data, 'JPEG', 0, 0, width, height, i, 'FAST');
 		if (doc.internal.pages[1].length === 2) {
 			doc.deletePage(1);
 		}
