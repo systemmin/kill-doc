@@ -2,7 +2,7 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.2.4
+// @version      1.2.5
 // @description  文泉|文泉(scau)|文泉(bit)|高教书苑|中教经典|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库|畅想之星|书递等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
@@ -534,6 +534,7 @@
 		const rect = el.getBoundingClientRect();
 		const height = rect.height + 10; // 误差
 		const top = rect.top - 10; // 
+		const bottom = rect.bottom ; // 
 		if (top <= 0 && top >= -height) {
 			return true;
 		} else if (bottom >= 0 && bottom <= height) {
