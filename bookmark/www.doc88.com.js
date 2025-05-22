@@ -1,8 +1,12 @@
+// 名称 道客巴巴
+// 介绍 更快、更便捷、更高清，强到没朋友
+// 示例网址 
+// 匹配网址 https://www.doc88.com/
+// 版本号码 0.0.1
 javascript: (async () => {
 	'use strict';
 
 	let loading = false;
-	alert('已开始！');
 	const script = document.createElement('script');
 	script.src = "https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js";
 	script.fetchpriority = "high";
@@ -28,19 +32,40 @@ javascript: (async () => {
 
 	const jsPDF = jspdf.jsPDF;
 	const doc = new jsPDF({
-		orientation: 'l',
+		orientation: 'p',
 		unit: 'px',
 		compress: true,
 		hotfixes: ["px_scaling"]
 	});
 
+	function updateState(params) {
+		const url = new URL(window.location.href);
+		url.searchParams.set('状态', params);
+		history.pushState({}, '', url.href);
+	}
+
+	updateState('开始预览');
+
+	function updateProgress(current, total) {
+		let p = (current / total) * 100;
+		let ps = p.toFixed(0) > 100 ? 100 : p.toFixed(0);
+		console.log('当前进度', ps);
+		let url = new URL(window.location.href);
+		url.searchParams.set('p', ps);
+		history.pushState({}, '', url.href);
+	}
+
 	function addDataPage(data, i, width, height) {
+		let target_h = height,
+			target_w = width;
 		let dir = 'p';
 		if (width > height) {
 			dir = 'l';
+			target_h = width;
+			target_w = height;
 		}
-		doc.addPage([width, height], dir);
-		doc.addImage(data, 'JPEG', 0, 0, width, height, i, 'FAST');
+		doc.addPage([target_w, target_h], dir);
+		doc.addImage(data, 'JPEG', 0, 0, target_w, target_h, i, 'FAST');
 		if (doc.internal.pages[1].length === 2) {
 			doc.deletePage(1);
 		}
@@ -56,9 +81,11 @@ javascript: (async () => {
 			if (t.length !== 0) {
 				continue;
 			}
+			updateProgress(i + 1, len);
 			addDataPage(item, i, item.width, item.height);
 		}
 		console.log('处理完成', length);
+		updateState('正在下载');
 		doc.save(`${title}.pdf`, {
 			returnPromise: true
 		}).then(res => {
@@ -99,12 +126,12 @@ javascript: (async () => {
 					behavior: "smooth"
 				});
 				finish = false;
+				updateProgress(i + 1, len);
 				break;
 			}
 		}
 		if (finish) {
-			console.log('预览结束');
-			console.log('开始保存');
+			updateState('开始下载');
 			traverseSaveCanvas();
 			clearTimer();
 		} else {
@@ -125,5 +152,6 @@ javascript: (async () => {
 		let end = previewPage();
 		console.log('定时器');
 	}, 500)
+
 
 })();
