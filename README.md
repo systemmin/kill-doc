@@ -181,31 +181,7 @@
 
 最新版本
 
-- 2025/03/30 `v6.8` 随机数
-
-定时器，正则匹配，隐藏并清空子节点。
-
-```js
-window.onload = function () {
-	setInterval(function(){
-			document.querySelectorAll('body > div[id]').forEach(el => {
-			if (/^[a-zA-Z0-9]{5}_[a-zA-Z0-9]{5}$/.test(el.id)) {
-				el.style.display = 'none';
-				el.innerHTML = '';
-			}
-		});
-	}, 1000);
-};
-```
-
-随机种子
-
-```js
-let factor = 0
-while (factor == 0) {
-	factor = Math.floor(Math.random() * 10)
-}
-```
+- 2025/06/03 `v7.1` 增加飞书/file/处理，但匹配/space/路径有bug，可能出现重复功能按钮，使用字体较大功能按钮即可，不影响正常功能更。
 
 历史版本
 
