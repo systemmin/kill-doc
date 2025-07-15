@@ -181,12 +181,13 @@
 
 最新版本
 
-- 2025/06/03 `v7.1` 增加飞书/file/处理，但匹配/space/路径有bug，可能出现重复功能按钮，使用字体较大功能按钮即可，不影响正常功能更。
+- 2025/07/15 `v7.2` 飞书 bytedance 域名资源匹配
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2025/06/03 </span><code>v7.1</code><span>增加飞书/file/处理，但匹配/space/路径有bug，可能出现重复功能按钮，使用字体较大功能按钮即可，不影响正常功能更。</span></li>
     <li><span>2025/03/29 </span><code>v6.7</code><span>花时间好好研究研究js，想想怎么改进页面预览，老是搞怎么隐藏dom怎么删除dom，研究一点有技术含量的，有助于提高技能。例如可以学习一下百度文库。----给道客前端维护者</span></li>
     <li><span>2025/03/24 </span><code>v6.6</code><span>道客 css 优化</span></li>
     <li><span>2025/01/21 </span><code>v6.5</code><span>金锄头无法下载 bug 处理</span></li>

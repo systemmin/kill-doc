@@ -36,6 +36,9 @@ https://ebook.hep.com.cn/index.html#/reader?bookId=1061910584296996864
 https://w1x54zx5cau.feishu.cn/file/CnfcbeLmBokffaxtH8scckyhnGf // space
 https://gizns0tb68f.feishu.cn/file/XALRbWdFfoxDN7x77rscwCAgnzg // file
 
+飞书字节域名
+https://bytedance.larkoffice.com/file/QzWjb9PwroghJmx5cRkcI8ukn6g
+
 标准馆
 https://www.nssi.org.cn/cssn/js/pdfjs/web/preview.jsp?a100=SL%20446-2009 
 https://www.nssi.org.cn/cssn/js/pdfjs/web/preview.jsp?a100=GB%201588-2024
@@ -86,3 +89,5 @@ https://wenku.baidu.com/view/98d266622d60ddccda38376baf1ffc4ffe47e295.html?fr=in
 
 360 优化清除缓存 bug
 https://wenku.so.com/d/7fec4294379fa83e95d090fe99802290
+
+
