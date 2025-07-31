@@ -2,7 +2,7 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.2.5
+// @version      1.2.6
 // @description  文泉|文泉(scau)|文泉(bit)|高教书苑|中教经典|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库|畅想之星|书递等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
@@ -21,7 +21,7 @@
 // @match        https://www.elib.link/pdf/*
 // @match        https://libresource.bit.edu.cn/https/443/cn/51zhy/yd/yitlink/ebook/reader/*
 // @match        https://yd.51zhy.cn/ebook/reader/*
-// @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js
+// @require      https://unpkg.com/jspdf@2.4.0/dist/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
 // @icon         https://dtking.cn/favicon.ico
