@@ -2,16 +2,15 @@
 // 介绍 更快、更便捷、更高清，强到没朋友
 // 示例网址 
 // 匹配网址 https://www.doc88.com/
-// 版本号码 0.0.1
+// 版本号码 0.0.2
 javascript: (async () => {
 	'use strict';
 
 	let loading = false;
 	const script = document.createElement('script');
-	script.src = "https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jspdf/2.4.0/jspdf.umd.min.js";
+	script.src = "https://unpkg.com/jspdf@2.4.0/dist/jspdf.umd.min.js";
 	script.fetchpriority = "high";
 	script.addEventListener("load", () => {
-		console.log("外部库加载完成！");
 		loading = true;
 	});
 	document.body.appendChild(script);
