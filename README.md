@@ -1,4 +1,4 @@
-<p align="center"><strong>宗旨就是你能看到多少，就能下载多少，挑战不可能</strong><p>
+<p align="center"><strong> 宗旨就是你能看到多少，就能下载多少，挑战不可能</strong><p>
 <p align="center">
     <a>
         <img src="https://img.shields.io/badge/jspdf-v2.4.0-blue?style=flat-square" alt="jspdf-v2" />
