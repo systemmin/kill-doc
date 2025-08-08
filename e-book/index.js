@@ -2,7 +2,7 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.2.6
+// @version      1.2.7
 // @description  文泉|文泉(scau)|文泉(bit)|高教书苑|中教经典|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库|畅想之星|书递等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
@@ -26,7 +26,7 @@
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
 // @icon         https://dtking.cn/favicon.ico
 // @run-at 		 document-idle
-// @grant        none
+// @grant        unsafeWindow
 // @license      Apache-2.0
 // ==/UserScript==
 
@@ -172,9 +172,9 @@
 					el.className = prefix + "box";
 				}
 				if (item.fun) {
-					el.onclick = function() {
-						eval(item.fun);
-					}
+					el.addEventListener('click', () => {
+						eval(item.fun)
+					});
 				}
 				if (item.id === 'k_page_no') {
 					this.attr(el, 'contenteditable', true)
@@ -216,7 +216,7 @@
 		new Box('k_speed', '2-5').setTitle('每页预览时间，默认2-5秒直接随机时间'),
 		new Box('k_page_no', '1').setTitle('指定页码，从第几页开始'),
 		new Box('k_page_size', '100').setTitle('指定每次下载多少页面'), ,
-		new Box('handleStart', '开始执行', 'handleStart()'),
+		new Box('handleStart', '开始执行', 'handleLoadPage()'),
 		new Box('handleClean', '结束执行', 'handleClean()'),
 		new Box('start', '继续预览', 'autoPreview()'),
 		new Box('stop', '停止预览', 'stopPreview()'),
@@ -448,8 +448,8 @@
 	/**
 	 * @description 开始执行
 	 */
-	const handleStart = () => {
-		console.log('handleStart=============>')
+	function handleLoadPage() {
+		console.log('handleLoadPage=============>')
 		// 重新设置页码参数
 		const k_page_no = Number(u.query('#MF_k_page_no').innerText) - 1;
 		if (k_page_no > 0) {
@@ -506,7 +506,7 @@
 		localStorage.setItem('k_start', '1');
 		// 初始化页码
 		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain
-			.nlibvpn) || host.includes(domain.xwfw)) {
+				.nlibvpn) || host.includes(domain.xwfw)) {
 
 		}
 		// 自动翻页
@@ -534,7 +534,7 @@
 		const rect = el.getBoundingClientRect();
 		const height = rect.height + 10; // 误差
 		const top = rect.top - 10; // 
-		const bottom = rect.bottom ; // 
+		const bottom = rect.bottom; // 
 		if (top <= 0 && top >= -height) {
 			return true;
 		} else if (bottom >= 0 && bottom <= height) {
@@ -548,7 +548,7 @@
 		localStorage.setItem('k_page_no', i + 1);
 		let canvas;
 		if (host.includes(domain.wqxuetang) || host.includes(domain.scau) || host.includes(domain
-			.nlibvpn) || host.includes(domain.xwfw)) {
+				.nlibvpn) || host.includes(domain.xwfw)) {
 			canvas = await MF_ImageJoinToBlob(els);
 		} else if (host.includes(domain.ebook)) {
 			canvas = await MF_ImageToBase64(els.src);
