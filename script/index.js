@@ -47,6 +47,8 @@
 // @match        https://weboffice.qq.com/pdf/*
 // @match        https://gbservice.cn/*
 // @match        https://ecp.sgcc.com.cn/*
+// @match        https://vt.quark.cn/**/**/**
+// @match        https://wenku-img.docs.quark.cn/*
 // @require      https://unpkg.com/jspdf@2.4.0/dist/jspdf.umd.min.js
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
@@ -371,6 +373,7 @@
 		weboffice: 'weboffice.qq.com',
 		gbservice: 'gbservice.cn',
 		sgcc: 'ecp.sgcc.com.cn',
+		quark: 'vt.quark.cn',
 	};
 	const {
 		host,
@@ -546,7 +549,6 @@
 	}
 	// 监听页面消息事件
 	window.addEventListener("message", (e) => {
-		// console.log(e)
 		const {
 			type,
 			value
@@ -890,6 +892,11 @@
 			select = "#viewer .page";
 			btns.splice(1, 0, new Box('speed', '500'));
 			btns.push(new Box('get-text', '获取文本', 'fullText()'))
+		} else if (host.includes(domain.quark)) {
+			fileType = "pdf";
+			dom = u.query('#outer-container');
+			select = "._preview-item_lruzz_1 img";
+			// title = u.query('.left_titile').innerText;
 		}
 		const query = u.query("#btn_ppt_front_pc"); // 原创
 		if (!query) {
@@ -999,6 +1006,30 @@
 		}
 	})();
 
+	// 解决监听事件序列问题
+	const injection = () => {
+		const script = document.createElement('script');
+		script.textContent = `
+		  (function() {
+		    const el = document.querySelector("div._continue-read-mask_1tndn_1 > div");
+			if(el){
+				const rect = el.getBoundingClientRect();
+				['mousedown','mouseup','click'].forEach(type=>{
+				  el.dispatchEvent(new MouseEvent(type,{
+				    bubbles:true,
+				    cancelable:true,
+				    view:window,
+				    button:0,
+				    clientX: rect.left + rect.width/2,
+				    clientY: rect.top + rect.height/2
+				  }));
+				});
+			}
+		  })();
+		`;
+		document.documentElement.appendChild(script);
+		script.remove();
+	}
 
 	/**
 	 * @description 开始方法，自动预览
@@ -1050,6 +1081,9 @@
 			dom = document.querySelector('.pdf-viewport__list');
 			localStorage.removeItem('fs_keys')
 		}
+		if (host.includes(domain.quark)) {
+			dom = u.query('#outer-container');;
+		}
 
 		if (host.includes(domain.docin)) {
 			// 起始页码
@@ -1061,6 +1095,10 @@
 			if (host.includes(domain.book118)) {
 				scrollPageArea()
 			} else if (host.includes(domain.renrendoc)) {
+				scrollPageArea()
+			} else if (host.includes(domain.quark)) {
+				injection()
+				// await u.sleep(2000);
 				scrollPageArea()
 			} else if (host.includes(domain.docin)) {
 				scrollWinArea()
@@ -1147,7 +1185,7 @@
 				} else {
 					await parseImage()
 				}
-			} else if (host.includes(domain.renrendoc)) {
+			} else if (host.includes(domain.renrendoc) || host.includes(domain.quark)) {
 				await parseImage()
 			} else if (host.includes(domain.wenku)) {
 				const display = u.query('#app-top-right-tool')?.style.display;
@@ -1507,7 +1545,14 @@
 				break;
 			}
 		}
-		if (end === 0) {
+		if (host.includes(domain.quark)) {
+			let t_text = document.querySelectorAll('.U54RfnzHJ35XZM_aVPA9')[2].innerText;
+			let end_el = document.querySelector("div._continue-read-mask_1tndn_1 > div")
+			if (length + '页' === t_text || !end_el) {
+				u.preview(-1);
+				stopPreview();
+			}
+		} else if (end === 0) {
 			u.preview(-1);
 			stopPreview();
 		}
