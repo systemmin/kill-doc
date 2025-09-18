@@ -45,6 +45,22 @@ javascript:(()=>{"use strict";const src=document.querySelector("iframe").src;let
 javascript:(()=>{"use strict";javascript:const src=document.querySelector("iframe").src;const downloadUrl=src.substring(80);const target=decodeURIComponent(downloadUrl);const news=target.substring(0,target.length-9);window.open(news,"_blank")})();
 ```
 
+### 百度文库
+
+```js
+// 名称 百度文库
+// 介绍 更快、更便捷、更高清，强到没朋友
+// 示例网址 
+// 匹配网址 https://wenku.baidu.com
+// 版本号码 0.0.1
+```
+
+#### 书签代码
+
+```js
+javascript:(async()=>{"use strict";let loading=false;const script=document.createElement("script");script.src="https://cdn.jsdelivr.net/npm/@zumer/snapdom/dist/snapdom.min.js";script.fetchpriority="high";script.addEventListener("load",(()=>{loading=true}));document.body.appendChild(script);await new Promise(((resolve,reject)=>{const interval=setInterval((()=>{if(loading){clearInterval(interval);resolve(true)}}),100)}));let el=document.querySelector("#app-reader-editor");const result=await snapdom(el);await result.download({format:"jpg",filename:document.title})})();
+```
+
 ### 前沿知识库
 
 ```js

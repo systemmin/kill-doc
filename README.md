@@ -88,7 +88,8 @@
 |       [认证认可标准](http://rbtest.cnca.cn/)        |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |  [腾讯文档（来自微云）](https://weboffice.qq.com)   |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 |          [绿色建站](https://gbservice.cn/)          |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
-|          [电网](https://ecp.sgcc.com.cn/)          |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
+|          [电网](https://ecp.sgcc.com.cn/)           |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ✅     |    ❌    |    ❌     |
+|            [夸克](https://vt.quark.cn/)             |  ✅   |    ✅     |    ✅     |    ✅     |    ✅    |    ❌     |    ❌    |    ❌     |
 
 之前支持后来移除的平台请移步 [kill-e-book](https://cn-greasyfork.org/zh-CN/scripts/497405-kill-e-book) 电子书下载脚本
 
@@ -176,17 +177,26 @@
 - 页面加载出来比较慢，大概10秒左右耐心等待
 - 页面会*提示弹出窗口*，**请允许弹框**
 
+### 夸克文库
+
+1. 支持PDF和Word格式下载PDF或图片
+2. 暂不支持PPT格式，后续优化
+3. 可能自动预览不完全，可手动预览，然后点击下载PDF
+
 
 ## 历史
 
 最新版本
 
-- 2025/07/15 `v7.2` 飞书 bytedance 域名资源匹配
+- 2025/09/18 `v7.4` 新增夸克文库
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2025/09/18 </span><code>v7.4</code><span>新增夸克文库</span></li>
+    <li><span>2025/07/31 </span><code>v7.3</code><span>优化 CDN 引入 jspdf 问题</span></li>
+    <li><span>2025/07/15 </span><code>v7.2</code><span>飞书 bytedance 域名资源匹配</span></li>
     <li><span>2025/06/03 </span><code>v7.1</code><span>增加飞书/file/处理，但匹配/space/路径有bug，可能出现重复功能按钮，使用字体较大功能按钮即可，不影响正常功能更。</span></li>
     <li><span>2025/03/29 </span><code>v6.7</code><span>花时间好好研究研究js，想想怎么改进页面预览，老是搞怎么隐藏dom怎么删除dom，研究一点有技术含量的，有助于提高技能。例如可以学习一下百度文库。----给道客前端维护者</span></li>
     <li><span>2025/03/24 </span><code>v6.6</code><span>道客 css 优化</span></li>
