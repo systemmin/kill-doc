@@ -2,7 +2,7 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      7.4
+// @version      7.5
 // @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标|能源标准|认证认可标准|腾讯文档|绿色建站|电网|夸克文库等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
@@ -47,7 +47,7 @@
 // @match        https://weboffice.qq.com/pdf/*
 // @match        https://gbservice.cn/*
 // @match        https://ecp.sgcc.com.cn/*
-// @match        https://vt.quark.cn/**/**/**
+// @match        https://vt.quark.cn/blm/quark-doc-main-pc-966/**
 // @match        https://wenku-img.docs.quark.cn/*
 // @match        https://preview-wenku.quark.cn/*
 // @require      https://unpkg.com/jspdf@2.4.0/dist/jspdf.umd.min.js
@@ -897,9 +897,6 @@
 			fileType = "pdf";
 			dom = u.query('#outer-container');
 			select = "._preview-item_lruzz_1 img";
-			// let type = u.query('.U54RfnzHJ35XZM_aVPA9').innerText
-			// console.log('文件类型',type);
-			
 		}
 		const query = u.query("#btn_ppt_front_pc"); // 原创
 		if (!query) {
@@ -1086,25 +1083,30 @@
 		}
 		if (host.includes(domain.quark)) {
 			// doc pdf 
-			dom = u.query('#outer-container') || u.query('#preview-list-scroll-div') || u.query('#content-div-ppt');
+			title = document.title;
+			dom = u.query('#outer-container') || u.query('#preview-list-scroll-div') || u.query(
+				'#content-div-ppt');
 			select = "._preview-item_lruzz_1 img";
 			let type = u.query('.U54RfnzHJ35XZM_aVPA9').innerText;
 			// pdf 类型有两种可能性：._preview-item_lruzz_1 .img-div
-			if(u.query('._preview-item_lruzz_1 img')){
+			if (u.query('._preview-item_lruzz_1 img')) {
 				select = "._preview-item_lruzz_1 img";
 			}
-			if(u.query('.img-div img')){
+			if (u.query('.img-div img')) {
 				select = ".img-div img";
+			} // ppt
+			if (u.query('.swiper-slide img')) {
+				select = ".swiper-slide img";
 			}
-			// console.log('select:',select);/
-			// console.log('type:',type);
 		}
 
 		if (host.includes(domain.docin)) {
 			// 起始页码
 			startPageNo = document.querySelector("#page_cur").value - 1 || 0;
 		} else {
-			dom.scrollTop = 0;
+			if (dom?.scrollTop) {
+				dom.scrollTop = 0;
+			}
 		}
 		interval = setInterval(() => {
 			if (host.includes(domain.book118)) {
@@ -1112,9 +1114,13 @@
 			} else if (host.includes(domain.renrendoc)) {
 				scrollPageArea()
 			} else if (host.includes(domain.quark)) {
-				injection()
-				// await u.sleep(2000);
-				scrollQuarkPageArea()
+				let type = u.query('.U54RfnzHJ35XZM_aVPA9').innerText;
+				if (type === 'PPTX') {
+					swiperSlideTarget();
+				} else {
+					injection();
+					scrollQuarkPageArea();
+				}
 			} else if (host.includes(domain.docin)) {
 				scrollWinArea()
 			} else if (host.includes(domain.wenku)) {
@@ -1572,7 +1578,31 @@
 			stopPreview();
 		}
 	}
-	
+
+	// 触发轮播图切换
+	const swiperSlideTarget = () => {
+		// 缩率图
+		const swipers = [...document.querySelector('#content-tab-main').children];
+		for (let i = 0; i < swipers.length; i++) {
+			let item = swipers[i];
+			if (item) {
+				item.click();
+			}
+		}
+		// 轮播图
+		const images = u.queryAll(select);
+		const length = images.length;
+		for (let i = 0; i < length; i++) {
+			let item = images[i];
+			u.preview(i + 1, length);
+		}
+		let t_text = document.querySelectorAll('.U54RfnzHJ35XZM_aVPA9')[2].innerText;
+		if (length + '页' === t_text) {
+			u.preview(-1);
+			stopPreview();
+		}
+	}
+
 	const scrollQuarkPageArea = () => {
 		const clientHeight = dom.clientHeight;
 		let end = 0;
@@ -1588,6 +1618,7 @@
 				left: 0,
 				behavior: "smooth",
 			});
+			u.preview(i + 1, length);
 		}
 		let t_text = document.querySelectorAll('.U54RfnzHJ35XZM_aVPA9')[2].innerText;
 		let end_el = document.querySelector("div._continue-read-mask_1tndn_1 > div")
