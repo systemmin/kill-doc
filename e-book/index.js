@@ -2,7 +2,7 @@
 // @name         kill-e-book 
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      1.2.7
+// @version      1.2.8
 // @description  文泉|文泉(scau)|文泉(bit)|高教书苑|中教经典|可知|先晓书院|工程科技(校)|悦读(校)|社会科学文库|畅想之星|书递等公开免费电子书下载
 // @author       Mr.Fang
 // @match        https://*.wqxuetang.com/deep/read/pdf*
@@ -25,8 +25,8 @@
 // @require      https://unpkg.com/@zip.js/zip.js@2.7.34/dist/zip.min.js
 // @require      https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.js
 // @icon         https://dtking.cn/favicon.ico
-// @run-at 		 document-idle
-// @grant        unsafeWindow
+// @run-at 		 document-start
+// @grant        none
 // @license      Apache-2.0
 // ==/UserScript==
 
@@ -37,14 +37,39 @@
 	MF +=
 		'.MF_box{padding:10px;cursor:pointer;border-color:rgb(0,102,255);border-radius:5px;background-color:white;color:rgb(0,102,255);}.MF_active{color: green}#MF_k_page_no,#MF_k_page_size{color: red;}';
 	const prefix = "MF_";
-	// canvas 禁止重写 drawImage
-	const canvasRenderingContext2DPrototype = CanvasRenderingContext2D.prototype;
-	const originalDrawImage = canvasRenderingContext2DPrototype.drawImage;
-	Object.defineProperty(canvasRenderingContext2DPrototype, 'drawImage', {
-		value: originalDrawImage,
-		writable: false,
-		configurable: false
+
+	const originalLog = console.log;
+	Object.defineProperty(console, 'log', {
+		get: () => originalLog,
+		set: () => {}
 	});
+
+	const ctxProto = CanvasRenderingContext2D.prototype;
+	const originalDrawImage = ctxProto.drawImage;
+	Object.defineProperty(ctxProto, 'drawImage', {
+		get: () => originalDrawImage,
+		set: () => {}
+	});
+
+	const originalFont = Object.getOwnPropertyDescriptor(ctxProto, 'font');
+	Object.defineProperty(ctxProto, 'font', {
+		get: function() {
+			return originalFont.get.call(this);
+		},
+		set: function(value) {
+			if (value.includes('no-real-font-123')) {
+				value = '11pt Arial';
+			}
+			return originalFont.set.call(this, value);
+		}
+	});
+
+	const originalToDataURL = HTMLCanvasElement.prototype.toDataURL;
+	Object.defineProperty(HTMLCanvasElement.prototype, 'toDataURL', {
+		get: () => originalToDataURL,
+		set: () => {}
+	});
+
 
 	class Box {
 		id = ""; // id
@@ -343,7 +368,9 @@
 			select = "#canvas_box .pdf_box";
 			dom = u.query('.pdf_reader');
 		}
-		u.gui(btns);
+		setTimeout(() => {
+			u.gui(btns);
+		}, 2000)
 		console.log('文件名称：', title);
 	}
 
