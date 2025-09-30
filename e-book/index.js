@@ -29,7 +29,7 @@
 // @grant        none
 // @license      Apache-2.0
 // ==/UserScript==
-
+const _drawImage = CanvasRenderingContext2D.prototype.drawImage;
 (function() {
 	'use strict';
 	let MF =
@@ -37,7 +37,11 @@
 	MF +=
 		'.MF_box{padding:10px;cursor:pointer;border-color:rgb(0,102,255);border-radius:5px;background-color:white;color:rgb(0,102,255);}.MF_active{color: green}#MF_k_page_no,#MF_k_page_size{color: red;}';
 	const prefix = "MF_";
-
+	
+	function safeDrawImage(ctx, ...args) {
+	        return _drawImage.apply(ctx, args);
+	    }
+		
 	const originalLog = console.log;
 	Object.defineProperty(console, 'log', {
 		get: () => originalLog,
@@ -813,7 +817,7 @@
 			// 3、遍历绘制画布
 			for (var i = 0; i < listData.length; i++) {
 				const img = children[listData[i].index];
-				ctx.drawImage(img, i * naturalWidth, 0, naturalWidth, naturalHeight);
+				safeDrawImage(ctx,img, i * naturalWidth, 0, naturalWidth, naturalHeight)
 			}
 			resolve(canvas)
 		})
@@ -841,7 +845,7 @@
 			let ctx = canvas.getContext('2d');
 			ctx.fillStyle = '#FFFFFF';
 			ctx.fillRect(0, 0, width, height);
-			ctx.drawImage(image, 0, 0, width, height);
+			safeDrawImage(ctx,image, 0, 0, width, height)
 			resolve(canvas);
 		})
 	}
@@ -867,7 +871,7 @@
 					let ctx = canvas.getContext('2d');
 					ctx.fillStyle = '#FFFFFF';
 					ctx.fillRect(0, 0, width, height);
-					ctx.drawImage(image, 0, 0, width, height);
+					safeDrawImage(ctx, image, 0, 0, width, height);
 					resolve(canvas);
 				} catch (e) {
 					console.error(e);
