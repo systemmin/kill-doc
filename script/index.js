@@ -2,8 +2,8 @@
 // @name         【最强无套路脚本】你能看见多少我能下载多少&下载公开免费的PPT、PDF、DOC、TXT等文件
 // @namespace    http://tampermonkey.net/
 // @homepage	 https://github.com/systemmin/kill-doc
-// @version      7.7
-// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标|能源标准|认证认可标准|腾讯文档|绿色建站|电网|夸克文库等公开免费文档下载
+// @version      7.8
+// @description  百度|原创力|人人|360文库|豆丁|豆丁建筑|道客|MBA智库|得力|七彩学科|金锄头|爱问|蚂蚁|读根网|搜弘|微传网|淘豆网|GB|国标全文公开|JJG|行业标准|轻竹办公|自然标准|交通标准|飞书|江苏计量|水利部|招投标|能源标准|认证认可标准|腾讯文档|绿色建站|电网|夸克文库等公开免费文档下载
 // @author       Mr.Fang
 // @match        https://*.book118.com/*
 // @match        https://*.renrendoc.com/*
@@ -29,6 +29,7 @@
 // @match        https://*.360tres.com/*
 // @match        https://www.wenkub.com/*
 // @match        http://c.gb688.cn/*
+// @match        https://openstd.samr.gov.cn/bzgk/*
 // @match        https://jjg.spc.org.cn/resmea/view/stdonline
 // @match        https://pro-img-brtm.baijiayun.com/*
 // @match        https://hbba.sacinfo.org.cn/attachment/onlineRead/*
@@ -358,6 +359,7 @@
 		taodocs: 'taodocs.com',
 		wenkub: 'wenkub.com',
 		gb688: 'gb688.cn',
+		openstd: 'openstd.samr.gov.cn',
 		jjg: 'jjg.spc.org.cn',
 		shengtongedu: 'pro-img-brtm.baijiayun.com',
 		sacinfo: 'hbba.sacinfo.org.cn',
@@ -806,6 +808,10 @@
 			select = "#viewer .page";
 			btns.splice(1, 0, new Box('speed', '500'));
 			btns.push(new Box('get-text', '获取文本', 'fullText()'))
+		} else if (host.includes(domain.openstd)) {
+			if (!u.query('#viewer')) return; // 非阅读页不显示工具栏
+			fileType = 'pdf';
+			select = "#viewer .page";
 		} else if (host.includes(domain.jjg)) {
 			fileType = ".pdf";
 			select = "#docViewer_ViewContainer .fwr-page-invisible";
@@ -1134,7 +1140,7 @@
 				scrollPageAreaDoc88()
 			} else if (host.includes(domain.taodocs)) {
 				scrollWinAreaTao()
-			} else if (host.includes(domain.gb688)) {
+			} else if (host.includes(domain.gb688) || host.includes(domain.openstd)) {
 				scrollPageAreaDocGB()
 			} else if (host.includes(domain.jjg)) {
 				scrollPageAreaJJG()
@@ -1258,7 +1264,7 @@
 				host.includes(domain.sacinfo)
 			) {
 				await downimg()
-			} else if (host.includes(domain.gb688)) {
+			} else if (host.includes(domain.gb688) || host.includes(domain.openstd)) {
 				if (u.query('#viewer').style.transform) { // bg
 					await downloadGBImage();
 				} else {
@@ -1667,7 +1673,8 @@
 
 	const scrollPageAreaDocGB = () => {
 		// 100% 预览
-		if (u.query('#scaleSelect').selectedIndex < 9) {
+		const scaleSelect = u.query('#scaleSelect');
+		if (scaleSelect && scaleSelect.selectedIndex < 9) {
 			u.query('#zoomIn').click();
 			return true;
 		}
@@ -2497,26 +2504,30 @@
 						const dy = Number(coord[2]);
 						const sx = Math.abs(pos[0].replace('px', ''));
 						const sy = Math.abs(pos[1].replace('px', ''));
-						const rect = child.getBoundingClientRect();
-						const {
-							width: sw,
-							height: sh
-						} = rect;
-						ctx.drawImage(image, sx, sy, sw, sh, dx * sw, dy * sh, sw, sh);
-						if (i === childrens.length - 1) {
-							// 转 base64 输出
-							canvas.toBlob(
-								(blob) => {
-									resolve({
-										blob,
-										canvas
-									});
-								},
-								"image/png",
-								1,
-							);
+						// 使用布局尺寸，避免视图缩放（transform: scale）影响碎片大小
+						let sw = child.offsetWidth;
+						let sh = child.offsetHeight;
+						if (!sw || !sh) {
+							// 布局尺寸缺失时，按视图缩放比例还原
+							const scale = el.getBoundingClientRect().width / cw || 1;
+							const crect = child.getBoundingClientRect();
+							sw = Math.round(crect.width / scale);
+							sh = Math.round(crect.height / scale);
 						}
+						if (!sw || !sh) continue;
+						ctx.drawImage(image, sx, sy, sw, sh, dx * sw, dy * sh, sw, sh);
 					}
+					// 转 base64 输出
+					canvas.toBlob(
+						(blob) => {
+							resolve({
+								blob,
+								canvas
+							});
+						},
+						"image/png",
+						1,
+					);
 				} catch (e) {
 					reject(e);
 				}
