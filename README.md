@@ -188,12 +188,13 @@
 
 最新版本
 
-- 2025/12/12 `v7.7` 修改交通运输标准，之前的地址可能改了
+- 2026/08/29 `v7.8` 修改GB标准，网站域名更新了
 
 历史版本
 
 <details>
 	<summary>点击查看</summary>
+    <li><span>2025/12/12 </span><code>v7.7</code><span>修改交通运输标准，之前的地址可能改了</span></li>
     <li><span>2025/11/21 </span><code>v7.6</code><span>能源标准修改协议地址</span></li>
     <li><span>2025/09/19 </span><code>v7.5</code><span>夸克支持PPTX格式文件，优化文件下载标题</span></li>
     <li><span>2025/09/18 </span><code>v7.4</code><span>新增夸克文库</span></li>
